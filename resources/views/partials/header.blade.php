@@ -27,11 +27,10 @@
                         </svg>
                     </button>
                     <div class="dropdown-content" id="dropdown-profil">
-                        <a href="#" class="dropdown-item" data-i18n="nav.about">Tentang Kami</a>
                         <a href="/visi-misi" class="dropdown-item" data-i18n="nav.vision">Visi & Misi</a>
-                        <a href="#" class="dropdown-item" data-i18n="nav.structure">Struktur Organisasi</a>
-                        <a href="#" class="dropdown-item" data-i18n="nav.history">Sejarah</a>
-                        <a href="#" class="dropdown-item" data-i18n="nav.contact">Kontak</a>
+                        <a href="/struktur-organisasi" class="dropdown-item" data-i18n="nav.structure">Struktur Organisasi</a>
+                        <a href="/sejarah" class="dropdown-item" data-i18n="nav.history">Sejarah</a>
+                        <a href="/kontak" class="dropdown-item" data-i18n="nav.contact">Kontak</a>
                     </div>
                 </div>
 
@@ -64,9 +63,9 @@
                         </svg>
                     </button>
                     <div class="dropdown-content" id="dropdown-galeri">
-                        <a href="#" class="dropdown-item" data-i18n="nav.photos">Foto</a>
-                        <a href="#" class="dropdown-item" data-i18n="nav.videos">Video</a>
-                        <a href="#" class="dropdown-item" data-i18n="nav.infographics">Infografis</a>
+                        <a href="/foto" class="dropdown-item" data-i18n="nav.photos">Foto</a>
+                        <a href="/video" class="dropdown-item" data-i18n="nav.videos">Video</a>
+                        <a href="/infografis" class="dropdown-item" data-i18n="nav.infographics">Infografis</a>
                     </div>
                 </div>
 
@@ -75,6 +74,30 @@
 
             <!-- Right -->
             <div class="flex items-center gap-4 flex-shrink-0" style="margin-left: 24px;">
+                @if(session('user'))
+                    <!-- User Menu (Jika sudah login) -->
+                    <div class="relative dropdown-menu">
+                        <button class="hover-custom whitespace-nowrap flex items-center gap-2 dropdown-toggle" data-dropdown="user">
+                            <span class="text-sm">{{ session('user.name') }}</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full" style="background-color: #ECB176; color: white;">
+                                {{ strtoupper(session('user.role')) }}
+                            </span>
+                            <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-content" id="dropdown-user" style="right: 0; left: auto;">
+                            <a href="{{ route('admin.dashboard') }}" class="dropdown-item">Dashboard</a>
+                            <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="dropdown-item w-full text-left" style="background: none; border: none; padding: 8px 16px; cursor: pointer; color: #374151;">
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @endif
+
                 <!-- Language Selector -->
                 <div class="relative language-selector">
                     <button class="language-toggle text-xs font-semibold border px-3 py-1.5 rounded-md hover:bg-gray-100 whitespace-nowrap flex items-center gap-1.5" id="languageToggle">
