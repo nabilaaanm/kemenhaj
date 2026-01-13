@@ -219,139 +219,24 @@
 
     <!-- Photo Gallery Grid -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8" id="photoGallery">
-        
-        <!-- Photo Item 1 -->
-        <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="kegiatan">
-            <img src="{{ asset('image/galeri/foto/foto-1.jpg') }}" 
-                 alt="Foto Kegiatan Kemenhaj" 
-                 class="w-full h-48 object-cover"
-                 onerror="this.src='https://via.placeholder.com/400x300/ECB176/FFFFFF?text=Foto+1'; this.onerror=null;">
-            <div class="photo-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.photos.item1">Kegiatan Haji 2024</p>
+        @php
+            $fotos = $fotos ?? collect([]);
+        @endphp
+        @forelse($fotos as $foto)
+            <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="{{ $foto->category ?? 'all' }}">
+                <img src="{{ $foto->image_url }}" 
+                     alt="{{ $foto->title }}" 
+                     class="w-full h-48 object-cover"
+                     onerror="this.src='https://via.placeholder.com/400x300/ECB176/FFFFFF?text={{ urlencode($foto->title) }}'; this.onerror=null;">
+                <div class="photo-overlay">
+                    <p class="text-white text-sm font-medium">{{ $foto->title }}</p>
+                </div>
             </div>
-        </div>
-
-        <!-- Photo Item 2 -->
-        <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="pelayanan">
-            <img src="{{ asset('image/galeri/foto/foto-2.jpg') }}" 
-                 alt="Foto Pelayanan Kemenhaj" 
-                 class="w-full h-48 object-cover"
-                 onerror="this.src='https://via.placeholder.com/400x300/ECB176/FFFFFF?text=Foto+2'; this.onerror=null;">
-            <div class="photo-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.photos.item2">Pelayanan Jemaah</p>
+        @empty
+            <div class="col-span-full text-center py-12">
+                <p class="text-gray-600">Belum ada foto yang ditampilkan.</p>
             </div>
-        </div>
-
-        <!-- Photo Item 3 -->
-        <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="pembinaan">
-            <img src="{{ asset('image/galeri/foto/foto-3.jpg') }}" 
-                 alt="Foto Pembinaan Kemenhaj" 
-                 class="w-full h-48 object-cover"
-                 onerror="this.src='https://via.placeholder.com/400x300/ECB176/FFFFFF?text=Foto+3'; this.onerror=null;">
-            <div class="photo-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.photos.item3">Pembinaan Jemaah</p>
-            </div>
-        </div>
-
-        <!-- Photo Item 4 -->
-        <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="kegiatan">
-            <img src="{{ asset('image/galeri/foto/foto-4.jpg') }}" 
-                 alt="Foto Kegiatan Kemenhaj" 
-                 class="w-full h-48 object-cover"
-                 onerror="this.src='https://via.placeholder.com/400x300/ECB176/FFFFFF?text=Foto+4'; this.onerror=null;">
-            <div class="photo-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.photos.item4">Kegiatan Umrah</p>
-            </div>
-        </div>
-
-        <!-- Photo Item 5 -->
-        <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="pelayanan">
-            <img src="{{ asset('image/galeri/foto/foto-5.jpg') }}" 
-                 alt="Foto Pelayanan Kemenhaj" 
-                 class="w-full h-48 object-cover"
-                 onerror="this.src='https://via.placeholder.com/400x300/ECB176/FFFFFF?text=Foto+5'; this.onerror=null;">
-            <div class="photo-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.photos.item5">Pelayanan Informasi</p>
-            </div>
-        </div>
-
-        <!-- Photo Item 6 -->
-        <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="pembinaan">
-            <img src="{{ asset('image/galeri/foto/foto-6.jpg') }}" 
-                 alt="Foto Pembinaan Kemenhaj" 
-                 class="w-full h-48 object-cover"
-                 onerror="this.src='https://via.placeholder.com/400x300/ECB176/FFFFFF?text=Foto+6'; this.onerror=null;">
-            <div class="photo-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.photos.item6">Bimbingan Haji</p>
-            </div>
-        </div>
-
-        <!-- Photo Item 7 -->
-        <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="kegiatan">
-            <img src="{{ asset('image/galeri/foto/foto-7.jpg') }}" 
-                 alt="Foto Kegiatan Kemenhaj" 
-                 class="w-full h-48 object-cover"
-                 onerror="this.src='https://via.placeholder.com/400x300/ECB176/FFFFFF?text=Foto+7'; this.onerror=null;">
-            <div class="photo-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.photos.item7">Kegiatan Sosial</p>
-            </div>
-        </div>
-
-        <!-- Photo Item 8 -->
-        <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="pelayanan">
-            <img src="{{ asset('image/galeri/foto/foto-8.jpg') }}" 
-                 alt="Foto Pelayanan Kemenhaj" 
-                 class="w-full h-48 object-cover"
-                 onerror="this.src='https://via.placeholder.com/400x300/ECB176/FFFFFF?text=Foto+8'; this.onerror=null;">
-            <div class="photo-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.photos.item8">Pelayanan Dokumen</p>
-            </div>
-        </div>
-
-        <!-- Photo Item 9 -->
-        <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="pembinaan">
-            <img src="{{ asset('image/galeri/foto/foto-9.jpg') }}" 
-                 alt="Foto Pembinaan Kemenhaj" 
-                 class="w-full h-48 object-cover"
-                 onerror="this.src='https://via.placeholder.com/400x300/ECB176/FFFFFF?text=Foto+9'; this.onerror=null;">
-            <div class="photo-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.photos.item9">Pelatihan Jemaah</p>
-            </div>
-        </div>
-
-        <!-- Photo Item 10 -->
-        <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="kegiatan">
-            <img src="{{ asset('image/galeri/foto/foto-10.jpg') }}" 
-                 alt="Foto Kegiatan Kemenhaj" 
-                 class="w-full h-48 object-cover"
-                 onerror="this.src='https://via.placeholder.com/400x300/ECB176/FFFFFF?text=Foto+10'; this.onerror=null;">
-            <div class="photo-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.photos.item10">Kegiatan Keagamaan</p>
-            </div>
-        </div>
-
-        <!-- Photo Item 11 -->
-        <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="pelayanan">
-            <img src="{{ asset('image/galeri/foto/foto-11.jpg') }}" 
-                 alt="Foto Pelayanan Kemenhaj" 
-                 class="w-full h-48 object-cover"
-                 onerror="this.src='https://via.placeholder.com/400x300/ECB176/FFFFFF?text=Foto+11'; this.onerror=null;">
-            <div class="photo-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.photos.item11">Pelayanan Kesehatan</p>
-            </div>
-        </div>
-
-        <!-- Photo Item 12 -->
-        <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="pembinaan">
-            <img src="{{ asset('image/galeri/foto/foto-12.jpg') }}" 
-                 alt="Foto Pembinaan Kemenhaj" 
-                 class="w-full h-48 object-cover"
-                 onerror="this.src='https://via.placeholder.com/400x300/ECB176/FFFFFF?text=Foto+12'; this.onerror=null;">
-            <div class="photo-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.photos.item12">Konsultasi Haji</p>
-            </div>
-        </div>
-
+        @endforelse
     </div>
 
     <!-- Load More Button -->

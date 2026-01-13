@@ -284,6 +284,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            position: relative;
         }
         .topbar h2 {
             font-size: 20px;
@@ -339,8 +340,8 @@
             font-weight: 600;
             padding: 4px 10px;
             border-radius: 8px;
-            background-color: #fee2e2;
-            color: #991b1b;
+            background-color:rgb(255, 212, 168); 
+            color: white;
             display: inline-block;
             width: fit-content;
             line-height: 1.2;
@@ -456,7 +457,7 @@
                 <div class="menu-item has-submenu {{ request()->routeIs('admin.posting.*') ? 'active' : '' }}" onclick="toggleSubmenu(this)">
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                         <span>Posting</span>
                     </div>
@@ -555,6 +556,25 @@
                     </a>
                 </div>
 
+                <!-- Regulasi -->
+                <div class="menu-item has-submenu {{ request()->routeIs('admin.regulasi.*') ? 'active' : '' }}" onclick="toggleSubmenu(this)">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                        <span>Regulasi</span>
+                    </div>
+                    <span class="submenu-arrow">▼</span>
+                </div>
+                <div class="submenu {{ request()->routeIs('admin.regulasi.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.regulasi.create') }}" class="submenu-item {{ request()->routeIs('admin.regulasi.create') ? 'active' : '' }}">
+                        <span>Tambah Regulasi</span>
+                    </a>
+                    <a href="{{ route('admin.regulasi.index') }}" class="submenu-item {{ request()->routeIs('admin.regulasi.index') ? 'active' : '' }}">
+                        <span>Lihat Regulasi</span>
+                    </a>
+                </div>
+
                 <!-- Pengaturan -->
                 <div class="menu-item has-submenu {{ request()->routeIs('admin.pengaturan.*') ? 'active' : '' }}" onclick="toggleSubmenu(this)">
                     <div style="display: flex; align-items: center; gap: 12px;">
@@ -593,11 +613,23 @@
         <div class="main-content">
             <!-- Topbar -->
             <div class="topbar">
-                <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="display: flex; align-items: center; gap: 16px; flex: 0 0 auto;">
                     <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
                     <h2>@yield('page-title', 'Dashboard')</h2>
                 </div>
-                <div class="user-menu">
+                <div style="position: absolute; left: 50%; transform: translateX(-50%);">
+                    <a href="{{ route('home') }}" 
+                       style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background-color: #ECB176; color: white; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 500; transition: background-color 0.2s; white-space: nowrap;"
+                       onmouseover="this.style.backgroundColor='#D99D5F'"
+                       onmouseout="this.style.backgroundColor='#ECB176'"
+                       target="_blank">
+                        <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        Beranda
+                    </a>
+                </div>
+                <div class="user-menu" style="flex: 0 0 auto; margin-left: auto;">
                     <div class="user-info-topbar">
                         <div class="user-avatar-topbar">
                             @if(session('user.avatar'))
@@ -622,17 +654,6 @@
 
             <!-- Content Area -->
             <div class="content-area">
-                @if(session('success'))
-                    <div class="card" style="background-color: #d1fae5; border: 1px solid #6ee7b7; margin-bottom: 16px;">
-                        <p style="color: #065f46;">{{ session('success') }}</p>
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="card" style="background-color: #fee2e2; border: 1px solid #fca5a5; margin-bottom: 16px;">
-                        <p style="color: #991b1b;">{{ session('error') }}</p>
-                    </div>
-                @endif
 
                 @yield('content')
             </div>

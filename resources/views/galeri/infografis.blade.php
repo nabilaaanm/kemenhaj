@@ -219,106 +219,24 @@
 
     <!-- Infographic Gallery Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="infographicGallery">
-        
-        <!-- Infographic Item 1 -->
-        <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="haji">
-            <img src="{{ asset('image/galeri/infografis/infografis-1.jpg') }}" 
-                 alt="Infografis Haji" 
-                 class="w-full h-auto"
-                 onerror="this.src='https://via.placeholder.com/800x1000/ECB176/FFFFFF?text=Infografis+1'; this.onerror=null;">
-            <div class="infographic-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.infographics.item1">Panduan Ibadah Haji</p>
+        @php
+            $infografis = $infografis ?? collect([]);
+        @endphp
+        @forelse($infografis as $infografisItem)
+            <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="{{ $infografisItem->category ?? 'all' }}">
+                <img src="{{ $infografisItem->image_url }}" 
+                     alt="{{ $infografisItem->title }}" 
+                     class="w-full h-auto"
+                     onerror="this.src='https://via.placeholder.com/800x1000/ECB176/FFFFFF?text={{ urlencode($infografisItem->title) }}'; this.onerror=null;">
+                <div class="infographic-overlay">
+                    <p class="text-white text-sm font-medium">{{ $infografisItem->title }}</p>
+                </div>
             </div>
-        </div>
-
-        <!-- Infographic Item 2 -->
-        <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="umrah">
-            <img src="{{ asset('image/galeri/infografis/infografis-2.jpg') }}" 
-                 alt="Infografis Umrah" 
-                 class="w-full h-auto"
-                 onerror="this.src='https://via.placeholder.com/800x1000/ECB176/FFFFFF?text=Infografis+2'; this.onerror=null;">
-            <div class="infographic-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.infographics.item2">Panduan Ibadah Umrah</p>
+        @empty
+            <div class="col-span-full text-center py-12">
+                <p class="text-gray-600">Belum ada infografis yang ditampilkan.</p>
             </div>
-        </div>
-
-        <!-- Infographic Item 3 -->
-        <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="informasi">
-            <img src="{{ asset('image/galeri/infografis/infografis-3.jpg') }}" 
-                 alt="Infografis Informasi" 
-                 class="w-full h-auto"
-                 onerror="this.src='https://via.placeholder.com/800x1000/ECB176/FFFFFF?text=Infografis+3'; this.onerror=null;">
-            <div class="infographic-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.infographics.item3">Alur Pendaftaran Haji</p>
-            </div>
-        </div>
-
-        <!-- Infographic Item 4 -->
-        <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="haji">
-            <img src="{{ asset('image/galeri/infografis/infografis-4.jpg') }}" 
-                 alt="Infografis Haji" 
-                 class="w-full h-auto"
-                 onerror="this.src='https://via.placeholder.com/800x1000/ECB176/FFFFFF?text=Infografis+4'; this.onerror=null;">
-            <div class="infographic-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.infographics.item4">Persiapan Sebelum Haji</p>
-            </div>
-        </div>
-
-        <!-- Infographic Item 5 -->
-        <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="umrah">
-            <img src="{{ asset('image/galeri/infografis/infografis-5.jpg') }}" 
-                 alt="Infografis Umrah" 
-                 class="w-full h-auto"
-                 onerror="this.src='https://via.placeholder.com/800x1000/ECB176/FFFFFF?text=Infografis+5'; this.onerror=null;">
-            <div class="infographic-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.infographics.item5">Tips Umrah</p>
-            </div>
-        </div>
-
-        <!-- Infographic Item 6 -->
-        <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="informasi">
-            <img src="{{ asset('image/galeri/infografis/infografis-6.jpg') }}" 
-                 alt="Infografis Informasi" 
-                 class="w-full h-auto"
-                 onerror="this.src='https://via.placeholder.com/800x1000/ECB176/FFFFFF?text=Infografis+6'; this.onerror=null;">
-            <div class="infographic-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.infographics.item6">Statistik Haji 2024</p>
-            </div>
-        </div>
-
-        <!-- Infographic Item 7 -->
-        <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="haji">
-            <img src="{{ asset('image/galeri/infografis/infografis-7.jpg') }}" 
-                 alt="Infografis Haji" 
-                 class="w-full h-auto"
-                 onerror="this.src='https://via.placeholder.com/800x1000/ECB176/FFFFFF?text=Infografis+7'; this.onerror=null;">
-            <div class="infographic-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.infographics.item7">Rukun dan Wajib Haji</p>
-            </div>
-        </div>
-
-        <!-- Infographic Item 8 -->
-        <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="umrah">
-            <img src="{{ asset('image/galeri/infografis/infografis-8.jpg') }}" 
-                 alt="Infografis Umrah" 
-                 class="w-full h-auto"
-                 onerror="this.src='https://via.placeholder.com/800x1000/ECB176/FFFFFF?text=Infografis+8'; this.onerror=null;">
-            <div class="infographic-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.infographics.item8">Rukun Umrah</p>
-            </div>
-        </div>
-
-        <!-- Infographic Item 9 -->
-        <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="informasi">
-            <img src="{{ asset('image/galeri/infografis/infografis-9.jpg') }}" 
-                 alt="Infografis Informasi" 
-                 class="w-full h-auto"
-                 onerror="this.src='https://via.placeholder.com/800x1000/ECB176/FFFFFF?text=Infografis+9'; this.onerror=null;">
-            <div class="infographic-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.infographics.item9">Layanan Kemenhaj</p>
-            </div>
-        </div>
-
+        @endforelse
     </div>
 
     <!-- Load More Button -->

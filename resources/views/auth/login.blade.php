@@ -61,31 +61,38 @@
             transform: translateY(-50%);
             background: white;
             border-radius: 20px;
-            padding: 48px;
-            width: 100%;
-            max-width: 450px;
+            padding: 40px;
+            width: 500px;
+            height: 500px;
+            max-width: 500px;
+            max-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             z-index: 10;
+            overflow-y: auto;
         }
         .login-title {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
         .login-title-logo {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .login-title-logo img {
-            height: 60px;
+            height: 50px;
             width: auto;
         }
         .login-title h1 {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 700;
             color: #1f2937;
             margin: 0 0 8px 0;
+            line-height: 1.3;
         }
         .login-title p {
             font-size: 14px;
@@ -93,7 +100,7 @@
             margin: 0;
         }
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             position: relative;
         }
         .form-group label {
@@ -159,7 +166,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             font-size: 14px;
         }
         .remember-me {
@@ -189,7 +196,7 @@
         }
         .btn-login {
             width: 100%;
-            padding: 16px;
+            padding: 16px 24px;
             background: #1f2937;
             color: white;
             border: none;
@@ -197,16 +204,39 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 4px 12px rgba(31, 41, 55, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
         }
         .btn-login:hover {
             background: #111827;
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(31, 41, 55, 0.3);
+            box-shadow: 0 8px 20px rgba(31, 41, 55, 0.4);
+        }
+        .btn-login:hover::before {
+            width: 300px;
+            height: 300px;
         }
         .btn-login:active {
             transform: translateY(0);
+            box-shadow: 0 4px 12px rgba(31, 41, 55, 0.3);
+        }
+        .btn-login:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(31, 41, 55, 0.2), 0 4px 12px rgba(31, 41, 55, 0.2);
         }
         .alert {
             padding: 14px 16px;
@@ -273,7 +303,8 @@
                     <div class="login-title-logo">
                         <img src="{{ asset('image/lambang.png') }}" alt="Logo Kemenhaj">
                     </div>
-                    <h1>KEMENTERIAN HAJI DAN UMRAH KOTA CIREBON</h1>
+                    <h1>KEMENTERIAN HAJI DAN UMRAH</h1>
+                    <h1>KOTA CIREBON</h1>
                 </div>
 
                 @if(session('success'))

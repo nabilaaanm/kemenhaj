@@ -111,61 +111,46 @@
 
     <!-- Regulation List -->
     <div class="space-y-4" id="regulasiList">
-        <!-- Regulation Card 1 -->
-        <article class="regulasi-card bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition" data-category="perpres">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div class="flex-1">
-                    <span class="inline-block badge-custom text-black text-xs font-bold px-3 py-1 rounded mb-3">
-                        PERATURAN PRESIDEN
-                    </span>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                        Peraturan Presiden (Perpres) Nomor 92 Tahun 2025 tentang Kementerian Haji dan Umrah
-                    </h3>
-                    <div class="flex items-center gap-2 text-sm text-gray-500">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                        <span>10 November 2025</span>
+        @php
+            $regulations = $regulations ?? collect([]);
+        @endphp
+        
+        @forelse($regulations as $regulation)
+            <article class="regulasi-card bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition" data-category="{{ $regulation->category }}">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div class="flex-1">
+                        <span class="inline-block badge-custom text-black text-xs font-bold px-3 py-1 rounded mb-3">
+                            {{ $regulation->badge_text }}
+                        </span>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                            {{ $regulation->title }}
+                        </h3>
+                        <div class="flex items-center gap-2 text-sm text-gray-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span>{{ $regulation->regulation_date->format('d F Y') }}</span>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        @if($regulation->file_url)
+                            <a href="{{ $regulation->file_url }}" download class="btn-custom text-black font-semibold px-6 py-2.5 rounded-lg text-sm inline-flex items-center gap-2 hover:bg-opacity-90 transition">
+                                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                                <span data-i18n="regulasi.download" style="vertical-align: middle;">Download</span>
+                            </a>
+                        @else
+                            <span class="text-gray-400 text-sm">Tidak ada file</span>
+                        @endif
                     </div>
                 </div>
-                <div class="flex-shrink-0">
-                    <a href="{{ asset('pdf/Peraturan Presiden (Perpres) Nomor 92 Tahun 2025 tentang Kementerian Haji dan Umrah.pdf') }}" download class="btn-custom text-black font-semibold px-6 py-2.5 rounded-lg text-sm inline-flex items-center gap-2 hover:bg-opacity-90 transition">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                        </svg>
-                        <span data-i10n="regulasi.download" style="vertical-align: middle;">Download</span>
-                    </a>
-                </div>
+            </article>
+        @empty
+            <div class="text-center py-12">
+                <p class="text-gray-600">Belum ada regulasi yang ditampilkan.</p>
             </div>
-        </article>
-
-        <!-- Regulation Card 2 -->
-        <article class="regulasi-card bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition" data-category="uu">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div class="flex-1">
-                    <span class="inline-block badge-custom text-black text-xs font-bold px-3 py-1 rounded mb-3">
-                        UNDANG UNDANG
-                    </span>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                        Undang-undang (UU) Nomor 14 Tahun 2025 tentang Perubahan Ketiga atas Undang-Undang Nomor 8 Tahun 2019 tentang Ibadah Haji dan Umrah
-                    </h3>
-                    <div class="flex items-center gap-2 text-sm text-gray-500">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                        <span>10 November 2025</span>
-                    </div>
-                </div>
-                <div class="flex-shrink-0">
-                    <a href="{{ asset('pdf/Undang-undang (UU) Nomor 14 Tahun 2025 tentang Perubahan Ketiga atas Undang-Undang Nomor 8 Tahun 2019 tentang Ibadah Haji dan Umrah.pdf') }}" download class="btn-custom text-black font-semibold px-6 py-2.5 rounded-lg text-sm inline-flex items-center gap-2 hover:bg-opacity-90 transition">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                        </svg>
-                        <span data-i18n="regulasi.download" style="vertical-align: middle;">Download</span>
-                    </a>
-                </div>
-            </div>
-        </article>
+        @endforelse
     </div>
 </main>
 

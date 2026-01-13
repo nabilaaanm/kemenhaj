@@ -226,133 +226,100 @@
 
     <!-- Video Gallery Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="videoGallery">
-        
-        <!-- Video Item 1 -->
-        <div class="video-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="kegiatan" data-video-type="youtube" data-video-id="dQw4w9WgXcQ">
-            <div class="video-thumbnail">
-                <img src="{{ asset('image/galeri/video/video-1.jpg') }}" 
-                     alt="Video Kegiatan Kemenhaj"
-                     onerror="this.src='https://via.placeholder.com/800x450/ECB176/FFFFFF?text=Video+1'; this.onerror=null;">
-                <div class="play-button">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
+        @php
+            $videos = $videos ?? collect([]);
+        @endphp
+        @forelse($videos as $video)
+            @php
+                $videoUrl = $video->video_url;
+                $isEmbedUrl = $video->url && (strpos($video->url, 'youtube.com') !== false || strpos($video->url, 'youtu.be') !== false || strpos($video->url, 'vimeo.com') !== false);
+                $isDirectFile = $video->file_path && !empty($video->file_path);
+            @endphp
+            
+            <div class="video-item bg-white rounded-lg shadow-sm overflow-hidden" 
+                 data-category="{{ $video->category ?? 'all' }}" 
+                 data-video-url="{{ $videoUrl }}"
+                 data-video-type="{{ $isEmbedUrl ? 'embed' : ($isDirectFile ? 'file' : 'none') }}">
+                
+                @if($isEmbedUrl)
+                    {{-- Tampilkan embed langsung untuk URL YouTube/Vimeo --}}
+                    <div class="video-embed-container" style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; background-color: #000;">
+                        @php
+                            $embedUrl = '';
+                            $url = $video->url;
+                            
+                            // Parse YouTube URL
+                            if (strpos($url, 'youtube.com/watch?v=') !== false) {
+                                $parts = parse_url($url);
+                                parse_str($parts['query'] ?? '', $query);
+                                $videoId = $query['v'] ?? '';
+                                if ($videoId) {
+                                    $embedUrl = 'https://www.youtube.com/embed/' . $videoId;
+                                }
+                            } elseif (strpos($url, 'youtu.be/') !== false) {
+                                $parts = parse_url($url);
+                                $path = trim($parts['path'] ?? '', '/');
+                                if ($path) {
+                                    $embedUrl = 'https://www.youtube.com/embed/' . $path;
+                                }
+                            } elseif (strpos($url, 'youtube.com/embed/') !== false) {
+                                $embedUrl = $url;
+                            } elseif (strpos($url, 'vimeo.com/') !== false) {
+                                $parts = parse_url($url);
+                                $path = trim($parts['path'] ?? '', '/');
+                                if ($path) {
+                                    $embedUrl = 'https://player.vimeo.com/video/' . $path;
+                                }
+                            }
+                        @endphp
+                        @if($embedUrl)
+                            <iframe src="{{ $embedUrl }}" 
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                            </iframe>
+                        @else
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; text-align: center;">
+                                <p>URL video tidak valid</p>
+                            </div>
+                        @endif
+                    </div>
+                @else
+                    {{-- Tampilkan thumbnail untuk file video atau jika tidak ada URL --}}
+                    <div class="video-thumbnail">
+                        <img src="{{ $video->thumbnail_url ?? 'https://via.placeholder.com/800x450/ECB176/FFFFFF?text=Video' }}" 
+                             alt="{{ $video->title }}"
+                             onerror="this.src='https://via.placeholder.com/800x450/ECB176/FFFFFF?text={{ urlencode($video->title) }}'; this.onerror=null;">
+                        <div class="play-button">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </div>
+                    </div>
+                @endif
+                
+                <div class="p-4">
+                    <h3 class="font-semibold text-gray-800 mb-2">{{ $video->title }}</h3>
+                    @if($video->description)
+                        <p class="text-sm text-gray-600 mb-2">{{ Str::limit($video->description, 100) }}</p>
+                    @endif
+                    @if($video->duration)
+                        <p class="text-sm text-gray-600">Durasi: {{ $video->duration }}</p>
+                    @endif
                 </div>
+                
+                @if(!$isEmbedUrl)
+                    <div class="video-overlay">
+                        <p class="text-white text-sm font-medium">{{ $video->title }}</p>
+                    </div>
+                @endif
             </div>
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2" data-i18n="gallery.videos.item1">Kegiatan Haji 2024</h3>
-                <p class="text-sm text-gray-600" data-i18n="gallery.videos.duration1">Durasi: 5:30</p>
+        @empty
+            <div class="col-span-full text-center py-12">
+                <p class="text-gray-600">Belum ada video yang ditampilkan.</p>
             </div>
-            <div class="video-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.videos.item1">Kegiatan Haji 2024</p>
-            </div>
-        </div>
-
-        <!-- Video Item 2 -->
-        <div class="video-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="informasi" data-video-type="youtube" data-video-id="dQw4w9WgXcQ">
-            <div class="video-thumbnail">
-                <img src="{{ asset('image/galeri/video/video-2.jpg') }}" 
-                     alt="Video Informasi Kemenhaj"
-                     onerror="this.src='https://via.placeholder.com/800x450/ECB176/FFFFFF?text=Video+2'; this.onerror=null;">
-                <div class="play-button">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </div>
-            </div>
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2" data-i18n="gallery.videos.item2">Informasi Pendaftaran Haji</h3>
-                <p class="text-sm text-gray-600" data-i18n="gallery.videos.duration2">Durasi: 3:45</p>
-            </div>
-            <div class="video-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.videos.item2">Informasi Pendaftaran Haji</p>
-            </div>
-        </div>
-
-        <!-- Video Item 3 -->
-        <div class="video-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="tutorial" data-video-type="youtube" data-video-id="dQw4w9WgXcQ">
-            <div class="video-thumbnail">
-                <img src="{{ asset('image/galeri/video/video-3.jpg') }}" 
-                     alt="Video Tutorial Kemenhaj"
-                     onerror="this.src='https://via.placeholder.com/800x450/ECB176/FFFFFF?text=Video+3'; this.onerror=null;">
-                <div class="play-button">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </div>
-            </div>
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2" data-i18n="gallery.videos.item3">Tutorial Pendaftaran Online</h3>
-                <p class="text-sm text-gray-600" data-i18n="gallery.videos.duration3">Durasi: 8:15</p>
-            </div>
-            <div class="video-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.videos.item3">Tutorial Pendaftaran Online</p>
-            </div>
-        </div>
-
-        <!-- Video Item 4 -->
-        <div class="video-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="kegiatan" data-video-type="youtube" data-video-id="dQw4w9WgXcQ">
-            <div class="video-thumbnail">
-                <img src="{{ asset('image/galeri/video/video-4.jpg') }}" 
-                     alt="Video Kegiatan Kemenhaj"
-                     onerror="this.src='https://via.placeholder.com/800x450/ECB176/FFFFFF?text=Video+4'; this.onerror=null;">
-                <div class="play-button">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </div>
-            </div>
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2" data-i18n="gallery.videos.item4">Pelayanan Jemaah Haji</h3>
-                <p class="text-sm text-gray-600" data-i18n="gallery.videos.duration4">Durasi: 6:20</p>
-            </div>
-            <div class="video-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.videos.item4">Pelayanan Jemaah Haji</p>
-            </div>
-        </div>
-
-        <!-- Video Item 5 -->
-        <div class="video-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="informasi" data-video-type="youtube" data-video-id="dQw4w9WgXcQ">
-            <div class="video-thumbnail">
-                <img src="{{ asset('image/galeri/video/video-5.jpg') }}" 
-                     alt="Video Informasi Kemenhaj"
-                     onerror="this.src='https://via.placeholder.com/800x450/ECB176/FFFFFF?text=Video+5'; this.onerror=null;">
-                <div class="play-button">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </div>
-            </div>
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2" data-i18n="gallery.videos.item5">Panduan Ibadah Haji</h3>
-                <p class="text-sm text-gray-600" data-i18n="gallery.videos.duration5">Durasi: 12:45</p>
-            </div>
-            <div class="video-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.videos.item5">Panduan Ibadah Haji</p>
-            </div>
-        </div>
-
-        <!-- Video Item 6 -->
-        <div class="video-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="tutorial" data-video-type="youtube" data-video-id="dQw4w9WgXcQ">
-            <div class="video-thumbnail">
-                <img src="{{ asset('image/galeri/video/video-6.jpg') }}" 
-                     alt="Video Tutorial Kemenhaj"
-                     onerror="this.src='https://via.placeholder.com/800x450/ECB176/FFFFFF?text=Video+6'; this.onerror=null;">
-                <div class="play-button">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </div>
-            </div>
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2" data-i18n="gallery.videos.item6">Cara Cek Status Pendaftaran</h3>
-                <p class="text-sm text-gray-600" data-i18n="gallery.videos.duration6">Durasi: 4:10</p>
-            </div>
-            <div class="video-overlay">
-                <p class="text-white text-sm font-medium" data-i18n="gallery.videos.item6">Cara Cek Status Pendaftaran</p>
-            </div>
-        </div>
-
+        @endforelse
     </div>
 
     <!-- Load More Button -->
@@ -753,24 +720,53 @@
         const modalContent = document.getElementById('videoModalContent');
         const closeModal = document.querySelector('.close-modal');
         
-        // Open modal on video click
+        // Open modal on video click (hanya untuk file video, bukan embed)
         videoItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const videoType = this.getAttribute('data-video-type');
-                const videoId = this.getAttribute('data-video-id');
-                
-                let videoHTML = '';
-                if (videoType === 'youtube') {
-                    videoHTML = `<iframe width="100%" height="600" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-                } else {
-                    const videoSrc = this.getAttribute('data-video-src');
-                    videoHTML = `<video width="100%" height="600" controls autoplay><source src="${videoSrc}" type="video/mp4">Your browser does not support the video tag.</video>`;
-                }
-                
-                modalContent.innerHTML = videoHTML;
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
+            const videoType = item.getAttribute('data-video-type');
+            
+            // Hanya buka modal jika bukan embed (embed sudah langsung ditampilkan)
+            if (videoType !== 'embed') {
+                item.addEventListener('click', function() {
+                    const videoUrl = this.getAttribute('data-video-url');
+                    
+                    if (!videoUrl) return;
+                    
+                    let videoHTML = '';
+                    
+                    // Check if it's a YouTube URL (fallback jika ada)
+                    if (videoUrl && (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be'))) {
+                        let videoId = '';
+                        if (videoUrl.includes('youtube.com/watch?v=')) {
+                            videoId = videoUrl.split('v=')[1].split('&')[0];
+                        } else if (videoUrl.includes('youtu.be/')) {
+                            videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
+                        } else if (videoUrl.includes('youtube.com/embed/')) {
+                            videoId = videoUrl.split('embed/')[1].split('?')[0];
+                        }
+                        if (videoId) {
+                            videoHTML = `<iframe width="100%" height="600" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                        }
+                    } else if (videoUrl && videoUrl.includes('vimeo.com')) {
+                        // Handle Vimeo
+                        let videoId = '';
+                        if (videoUrl.includes('vimeo.com/')) {
+                            videoId = videoUrl.split('vimeo.com/')[1].split('?')[0];
+                        }
+                        if (videoId) {
+                            videoHTML = `<iframe src="https://player.vimeo.com/video/${videoId}?autoplay=1" width="100%" height="600" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+                        }
+                    } else if (videoUrl) {
+                        // Direct video file
+                        videoHTML = `<video width="100%" height="600" controls autoplay><source src="${videoUrl}" type="video/mp4">Your browser does not support the video tag.</video>`;
+                    }
+                    
+                    if (videoHTML) {
+                        modalContent.innerHTML = videoHTML;
+                        modal.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            }
         });
         
         // Close modal

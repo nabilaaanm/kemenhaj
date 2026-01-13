@@ -7,7 +7,11 @@ use App\Http\Controllers\Admin\PostingController;
 use App\Http\Controllers\Admin\HalamanController;
 use App\Http\Controllers\Admin\GaleriController;
 use App\Http\Controllers\Admin\LayananController;
+use App\Http\Controllers\Admin\RegulasiController;
 use App\Http\Controllers\Admin\PengaturanController;
+use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\RegulasiController as PublicRegulasiController;
 
 // ==================== PUBLIC ROUTES (Tanpa Session) ====================
 Route::get('/', function () {
@@ -23,12 +27,8 @@ Route::post('/kemenhaj-admin-secure', [AuthController::class, 'login'])->name('l
 Route::get('/visi-misi', function () {
     return view('profil.visi-misi');
 });
-Route::get('/regulasi', function () {
-    return view('regulasi');
-});
-Route::get('/layanan', function () {
-    return view('layanan');
-});
+Route::get('/regulasi', [PublicRegulasiController::class, 'index'])->name('regulasi');
+Route::get('/layanan', [ServiceController::class, 'index'])->name('layanan');
 Route::get('/data-informasi', function () {
     return view('data-informasi');
 });
@@ -56,15 +56,9 @@ Route::get('/struktur-organisasi', function () {
 Route::get('/sejarah', function () {
     return view('profil.sejarah');
 });
-Route::get('/foto', function () {
-    return view('galeri.foto');
-});
-Route::get('/video', function () {
-    return view('galeri.video');
-});
-Route::get('/infografis', function () {
-    return view('galeri.infografis');
-});
+Route::get('/foto', [GalleryController::class, 'foto'])->name('galeri.foto');
+Route::get('/video', [GalleryController::class, 'video'])->name('galeri.video');
+Route::get('/infografis', [GalleryController::class, 'infografis'])->name('galeri.infografis');
 
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -96,24 +90,44 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         // Foto
         Route::prefix('foto')->name('foto.')->group(function () {
             Route::get('/create', [GaleriController::class, 'fotoCreate'])->name('create');
+            Route::post('/create', [GaleriController::class, 'fotoStore'])->name('store');
             Route::get('/', [GaleriController::class, 'fotoIndex'])->name('index');
+            Route::delete('/{id}', [GaleriController::class, 'fotoDestroy'])->name('destroy');
         });
         // Video
         Route::prefix('video')->name('video.')->group(function () {
             Route::get('/create', [GaleriController::class, 'videoCreate'])->name('create');
+            Route::post('/create', [GaleriController::class, 'videoStore'])->name('store');
             Route::get('/', [GaleriController::class, 'videoIndex'])->name('index');
+            Route::delete('/{id}', [GaleriController::class, 'videoDestroy'])->name('destroy');
         });
         // Infografis
         Route::prefix('infografis')->name('infografis.')->group(function () {
             Route::get('/create', [GaleriController::class, 'infografisCreate'])->name('create');
+            Route::post('/create', [GaleriController::class, 'infografisStore'])->name('store');
             Route::get('/', [GaleriController::class, 'infografisIndex'])->name('index');
+            Route::delete('/{id}', [GaleriController::class, 'infografisDestroy'])->name('destroy');
         });
     });
     
     // Layanan - Admin, Editor
     Route::middleware(['role:admin,editor'])->prefix('layanan')->name('layanan.')->group(function () {
-        Route::get('/create', [LayananController::class, 'create'])->name('create');
         Route::get('/', [LayananController::class, 'index'])->name('index');
+        Route::get('/create', [LayananController::class, 'create'])->name('create');
+        Route::post('/create', [LayananController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [LayananController::class, 'edit'])->name('edit');
+        Route::post('/{id}/edit', [LayananController::class, 'update'])->name('update');
+        Route::delete('/{id}', [LayananController::class, 'destroy'])->name('destroy');
+    });
+    
+    // Regulasi - Admin, Editor
+    Route::middleware(['role:admin,editor'])->prefix('regulasi')->name('regulasi.')->group(function () {
+        Route::get('/', [RegulasiController::class, 'index'])->name('index');
+        Route::get('/create', [RegulasiController::class, 'create'])->name('create');
+        Route::post('/create', [RegulasiController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [RegulasiController::class, 'edit'])->name('edit');
+        Route::post('/{id}/edit', [RegulasiController::class, 'update'])->name('update');
+        Route::delete('/{id}', [RegulasiController::class, 'destroy'])->name('destroy');
     });
     
     // Pengaturan - Admin Only
