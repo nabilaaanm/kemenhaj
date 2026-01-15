@@ -5,8 +5,7 @@
 
 @section('content')
 <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <h3>Daftar Video Galeri</h3>
+    <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 24px;">
         <a href="{{ route('admin.galeri.video.create') }}" 
            style="padding: 10px 20px; background-color: #ECB176; color: white; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center;">
             <svg style="width: 20px; height: 20px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">

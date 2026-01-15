@@ -72,6 +72,7 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             z-index: 10;
             overflow-y: auto;
+            transition: none;
         }
         .login-title {
             text-align: center;
@@ -238,12 +239,20 @@
             outline: none;
             box-shadow: 0 0 0 4px rgba(31, 41, 55, 0.2), 0 4px 12px rgba(31, 41, 55, 0.2);
         }
+        .btn-login:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
         .alert {
             padding: 14px 16px;
             border-radius: 12px;
             margin-bottom: 24px;
             font-size: 14px;
             border: 1px solid;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
         }
         .alert-success {
             background-color: #d1fae5;
@@ -307,19 +316,13 @@
                     <h1>KOTA CIREBON</h1>
                 </div>
 
-                @if(session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
                 @if(session('error'))
                     <div class="alert alert-error">
                         {{ session('error') }}
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('login.post') }}">
+                <form method="POST" action="{{ route('login.post') }}" id="loginForm">
                     @csrf
 
                     <div class="form-group">
@@ -387,6 +390,9 @@
                 </form>
         </div>
     </div>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script>
         function togglePassword() {
             const passwordInput = document.getElementById('password');
@@ -403,6 +409,40 @@
                 eyeSlashIcon.style.display = 'block';
             }
         }
+
+        // SweetAlert untuk logout message
+        @if(session('success'))
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            });
+        @endif
+
+        // Mencegah form berubah saat submit
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const form = this;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            // Disable button untuk mencegah double submit
+            submitButton.disabled = true;
+            submitButton.textContent = 'Memproses...';
+            
+            // Jika ada error, enable kembali setelah beberapa saat
+            setTimeout(function() {
+                if (form.querySelector('.text-error')) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Login';
+                }
+            }, 2000);
+        });
     </script>
 </body>
 </html>

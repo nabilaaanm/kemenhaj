@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\GaleriController;
 use App\Http\Controllers\Admin\LayananController;
 use App\Http\Controllers\Admin\RegulasiController;
 use App\Http\Controllers\Admin\PengaturanController;
+use App\Http\Controllers\Admin\PenggunaController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\RegulasiController as PublicRegulasiController;
@@ -130,6 +131,9 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::delete('/{id}', [RegulasiController::class, 'destroy'])->name('destroy');
     });
     
+    // Panduan - Semua Role
+    Route::get('/pengaturan/panduan', [PengaturanController::class, 'panduan'])->name('pengaturan.panduan');
+    
     // Pengaturan - Admin Only
     Route::middleware(['role:admin'])->prefix('pengaturan')->name('pengaturan.')->group(function () {
         Route::get('/umum', [PengaturanController::class, 'umum'])->name('umum');
@@ -137,7 +141,13 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/modul', [PengaturanController::class, 'modul'])->name('modul');
         Route::get('/tampilan', [PengaturanController::class, 'tampilan'])->name('tampilan');
         Route::get('/slideshow', [PengaturanController::class, 'slideshow'])->name('slideshow');
-        Route::get('/pengguna', [PengaturanController::class, 'pengguna'])->name('pengguna');
-        Route::get('/panduan', [PengaturanController::class, 'panduan'])->name('panduan');
+        
+        // Manajemen Pengguna - Admin Only
+        Route::get('/pengguna', [PenggunaController::class, 'index'])->name('pengguna');
+        Route::get('/pengguna/create', [PenggunaController::class, 'create'])->name('pengguna.create');
+        Route::post('/pengguna', [PenggunaController::class, 'store'])->name('pengguna.store');
+        Route::get('/pengguna/{id}/edit', [PenggunaController::class, 'edit'])->name('pengguna.edit');
+        Route::put('/pengguna/{id}', [PenggunaController::class, 'update'])->name('pengguna.update');
+        Route::delete('/pengguna/{id}', [PenggunaController::class, 'destroy'])->name('pengguna.destroy');
     });
 });

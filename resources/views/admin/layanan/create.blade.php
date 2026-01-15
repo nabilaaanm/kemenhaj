@@ -76,7 +76,7 @@
             <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Masukkan link aplikasi layanan (akan dibuka di tab baru)</p>
             <input type="url" name="url" value="{{ old('url') }}" required
                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
-                   placeholder="https://siskopatuh.haji.go.id/web/">
+                   placeholder="https://haji.go.id/web/">
         </div>
 
         <div style="margin-bottom: 24px;">

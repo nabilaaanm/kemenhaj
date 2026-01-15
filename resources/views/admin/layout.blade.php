@@ -319,6 +319,18 @@
             justify-content: center;
             flex-shrink: 0;
         }
+        .user-avatar-topbar.role-admin {
+            border-color: #ECB176;
+            background: rgba(254, 243, 199, 0.3);
+        }
+        .user-avatar-topbar.role-editor {
+            border-color: #1e40af;
+            background: rgba(219, 234, 254, 0.3);
+        }
+        .user-avatar-topbar.role-kontributor {
+            border-color: rgb(61, 163, 48);
+            background: rgba(214, 248, 216, 0.3);
+        }
         .user-avatar-topbar img {
             width: 100%;
             height: 100%;
@@ -330,6 +342,15 @@
             height: 24px;
             color: #ECB176;
         }
+        .user-avatar-topbar.role-admin svg {
+            color: #ECB176;
+        }
+        .user-avatar-topbar.role-editor svg {
+            color: #1e40af;
+        }
+        .user-avatar-topbar.role-kontributor svg {
+            color: rgb(61, 163, 48);
+        }
         .user-details-topbar {
             display: flex;
             flex-direction: column;
@@ -340,11 +361,21 @@
             font-weight: 600;
             padding: 4px 10px;
             border-radius: 8px;
-            background-color:rgb(255, 212, 168); 
-            color: white;
             display: inline-block;
             width: fit-content;
             line-height: 1.2;
+        }
+        .user-name-topbar.role-admin {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .user-name-topbar.role-editor {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .user-name-topbar.role-kontributor {
+            background-color: rgb(214, 248, 216);
+            color: rgb(61, 163, 48);
         }
         .user-email-topbar {
             font-size: 12px;
@@ -445,6 +476,10 @@
             </div>
             
             <nav class="sidebar-menu">
+                @php
+                    $userRole = session('user.role', 'kontributor');
+                @endphp
+
                 <!-- Dashboard -->
                 <a href="{{ route('admin.dashboard') }}" class="menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -487,6 +522,7 @@
                     </a>
                 </div>
 
+                @if(in_array($userRole, ['admin', 'editor']))
                 <!-- Halaman -->
                 <div class="menu-item has-submenu {{ request()->routeIs('admin.halaman.*') ? 'active' : '' }}" onclick="toggleSubmenu(this)">
                     <div style="display: flex; align-items: center; gap: 12px;">
@@ -574,7 +610,9 @@
                         <span>Lihat Regulasi</span>
                     </a>
                 </div>
+                @endif
 
+                @if($userRole === 'admin')
                 <!-- Pengaturan -->
                 <div class="menu-item has-submenu {{ request()->routeIs('admin.pengaturan.*') ? 'active' : '' }}" onclick="toggleSubmenu(this)">
                     <div style="display: flex; align-items: center; gap: 12px;">
@@ -602,10 +640,26 @@
                     <a href="{{ route('admin.pengaturan.pengguna') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.pengguna') ? 'active' : '' }}">
                         <span>Pengguna</span>
                     </a>
-                    <a href="{{ route('admin.pengaturan.panduan') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.panduan') ? 'active' : '' }}">
-                        <span>Panduan Pengguna</span>
-                    </a>
                 </div>
+
+                <!-- Panduan Pengguna -->
+                <a href="{{ route('admin.pengaturan.panduan') }}" class="menu-item {{ request()->routeIs('admin.pengaturan.panduan') ? 'active' : '' }}">
+                    <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    <span>Panduan Pengguna</span>
+                </a>
+                @endif
+                
+                <!-- Panduan Pengguna untuk Editor dan Kontributor -->
+                @if(in_array($userRole, ['editor', 'kontributor']))
+                <a href="{{ route('admin.pengaturan.panduan') }}" class="menu-item {{ request()->routeIs('admin.pengaturan.panduan') ? 'active' : '' }}">
+                    <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    <span>Panduan Pengguna</span>
+                </a>
+                @endif
             </nav>
         </aside>
 
@@ -631,7 +685,11 @@
                 </div>
                 <div class="user-menu" style="flex: 0 0 auto; margin-left: auto;">
                     <div class="user-info-topbar">
-                        <div class="user-avatar-topbar">
+                        @php
+                            $userRole = session('user.role', 'kontributor');
+                            $roleClass = 'role-' . $userRole;
+                        @endphp
+                        <div class="user-avatar-topbar {{ $roleClass }}">
                             @if(session('user.avatar'))
                                 <img src="{{ asset('storage/' . session('user.avatar')) }}" alt="{{ session('user.name') }}">
                             @else
@@ -641,7 +699,7 @@
                             @endif
                         </div>
                         <div class="user-details-topbar">
-                            <div class="user-name-topbar">{{ strtoupper(session('user.name')) }}</div>
+                            <div class="user-name-topbar {{ $roleClass }}">{{ strtoupper(session('user.name')) }}</div>
                             <div class="user-email-topbar">{{ session('user.email') }}</div>
                         </div>
                     </div>
