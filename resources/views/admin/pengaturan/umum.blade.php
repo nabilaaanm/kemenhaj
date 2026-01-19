@@ -9,7 +9,7 @@
     <form method="POST" action="{{ route('admin.pengaturan.umum.update') }}" enctype="multipart/form-data">
         @csrf
         <div style="margin-bottom: 24px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Nama Kemenhaj</label>
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Nama Kementerian</label>
             <input type="text" name="nama_kemenhaj" value="Kementerian Haji dan Umrah" 
                    class="form-input" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;">
         </div>

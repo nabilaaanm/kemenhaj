@@ -16,92 +16,141 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
             min-height: 100vh;
-            display: flex;
             overflow: hidden;
-        }
-        .login-wrapper {
+            background: #0f172a;
             position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('{{ asset('image/mekah.png') }}') center/cover no-repeat;
+            filter: blur(20px);
+            -webkit-filter: blur(20px);
+            z-index: 0;
+            transform: scale(1.1);
+        }
+        .login-container {
+            display: flex;
             width: 100%;
             min-height: 100vh;
-            overflow: hidden;
         }
-        /* Background Image - Full Width */
-        .login-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-        .login-background img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-        .login-background-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.15);
-            z-index: 2;
-        }
-        /* Login Form Card - Overlay on Right */
-        .login-form-container {
-            position: absolute;
-            top: 50%;
-            right: 5%;
-            transform: translateY(-50%);
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            width: 500px;
-            height: 500px;
-            max-width: 500px;
-            max-height: 500px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            z-index: 10;
-            overflow-y: auto;
-            transition: none;
-        }
-        .login-title {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        .login-title-logo {
+        /* Left Panel - Visual */
+        .login-visual {
+            flex: 1;
+            position: relative;
+            background: url('{{ asset('image/mekah.png') }}') center/cover no-repeat;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 16px;
+            overflow: hidden;
+            border-radius: 36px 0 0 36px;
         }
-        .login-title-logo img {
-            height: 50px;
-            width: auto;
+        .login-visual-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 40px;
         }
-        .login-title h1 {
+        /* Right Panel - Login Form */
+        .login-form-panel {
+            flex: 0 0 45%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px 64px;
+            position: relative;
+            overflow-y: auto;
+            border-radius: 0 36px 36px 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15),
+                        0 8px 25px rgba(0, 0, 0, 0.1),
+                        0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        .login-form-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(236, 177, 118, 0.03) 0%, 
+                rgba(255, 255, 255, 0) 50%,
+                rgba(236, 177, 118, 0.02) 100%);
+            border-radius: 0 36px 36px 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .login-form-panel > * {
+            position: relative;
+            z-index: 1;
+        }
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+        }
+        .auth-card {
+            width: 1200px;
+            max-width: 95%;
+            height: 720px;
+            background: #fff;
+            border-radius: 36px;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+            margin: 0 auto;
+        }
+        .login-greeting {
+            margin-bottom: 48px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-greeting img {
+            width: 130px;
+            height: auto;
+            margin-bottom: 28px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
+            transition: transform 0.3s ease;
+        }
+        .login-greeting img:hover {
+            transform: scale(1.05);
+        }
+        .login-greeting h1 {
             font-size: 22px;
             font-weight: 700;
             color: #1f2937;
-            margin: 0 0 8px 0;
-            line-height: 1.3;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            letter-spacing: 0.3px;
         }
-        .login-title p {
-            font-size: 14px;
+        .login-greeting p {
+            font-size: 15px;
             color: #6b7280;
             margin: 0;
+            font-weight: 500;
         }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             position: relative;
         }
         .form-group label {
@@ -109,20 +158,60 @@
             font-size: 14px;
             font-weight: 600;
             color: #374151;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            letter-spacing: 0.2px;
         }
         .input-wrapper {
             position: relative;
         }
-        .input-icon {
+        .form-group input {
+            width: 100%;
+            padding: 16px 52px 16px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 18px;
+            font-size: 15px;
+            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06),
+                        inset 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+        .form-group input:hover {
+            border-color: #d1d5db;
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1),
+                        inset 0 1px 2px rgba(255, 255, 255, 1);
+            transform: translateY(-1px);
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #ECB176;
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+            box-shadow: 0 0 0 5px rgba(236, 177, 118, 0.15),
+                        0 6px 20px rgba(236, 177, 118, 0.2),
+                        inset 0 1px 2px rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+        }
+        .form-group input::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
+        }
+        .input-icon-right {
             position: absolute;
-            left: 16px;
+            right: 16px;
             top: 50%;
             transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             color: #6b7280;
-            pointer-events: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .input-icon-right:hover {
+            color: #ECB176;
+        }
+        .input-icon-right svg {
+            width: 100%;
+            height: 100%;
         }
         .password-toggle {
             position: absolute;
@@ -143,74 +232,54 @@
             width: 100%;
             height: 100%;
         }
-        .form-group input {
-            width: 100%;
-            padding: 14px 16px 14px 48px;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            background: white;
+        .recover-password {
+            text-align: right;
+            margin-bottom: 32px;
+            margin-top: -4px;
         }
-        .form-group.password-field input {
-            padding-right: 48px;
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: #ECB176;
-            box-shadow: 0 0 0 4px rgba(236, 177, 118, 0.1);
-        }
-        .form-group input::placeholder {
-            color: #9ca3af;
-        }
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .remember-me {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .remember-me input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #ECB176;
-        }
-        .remember-me label {
-            color: #374151;
-            cursor: pointer;
-            margin: 0;
-        }
-        .forget-password {
-            color: #1f2937;
+        .recover-password a {
+            color: #6b7280;
             text-decoration: none;
+            font-size: 14px;
             font-weight: 500;
-            transition: color 0.2s;
+            transition: all 0.2s ease;
         }
-        .forget-password:hover {
+        .recover-password a:hover {
             color: #ECB176;
+            text-decoration: underline;
         }
-        .btn-login {
+        .btn-signin {
             width: 100%;
-            padding: 16px 24px;
-            background: #1f2937;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #ECB176 0%, #D99D5F 50%, #ECB176 100%);
+            background-size: 200% 200%;
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 18px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(31, 41, 55, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(236, 177, 118, 0.35),
+                        0 3px 10px rgba(236, 177, 118, 0.25),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.5px;
             position: relative;
             overflow: hidden;
+            text-transform: uppercase;
+            font-size: 15px;
         }
-        .btn-login::before {
+        .btn-signin::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+        .btn-signin::after {
             content: '';
             position: absolute;
             top: 50%;
@@ -222,45 +291,44 @@
             transform: translate(-50%, -50%);
             transition: width 0.6s, height 0.6s;
         }
-        .btn-login:hover {
-            background: #111827;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(31, 41, 55, 0.4);
+        .btn-signin:hover {
+            transform: translateY(-3px);
+            background-position: right center;
+            box-shadow: 0 10px 30px rgba(236, 177, 118, 0.45),
+                        0 6px 15px rgba(236, 177, 118, 0.35),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.4);
         }
-        .btn-login:hover::before {
+        .btn-signin:hover::before {
+            left: 100%;
+        }
+        .btn-signin:hover::after {
             width: 300px;
             height: 300px;
         }
-        .btn-login:active {
-            transform: translateY(0);
-            box-shadow: 0 4px 12px rgba(31, 41, 55, 0.3);
+        .btn-signin:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(236, 177, 118, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
         }
-        .btn-login:focus {
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(31, 41, 55, 0.2), 0 4px 12px rgba(31, 41, 55, 0.2);
-        }
-        .btn-login:disabled {
-            opacity: 0.7;
+        .btn-signin:disabled {
+            opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+            background: #e5e7eb;
+            box-shadow: none;
         }
         .alert {
-            padding: 14px 16px;
-            border-radius: 12px;
+            padding: 14px 18px;
+            border-radius: 16px;
             margin-bottom: 24px;
-            font-size: 14px;
+            font-size: 13px;
             border: 1px solid;
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-        }
-        .alert-success {
-            background-color: #d1fae5;
-            color: #065f46;
-            border-color: #6ee7b7;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08),
+                        inset 0 1px 2px rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
         }
         .alert-error {
-            background-color: #fee2e2;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
             color: #991b1b;
             border-color: #fca5a5;
         }
@@ -271,125 +339,147 @@
             display: block;
         }
         /* Responsive */
-        @media (max-width: 968px) {
-            .login-form-container {
-                right: 50%;
-                transform: translate(50%, -50%);
-                max-width: 90%;
+        @media (max-width: 900px) {
+            .auth-card {
+                flex-direction: column;
+                height: auto;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .login-visual {
+                height: 260px;
+                border-radius: 36px 36px 0 0;
+            }
+
+            .login-form-panel {
+                flex: 1;
+                border-radius: 0 0 36px 36px;
+                padding: 48px 40px;
+            }
+
+            .login-form-panel::before {
+                border-radius: 0 0 36px 36px;
             }
         }
         @media (max-width: 640px) {
-            .login-form-container {
-                right: 50%;
-                transform: translate(50%, -50%);
-                max-width: 95%;
-                padding: 32px 24px;
+            .page-wrapper {
+                padding: 20px;
             }
-            .login-title h1 {
-                font-size: 24px;
+            .auth-card {
+                height: auto;
+            }
+            .login-form-panel {
+                padding: 40px 28px;
+            }
+            .login-greeting {
+                margin-bottom: 36px;
+            }
+            .login-greeting h1 {
+                font-size: 18px;
+            }
+            .login-greeting img {
+                width: 100px;
+                margin-bottom: 20px;
+            }
+            .form-group input {
+                padding: 14px 48px 14px 18px;
+                font-size: 14px;
+                border-radius: 16px;
+            }
+            .btn-signin {
+                padding: 16px 24px;
+                font-size: 15px;
+                border-radius: 16px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="login-wrapper">
-        <!-- Background Image - Full Width -->
-        <div class="login-background">
-            <img src="{{ asset('image/mekah.png') }}" 
-                 alt="Mekah" 
-                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div style="display: none;">
-                <div style="font-size: 48px; margin-bottom: 16px;">🕌</div>
-                <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">Kementerian Haji</h2>
-                <p style="font-size: 16px; opacity: 0.9;">Kota Cirebon</p>
-            </div>
-            <div class="login-background-overlay"></div>
+<div class="page-wrapper">
+    <div class="auth-card">
+        <div class="login-visual">
+            <div class="login-visual-content"></div>
         </div>
 
-        <!-- Login Form Card - Overlay on Right -->
-        <div class="login-form-container">
-                <div class="login-title">
-                    <div class="login-title-logo">
-                        <img src="{{ asset('image/lambang.png') }}" alt="Logo Kemenhaj">
-                    </div>
-                    <h1>KEMENTERIAN HAJI DAN UMRAH</h1>
-                    <h1>KOTA CIREBON</h1>
+        <!-- Right Panel - Login Form -->
+        <div class="login-form-panel">
+            <div class="login-greeting">
+                <img src="{{ asset('image/lambang.png') }}" alt="Logo Kemenhaj">
+                <h1>KEMENTERIAN HAJI DAN UMRAH</h1>
+                <p>Kota Cirebon</p>
+            </div>
+
+            @if(session('error'))
+                <div class="alert alert-error">
+                    {{ session('error') }}
                 </div>
+            @endif
 
-                @if(session('error'))
-                    <div class="alert alert-error">
-                        {{ session('error') }}
-                    </div>
-                @endif
+            <form method="POST" action="{{ route('login.post') }}" id="loginForm">
+                @csrf
 
-                <form method="POST" action="{{ route('login.post') }}" id="loginForm">
-                    @csrf
-
-                    <div class="form-group">
-                        <label for="email">Username/Email</label>
-                        <div class="input-wrapper">
-                            <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            value="{{ old('email') }}" 
+                            required 
+                            autofocus
+                            placeholder="Masukkan Email"
+                        >
+                        <div class="input-icon-right">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                             </svg>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                value="{{ old('email') }}" 
-                                required 
-                                autofocus
-                                placeholder="Masukkan email"
-                            >
                         </div>
-                        @error('email')
-                            <span class="text-error">{{ $message }}</span>
-                        @enderror
                     </div>
+                    @error('email')
+                        <span class="text-error">{{ $message }}</span>
+                    @enderror
+                </div>
 
-                    <div class="form-group password-field">
-                        <label for="password">Password</label>
-                        <div class="input-wrapper">
-                            <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required
+                            placeholder="Masukkan Password"
+                        >
+                        <span class="password-toggle" id="passwordToggle" onclick="togglePassword()">
+                            <!-- Eye icon (visible) -->
+                            <svg id="eyeIcon" style="display: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                             </svg>
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password" 
-                                required
-                                placeholder="Masukkan password"
-                            >
-                            <span class="password-toggle" id="passwordToggle" onclick="togglePassword()">
-                                <!-- Eye icon (visible) -->
-                                <svg id="eyeIcon" style="display: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                </svg>
-                                <!-- Eye slash icon (hidden) -->
-                                <svg id="eyeSlashIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
-                                </svg>
-                            </span>
-                        </div>
-                        @error('password')
-                            <span class="text-error">{{ $message }}</span>
-                        @enderror
+                            <!-- Eye slash icon (hidden) -->
+                            <svg id="eyeSlashIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                            </svg>
+                        </span>
                     </div>
+                    @error('password')
+                        <span class="text-error">{{ $message }}</span>
+                    @enderror
+                </div>
 
-                    <div class="form-options">
-                        <div class="remember-me">
-                            <input type="checkbox" id="remember" name="remember">
-                            <label for="remember">Remember me</label>
-                        </div>
-                        <a href="#" class="forget-password">Forget password?</a>
-                    </div>
+                <div class="recover-password">
+                    <a href="#">Lupa Password ?</a>
+                </div>
 
-                    <button type="submit" class="btn-login">
-                        Login
-                    </button>
-                </form>
+                <button type="submit" class="btn-signin">
+                    Log In 
+                </button>
+            </form>
         </div>
     </div>
+
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
@@ -439,7 +529,7 @@
             setTimeout(function() {
                 if (form.querySelector('.text-error')) {
                     submitButton.disabled = false;
-                    submitButton.textContent = 'Login';
+                    submitButton.textContent = 'Log In';
                 }
             }, 2000);
         });

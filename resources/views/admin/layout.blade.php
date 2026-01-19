@@ -610,6 +610,28 @@
                         <span>Lihat Regulasi</span>
                     </a>
                 </div>
+
+                <!-- Data Informasi -->
+                <div class="menu-item has-submenu {{ request()->routeIs('admin.data-informasi.*') ? 'active' : '' }}" onclick="toggleSubmenu(this)">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        <span>Data Informasi</span>
+                    </div>
+                    <span class="submenu-arrow">▼</span>
+                </div>
+                <div class="submenu {{ request()->routeIs('admin.data-informasi.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.data-informasi.berhak-lunas.index') }}" class="submenu-item {{ request()->routeIs('admin.data-informasi.berhak-lunas.*') ? 'active' : '' }}">
+                        <span>Berhak Lunas</span>
+                    </a>
+                    <a href="{{ route('admin.data-informasi.kbihu.index') }}" class="submenu-item {{ request()->routeIs('admin.data-informasi.kbihu.*') ? 'active' : '' }}">
+                        <span>KBIHU</span>
+                    </a>
+                    <a href="{{ route('admin.data-informasi.ppiu.index') }}" class="submenu-item {{ request()->routeIs('admin.data-informasi.ppiu.*') ? 'active' : '' }}">
+                        <span>PPIU</span>
+                    </a>
+                </div>
                 @endif
 
                 @if($userRole === 'admin')

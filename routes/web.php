@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\HalamanController;
 use App\Http\Controllers\Admin\GaleriController;
 use App\Http\Controllers\Admin\LayananController;
 use App\Http\Controllers\Admin\RegulasiController;
+use App\Http\Controllers\Admin\DataInformasiController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Admin\PenggunaController;
 use App\Http\Controllers\GalleryController;
@@ -129,6 +130,37 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/{id}/edit', [RegulasiController::class, 'edit'])->name('edit');
         Route::post('/{id}/edit', [RegulasiController::class, 'update'])->name('update');
         Route::delete('/{id}', [RegulasiController::class, 'destroy'])->name('destroy');
+    });
+    
+    // Data Informasi - Admin, Editor
+    Route::middleware(['role:admin,editor'])->prefix('data-informasi')->name('data-informasi.')->group(function () {
+        // Berhak Lunas
+        Route::prefix('berhak-lunas')->name('berhak-lunas.')->group(function () {
+            Route::get('/', [DataInformasiController::class, 'berhakLunasIndex'])->name('index');
+            Route::get('/create', [DataInformasiController::class, 'berhakLunasCreate'])->name('create');
+            Route::post('/create', [DataInformasiController::class, 'berhakLunasStore'])->name('store');
+            Route::get('/{id}/edit', [DataInformasiController::class, 'berhakLunasEdit'])->name('edit');
+            Route::post('/{id}/edit', [DataInformasiController::class, 'berhakLunasUpdate'])->name('update');
+            Route::delete('/{id}', [DataInformasiController::class, 'berhakLunasDestroy'])->name('destroy');
+        });
+        // KBIHU
+        Route::prefix('kbihu')->name('kbihu.')->group(function () {
+            Route::get('/', [DataInformasiController::class, 'kbihuIndex'])->name('index');
+            Route::get('/create', [DataInformasiController::class, 'kbihuCreate'])->name('create');
+            Route::post('/create', [DataInformasiController::class, 'kbihuStore'])->name('store');
+            Route::get('/{id}/edit', [DataInformasiController::class, 'kbihuEdit'])->name('edit');
+            Route::post('/{id}/edit', [DataInformasiController::class, 'kbihuUpdate'])->name('update');
+            Route::delete('/{id}', [DataInformasiController::class, 'kbihuDestroy'])->name('destroy');
+        });
+        // PPIU
+        Route::prefix('ppiu')->name('ppiu.')->group(function () {
+            Route::get('/', [DataInformasiController::class, 'ppiuIndex'])->name('index');
+            Route::get('/create', [DataInformasiController::class, 'ppiuCreate'])->name('create');
+            Route::post('/create', [DataInformasiController::class, 'ppiuStore'])->name('store');
+            Route::get('/{id}/edit', [DataInformasiController::class, 'ppiuEdit'])->name('edit');
+            Route::post('/{id}/edit', [DataInformasiController::class, 'ppiuUpdate'])->name('update');
+            Route::delete('/{id}', [DataInformasiController::class, 'ppiuDestroy'])->name('destroy');
+        });
     });
     
     // Panduan - Semua Role
