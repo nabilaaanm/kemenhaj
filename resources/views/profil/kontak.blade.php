@@ -68,6 +68,17 @@
 
 <!-- ================= MAIN CONTENT ================= -->
 <main class="container-fixed py-12 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
+    @php
+        $alamat = $profil->alamat ?? null;
+        $alamatKeterangan = $profil->alamat_keterangan ?? null;
+        $telepon = $profil->telepon ?? null;
+        $teleponAlt = $profil->telepon_alt ?? null;
+        $email = $profil->email ?? null;
+        $mapsUrl = $profil->maps_url ?? null;
+        $mapsEmbed = $profil->maps_embed ?? null;
+        $hasAlamat = !empty($alamat) || !empty($alamatKeterangan) || !empty($mapsUrl);
+        $hasKontak = !empty($telepon) || !empty($teleponAlt) || !empty($email);
+    @endphp
     
     <!-- Title Section -->
     <div class="mb-12 text-center">
@@ -80,9 +91,11 @@
     </div>
 
     <!-- Contact Information Grid -->
+    @if($hasAlamat || $hasKontak)
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         
         <!-- Address Card -->
+        @if($hasAlamat)
         <div class="bg-white rounded-2xl p-8 shadow-lg">
             <div class="flex items-start gap-4 mb-6">
                 <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #ECB176;">
@@ -95,13 +108,18 @@
                     <h3 class="text-xl font-bold mb-2" style="color: #374151;" data-i18n="contact.address.title">Alamat</h3>
                 </div>
             </div>
+            @if(!empty($alamat))
             <p class="text-gray-700 leading-relaxed mb-4">
-                Jl. Terusan Pemuda, Sunyaragi, Kec. Kesambi, Kota Cirebon, Jawa Barat 45132
+                {{ $alamat }}
             </p>
+            @endif
+            @if(!empty($alamatKeterangan))
             <p class="text-sm text-gray-500 mb-4">
-                7G9P+GWW, Sunyaragi, Kec. Kesambi, Kota Cirebon, Jawa Barat
+                {{ $alamatKeterangan }}
             </p>
-            <a href="https://share.google/UpWidGcSmsuguSxrr" target="_blank" rel="noopener noreferrer" 
+            @endif
+            @if(!empty($mapsUrl))
+            <a href="{{ $mapsUrl }}" target="_blank" rel="noopener noreferrer" 
                class="inline-flex items-center gap-2 text-white px-6 py-3 rounded-lg font-medium transition hover:opacity-90" 
                style="background-color: #ECB176;">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,9 +127,12 @@
                 </svg>
                 <span data-i18n="contact.address.map">Buka di Google Maps</span>
             </a>
+            @endif
         </div>
+        @endif
 
         <!-- Contact Info Card -->
+        @if($hasKontak)
         <div class="bg-white rounded-2xl p-8 shadow-lg">
             <div class="flex items-start gap-4 mb-6">
                 <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #ECB176;">
@@ -127,21 +148,35 @@
                 <div>
                     <p class="text-sm font-semibold text-gray-600 mb-1" data-i18n="contact.info.phone">Telepon</p>
                     <p class="text-gray-700">
-                        (0231) 486047<br>
-                        021-3900020
+                        @if(!empty($telepon))
+                            {{ $telepon }}
+                        @endif
+                        @if(!empty($telepon) && !empty($teleponAlt))
+                            <br>
+                        @endif
+                        @if(!empty($teleponAlt))
+                            {{ $teleponAlt }}
+                        @endif
                     </p>
                 </div>
                 <div>
                     <p class="text-sm font-semibold text-gray-600 mb-1" data-i18n="contact.info.email">Email</p>
-                    <a href="mailto:kemenhaj.ri@haji.go.id" class="text-gray-700 hover:underline">
-                        kemenhaj.ri@haji.go.id
-                    </a>
+                    @if(!empty($email))
+                        <a href="mailto:{{ $email }}" class="text-gray-700 hover:underline">
+                            {{ $email }}
+                        </a>
+                    @else
+                        <span class="text-gray-500">-</span>
+                    @endif
                 </div>
             </div>
         </div>
+        @endif
     </div>
+    @endif
 
     <!-- Google Maps Section -->
+    @if(!empty($mapsEmbed))
     <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-12">
         <div class="p-6 border-b">
             <h2 class="text-2xl font-bold" style="color: #374151;" data-i18n="contact.map.title">Lokasi Kami di Peta</h2>
@@ -149,7 +184,7 @@
         </div>
         <div class="relative" style="padding-bottom: 56.25%; height: 0; overflow: hidden;">
             <iframe 
-                src="https://www.google.com/maps?q=Jl.+Terusan+Pemuda,+Sunyaragi,+Kec.+Kesambi,+Kota+Cirebon,+Jawa+Barat+45132&output=embed" 
+                src="{{ $mapsEmbed }}" 
                 width="100%" 
                 height="100%" 
                 style="position: absolute; top: 0; left: 0; border: 0;" 
@@ -160,7 +195,8 @@
             </iframe>
         </div>
         <div class="p-6 text-center">
-            <a href="https://maps.app.goo.gl/TXUWZJB6ddPYRjj87" target="_blank" rel="noopener noreferrer" 
+            @if(!empty($mapsUrl))
+            <a href="{{ $mapsUrl }}" target="_blank" rel="noopener noreferrer" 
                class="inline-flex items-center gap-2 text-white px-6 py-3 rounded-lg font-medium transition hover:opacity-90" 
                style="background-color: #ECB176;">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,8 +204,10 @@
                 </svg>
                 <span data-i18n="contact.map.open">Buka di Google Maps</span>
             </a>
+            @endif
         </div>
     </div>
+    @endif
 
 </main>
 

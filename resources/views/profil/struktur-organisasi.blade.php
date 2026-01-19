@@ -68,16 +68,30 @@
 
 <!-- ================= MAIN CONTENT ================= -->
 <main class="container-fixed py-12 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
+    @php
+        $strukturSubjudul = $profil->struktur_subjudul ?? 'Struktur organisasi dan tim kerja Kementerian Haji dan Umrah Kota Cirebon';
+        $strukturGambarUrl = $profil->struktur_gambar_url ?? asset('image/struktur-organisasi.png');
+    @endphp
     
     <!-- Title Section -->
     <div class="mb-12 text-center">
         <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #374151;" data-i18n="structure.title">
             Struktur Organisasi
         </h1>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto" data-i18n="structure.subtitle">
-            Struktur organisasi dan tim kerja Kementerian Haji dan Umrah Kota Cirebon
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+            {{ $strukturSubjudul }}
         </p>
     </div>
+
+    @if(!empty($profil?->struktur_organisasi))
+        <div class="mb-12">
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                <div class="prose max-w-none text-gray-700">
+                    {!! $profil->struktur_organisasi !!}
+                </div>
+            </div>
+        </div>
+    @endif
 
     <!-- Organization Chart Section -->
     <div class="mb-16">
@@ -86,7 +100,7 @@
         </h2>
         <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 overflow-hidden">
             <div class="w-full">
-                <img src="{{ asset('image/struktur-organisasi.png') }}" 
+                <img src="{{ $strukturGambarUrl }}" 
                      alt="Struktur Organisasi Kementerian Haji dan Umrah Kota Cirebon" 
                      class="w-full h-auto rounded-lg"
                      onerror="this.src='https://via.placeholder.com/1200x800/ECB176/FFFFFF?text=Struktur+Organisasi+Kemenhaj+Cirebon'; this.onerror=null;">
@@ -101,105 +115,26 @@
         </h2>
         
         <!-- Staff Grid -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-            
-            <!-- Staff Card 1 -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 text-center">
-                <div class="mb-4">
-                    <img src="{{ asset('image/staff/staff-1.jpg') }}" 
-                         alt="Staff Kemenhaj" 
-                         class="w-full aspect-square object-cover rounded-lg mb-3"
-                         onerror="this.src='https://via.placeholder.com/300x300/ECB176/FFFFFF?text=Staff+1'; this.onerror=null;">
-                </div>
-                <h3 class="font-semibold text-gray-800 mb-1" data-i18n="structure.staff.name1">Nama Staff</h3>
-                <p class="text-sm text-gray-600" data-i18n="structure.staff.position1">Jabatan</p>
+        @if(!empty($tim) && $tim->count() > 0)
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+                @foreach($tim as $member)
+                    <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 text-center">
+                        <div class="mb-4">
+                            <img src="{{ $member->foto_url }}" 
+                                 alt="{{ $member->nama }}" 
+                                 class="w-full aspect-square object-cover rounded-lg mb-3"
+                                 onerror="this.src='https://via.placeholder.com/300x300/ECB176/FFFFFF?text=Staff'; this.onerror=null;">
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">{{ $member->nama }}</h3>
+                        <p class="text-sm text-gray-600">{{ $member->jabatan }}</p>
+                    </div>
+                @endforeach
             </div>
-
-            <!-- Staff Card 2 -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 text-center">
-                <div class="mb-4">
-                    <img src="{{ asset('image/staff/staff-2.jpg') }}" 
-                         alt="Staff Kemenhaj" 
-                         class="w-full aspect-square object-cover rounded-lg mb-3"
-                         onerror="this.src='https://via.placeholder.com/300x300/ECB176/FFFFFF?text=Staff+2'; this.onerror=null;">
-                </div>
-                <h3 class="font-semibold text-gray-800 mb-1" data-i18n="structure.staff.name2">Nama Staff</h3>
-                <p class="text-sm text-gray-600" data-i18n="structure.staff.position2">Jabatan</p>
+        @else
+            <div class="text-center text-gray-500 bg-white rounded-xl shadow-sm p-8">
+                Belum ada data tim.
             </div>
-
-            <!-- Staff Card 3 -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 text-center">
-                <div class="mb-4">
-                    <img src="{{ asset('image/staff/staff-3.jpg') }}" 
-                         alt="Staff Kemenhaj" 
-                         class="w-full aspect-square object-cover rounded-lg mb-3"
-                         onerror="this.src='https://via.placeholder.com/300x300/ECB176/FFFFFF?text=Staff+3'; this.onerror=null;">
-                </div>
-                <h3 class="font-semibold text-gray-800 mb-1" data-i18n="structure.staff.name3">Nama Staff</h3>
-                <p class="text-sm text-gray-600" data-i18n="structure.staff.position3">Jabatan</p>
-            </div>
-
-            <!-- Staff Card 4 -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 text-center">
-                <div class="mb-4">
-                    <img src="{{ asset('image/staff/staff-4.jpg') }}" 
-                         alt="Staff Kemenhaj" 
-                         class="w-full aspect-square object-cover rounded-lg mb-3"
-                         onerror="this.src='https://via.placeholder.com/300x300/ECB176/FFFFFF?text=Staff+4'; this.onerror=null;">
-                </div>
-                <h3 class="font-semibold text-gray-800 mb-1" data-i18n="structure.staff.name4">Nama Staff</h3>
-                <p class="text-sm text-gray-600" data-i18n="structure.staff.position4">Jabatan</p>
-            </div>
-
-            <!-- Staff Card 5 -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 text-center">
-                <div class="mb-4">
-                    <img src="{{ asset('image/staff/staff-5.jpg') }}" 
-                         alt="Staff Kemenhaj" 
-                         class="w-full aspect-square object-cover rounded-lg mb-3"
-                         onerror="this.src='https://via.placeholder.com/300x300/ECB176/FFFFFF?text=Staff+5'; this.onerror=null;">
-                </div>
-                <h3 class="font-semibold text-gray-800 mb-1" data-i18n="structure.staff.name5">Nama Staff</h3>
-                <p class="text-sm text-gray-600" data-i18n="structure.staff.position5">Jabatan</p>
-            </div>
-
-            <!-- Staff Card 6 -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 text-center">
-                <div class="mb-4">
-                    <img src="{{ asset('image/staff/staff-6.jpg') }}" 
-                         alt="Staff Kemenhaj" 
-                         class="w-full aspect-square object-cover rounded-lg mb-3"
-                         onerror="this.src='https://via.placeholder.com/300x300/ECB176/FFFFFF?text=Staff+6'; this.onerror=null;">
-                </div>
-                <h3 class="font-semibold text-gray-800 mb-1" data-i18n="structure.staff.name6">Nama Staff</h3>
-                <p class="text-sm text-gray-600" data-i18n="structure.staff.position6">Jabatan</p>
-            </div>
-
-            <!-- Staff Card 7 -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 text-center">
-                <div class="mb-4">
-                    <img src="{{ asset('image/staff/staff-7.jpg') }}" 
-                         alt="Staff Kemenhaj" 
-                         class="w-full aspect-square object-cover rounded-lg mb-3"
-                         onerror="this.src='https://via.placeholder.com/300x300/ECB176/FFFFFF?text=Staff+7'; this.onerror=null;">
-                </div>
-                <h3 class="font-semibold text-gray-800 mb-1" data-i18n="structure.staff.name7">Nama Staff</h3>
-                <p class="text-sm text-gray-600" data-i18n="structure.staff.position7">Jabatan</p>
-            </div>
-
-            <!-- Staff Card 8 -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 text-center">
-                <div class="mb-4">
-                    <img src="{{ asset('image/staff/staff-8.jpg') }}" 
-                         alt="Staff Kemenhaj" 
-                         class="w-full aspect-square object-cover rounded-lg mb-3"
-                         onerror="this.src='https://via.placeholder.com/300x300/ECB176/FFFFFF?text=Staff+8'; this.onerror=null;">
-                </div>
-                <h3 class="font-semibold text-gray-800 mb-1" data-i18n="structure.staff.name8">Nama Staff</h3>
-                <p class="text-sm text-gray-600" data-i18n="structure.staff.position8">Jabatan</p>
-            </div>
-
-        </div>
+        @endif
     </div>
 
 </main>

@@ -72,77 +72,108 @@
         
         <!-- Carousel Container -->
         <div class="carousel-wrapper relative w-full h-full">
-            <!-- Slide 1 -->
-            <div class="carousel-slide active">
-                <img src="/hero-haji.jpg" class="absolute inset-0 w-full h-full object-cover" style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; object-fit: cover;">
-                <div class="absolute inset-0 bg-black/55"></div>
-                <div class="container-fixed relative h-full flex items-center">
-                    <div class="text-white hero-content" style="max-width: 640px; width: 100%; min-width: 0; box-sizing: border-box;">
-                        <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4" data-i18n="hero.slide1.badge">
-                            Berita Terkini
-                        </span>
-                        <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4" data-i18n="hero.slide1.title">
-                            Bimtek Pemvisaan Haji 1447H/2026M Digelar, 
-                            Misi Perkuat Akurasi Dokumen Jemaah
-                        </h1>
-                        <p class="text-sm md:text-base text-gray-200 mb-6" data-i18n="hero.slide1.description">
-                            Serpong — Direktorat Pelayanan Haji Dalam Negeri Kementerian Haji dan Umrah RI
-                            menggelar Bimbingan Teknis Penyelesaian Dokumen Pemvisaan Haji.
-                        </p>
-                        <a href="#" class="inline-flex items-center gap-2 btn-custom text-black font-semibold px-6 py-3 rounded-full text-sm" data-i18n="hero.readMore">
-                            Baca Selengkapnya →
-                        </a>
+            @if(isset($slides) && $slides->count())
+                @foreach($slides as $index => $slide)
+                    <div class="carousel-slide {{ $index === 0 ? 'active' : '' }}">
+                        <img src="{{ $slide->image_url }}" class="absolute inset-0 w-full h-full object-cover" style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; object-fit: cover;">
+                        <div class="absolute inset-0 bg-black/55"></div>
+                        <div class="container-fixed relative h-full flex items-center">
+                            <div class="text-white hero-content" style="max-width: 640px; width: 100%; min-width: 0; box-sizing: border-box;">
+                                @if($slide->badge)
+                                    <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4">
+                                        {{ $slide->badge }}
+                                    </span>
+                                @endif
+                                <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4">
+                                    {{ $slide->title }}
+                                </h1>
+                                @if($slide->description)
+                                    <p class="text-sm md:text-base text-gray-200 mb-6">
+                                        {{ $slide->description }}
+                                    </p>
+                                @endif
+                                @if($slide->button_url)
+                                    <a href="{{ $slide->button_url }}" class="inline-flex items-center gap-2 btn-custom text-black font-semibold px-6 py-3 rounded-full text-sm">
+                                        {{ $slide->button_text ?: 'Selengkapnya' }}
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <!-- Slide 1 -->
+                <div class="carousel-slide active">
+                    <img src="/hero-haji.jpg" class="absolute inset-0 w-full h-full object-cover" style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; object-fit: cover;">
+                    <div class="absolute inset-0 bg-black/55"></div>
+                    <div class="container-fixed relative h-full flex items-center">
+                        <div class="text-white hero-content" style="max-width: 640px; width: 100%; min-width: 0; box-sizing: border-box;">
+                            <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4" data-i18n="hero.slide1.badge">
+                                Berita Terkini
+                            </span>
+                            <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4" data-i18n="hero.slide1.title">
+                                Bimtek Pemvisaan Haji 1447H/2026M Digelar, 
+                                Misi Perkuat Akurasi Dokumen Jemaah
+                            </h1>
+                            <p class="text-sm md:text-base text-gray-200 mb-6" data-i18n="hero.slide1.description">
+                                Serpong — Direktorat Pelayanan Haji Dalam Negeri Kementerian Haji dan Umrah RI
+                                menggelar Bimbingan Teknis Penyelesaian Dokumen Pemvisaan Haji.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 btn-custom text-black font-semibold px-6 py-3 rounded-full text-sm" data-i18n="hero.readMore">
+                                Baca Selengkapnya →
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Slide 2 -->
-            <div class="carousel-slide">
-                <img src="/hero-haji-2.jpg" class="absolute inset-0 w-full h-full object-cover" style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; object-fit: cover;">
-                <div class="absolute inset-0 bg-black/55"></div>
-                <div class="container-fixed relative h-full flex items-center">
-                    <div class="text-white hero-content" style="max-width: 640px; width: 100%; min-width: 0; box-sizing: border-box;">
-                        <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4" data-i18n="hero.slide2.badge">
-                            Pengumuman
-                        </span>
-                        <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4" data-i18n="hero.slide2.title">
-                            Kemenhaj Tetap Buka Layanan di Hari Libur, 
-                            Percepat Persiapan Haji
-                        </h1>
-                        <p class="text-sm md:text-base text-gray-200 mb-6" data-i18n="hero.slide2.description">
-                            Kemenhaj (Jakarta) — Kementerian Haji dan Umrah (Kemenhaj) tetap membuka layanan kepada jemaah haji 
-                            di tingkat kabupaten/kota meskipun pada hari libur.
-                        </p>
-                        <a href="#" class="inline-flex items-center gap-2 btn-custom text-black font-semibold px-6 py-3 rounded-full text-sm" data-i18n="hero.readMore">
-                            Baca Selengkapnya →
-                        </a>
+                <!-- Slide 2 -->
+                <div class="carousel-slide">
+                    <img src="/hero-haji-2.jpg" class="absolute inset-0 w-full h-full object-cover" style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; object-fit: cover;">
+                    <div class="absolute inset-0 bg-black/55"></div>
+                    <div class="container-fixed relative h-full flex items-center">
+                        <div class="text-white hero-content" style="max-width: 640px; width: 100%; min-width: 0; box-sizing: border-box;">
+                            <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4" data-i18n="hero.slide2.badge">
+                                Pengumuman
+                            </span>
+                            <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4" data-i18n="hero.slide2.title">
+                                Kemenhaj Tetap Buka Layanan di Hari Libur, 
+                                Percepat Persiapan Haji
+                            </h1>
+                            <p class="text-sm md:text-base text-gray-200 mb-6" data-i18n="hero.slide2.description">
+                                Kemenhaj (Jakarta) — Kementerian Haji dan Umrah (Kemenhaj) tetap membuka layanan kepada jemaah haji 
+                                di tingkat kabupaten/kota meskipun pada hari libur.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 btn-custom text-black font-semibold px-6 py-3 rounded-full text-sm" data-i18n="hero.readMore">
+                                Baca Selengkapnya →
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Slide 3 -->
-            <div class="carousel-slide">
-                <img src="/hero-haji-3.jpg" class="absolute inset-0 w-full h-full object-cover" style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; object-fit: cover;">
-                <div class="absolute inset-0 bg-black/55"></div>
-                <div class="container-fixed relative h-full flex items-center">
-                    <div class="text-white hero-content" style="max-width: 640px; width: 100%; min-width: 0; box-sizing: border-box;">
-                        <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4" data-i18n="hero.slide3.badge">
-                            Siaran Pers
-                        </span>
-                        <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4" data-i18n="hero.slide3.title">
-                            Kemenhaj Fokus Penyelenggaraan Haji 1447 H/2026 M: 
-                            Tepat Waktu, Berkualitas
-                        </h1>
-                        <p class="text-sm md:text-base text-gray-200 mb-6" data-i18n="hero.slide3.description">
-                            Jakarta (Kemenhaj) — Menteri Haji dan Umrah RI menegaskan komitmen pelayanan haji yang tepat waktu, 
-                            berkualitas tinggi, dan memperkuat perlindungan jemaah.
-                        </p>
-                        <a href="#" class="inline-flex items-center gap-2 btn-custom text-black font-semibold px-6 py-3 rounded-full text-sm" data-i18n="hero.readMore">
-                            Baca Selengkapnya →
-                        </a>
+                <!-- Slide 3 -->
+                <div class="carousel-slide">
+                    <img src="/hero-haji-3.jpg" class="absolute inset-0 w-full h-full object-cover" style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; object-fit: cover;">
+                    <div class="absolute inset-0 bg-black/55"></div>
+                    <div class="container-fixed relative h-full flex items-center">
+                        <div class="text-white hero-content" style="max-width: 640px; width: 100%; min-width: 0; box-sizing: border-box;">
+                            <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4" data-i18n="hero.slide3.badge">
+                                Siaran Pers
+                            </span>
+                            <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4" data-i18n="hero.slide3.title">
+                                Kemenhaj Fokus Penyelenggaraan Haji 1447 H/2026 M: 
+                                Tepat Waktu, Berkualitas
+                            </h1>
+                            <p class="text-sm md:text-base text-gray-200 mb-6" data-i18n="hero.slide3.description">
+                                Jakarta (Kemenhaj) — Menteri Haji dan Umrah RI menegaskan komitmen pelayanan haji yang tepat waktu, 
+                                berkualitas tinggi, dan memperkuat perlindungan jemaah.
+                            </p>
+                            <a href="#" class="inline-flex items-center gap-2 btn-custom text-black font-semibold px-6 py-3 rounded-full text-sm" data-i18n="hero.readMore">
+                                Baca Selengkapnya →
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         <!-- Navigation Arrows -->

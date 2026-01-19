@@ -11,13 +11,26 @@ use App\Http\Controllers\Admin\RegulasiController;
 use App\Http\Controllers\Admin\DataInformasiController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Admin\PenggunaController;
+use App\Http\Controllers\Admin\SlideshowController;
+use App\Models\Slideshow;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\RegulasiController as PublicRegulasiController;
+use Illuminate\Support\Facades\Schema;
 
 // ==================== PUBLIC ROUTES (Tanpa Session) ====================
 Route::get('/', function () {
-    return view('home');
+    if (!Schema::hasTable('slideshows')) {
+        $slides = collect();
+        return view('home', compact('slides'));
+    }
+
+    $slides = Slideshow::where('is_active', true)
+        ->orderBy('order')
+        ->orderBy('id')
+        ->get();
+    return view('home', compact('slides'));
 })->name('home');
 
 // ==================== AUTH ROUTES (Login) ====================
@@ -49,12 +62,8 @@ Route::get('/siaran-pers', function () {
 Route::get('/klarifikasi-hoax', function () {
     return view('berita.klarifikasi-hoax');
 });
-Route::get('/kontak', function () {
-    return view('profil.kontak');
-});
-Route::get('/struktur-organisasi', function () {
-    return view('profil.struktur-organisasi');
-});
+Route::get('/kontak', [ProfilController::class, 'kontak'])->name('kontak');
+Route::get('/struktur-organisasi', [ProfilController::class, 'strukturOrganisasi'])->name('struktur-organisasi');
 Route::get('/sejarah', function () {
     return view('profil.sejarah');
 });
@@ -166,13 +175,29 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
     // Panduan - Semua Role
     Route::get('/pengaturan/panduan', [PengaturanController::class, 'panduan'])->name('pengaturan.panduan');
     
+    // Profil - Admin Only
+    Route::middleware(['role:admin'])->prefix('profil')->name('profil.')->group(function () {
+        Route::get('/struktur', [PengaturanController::class, 'profilStruktur'])->name('struktur');
+        Route::post('/struktur', [PengaturanController::class, 'updateProfil'])->name('struktur.update');
+        Route::get('/kontak', [PengaturanController::class, 'profilKontak'])->name('kontak');
+        Route::post('/kontak', [PengaturanController::class, 'updateProfil'])->name('kontak.update');
+        Route::post('/tim', [PengaturanController::class, 'timStore'])->name('tim.store');
+        Route::put('/tim/{id}', [PengaturanController::class, 'timUpdate'])->name('tim.update');
+        Route::delete('/tim/{id}', [PengaturanController::class, 'timDestroy'])->name('tim.destroy');
+    });
+
     // Pengaturan - Admin Only
     Route::middleware(['role:admin'])->prefix('pengaturan')->name('pengaturan.')->group(function () {
         Route::get('/umum', [PengaturanController::class, 'umum'])->name('umum');
         Route::post('/umum', [PengaturanController::class, 'updateUmum'])->name('umum.update');
         Route::get('/modul', [PengaturanController::class, 'modul'])->name('modul');
         Route::get('/tampilan', [PengaturanController::class, 'tampilan'])->name('tampilan');
-        Route::get('/slideshow', [PengaturanController::class, 'slideshow'])->name('slideshow');
+        Route::get('/slideshow', [SlideshowController::class, 'index'])->name('slideshow');
+        Route::get('/slideshow/create', [SlideshowController::class, 'create'])->name('slideshow.create');
+        Route::post('/slideshow', [SlideshowController::class, 'store'])->name('slideshow.store');
+        Route::get('/slideshow/{id}/edit', [SlideshowController::class, 'edit'])->name('slideshow.edit');
+        Route::put('/slideshow/{id}', [SlideshowController::class, 'update'])->name('slideshow.update');
+        Route::delete('/slideshow/{id}', [SlideshowController::class, 'destroy'])->name('slideshow.destroy');
         
         // Manajemen Pengguna - Admin Only
         Route::get('/pengguna', [PenggunaController::class, 'index'])->name('pengguna');

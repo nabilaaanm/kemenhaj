@@ -635,6 +635,27 @@
                 @endif
 
                 @if($userRole === 'admin')
+                <!-- Profil -->
+                <div class="menu-item has-submenu {{ request()->routeIs('admin.profil.*') ? 'active' : '' }}" onclick="toggleSubmenu(this)">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        <span>Profil</span>
+                    </div>
+                    <span class="submenu-arrow">▼</span>
+                </div>
+                <div class="submenu {{ request()->routeIs('admin.profil.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.profil.struktur') }}" class="submenu-item {{ request()->routeIs('admin.profil.struktur') ? 'active' : '' }}">
+                        <span>Struktur & Tim Kemenhaj</span>
+                    </a>
+                    <a href="{{ route('admin.profil.kontak') }}" class="submenu-item {{ request()->routeIs('admin.profil.kontak') ? 'active' : '' }}">
+                        <span>Kontak</span>
+                    </a>
+                </div>
+                @endif
+
+                @if($userRole === 'admin')
                 <!-- Pengaturan -->
                 <div class="menu-item has-submenu {{ request()->routeIs('admin.pengaturan.*') ? 'active' : '' }}" onclick="toggleSubmenu(this)">
                     <div style="display: flex; align-items: center; gap: 12px;">
