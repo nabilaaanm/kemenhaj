@@ -3,18 +3,25 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\GalleryCategory;
 use App\Models\Gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
 
 class GaleriController extends Controller
 {
     // Foto
     public function fotoCreate()
     {
-        return view('admin.galeri.foto.create');
+        $categories = [];
+        if (Schema::hasTable('gallery_categories')) {
+            $categories = GalleryCategory::where('type', 'foto')->orderBy('name')->get();
+        }
+
+        return view('admin.galeri.foto.create', compact('categories'));
     }
 
     public function fotoStore(Request $request)
@@ -22,7 +29,7 @@ class GaleriController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'category' => 'nullable|string|in:kegiatan,pelayanan,pembinaan',
+            'category' => 'nullable|string|max:255',
             'file' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
             'url' => 'nullable|url',
         ], [
@@ -100,7 +107,12 @@ class GaleriController extends Controller
     // Video
     public function videoCreate()
     {
-        return view('admin.galeri.video.create');
+        $categories = [];
+        if (Schema::hasTable('gallery_categories')) {
+            $categories = GalleryCategory::where('type', 'video')->orderBy('name')->get();
+        }
+
+        return view('admin.galeri.video.create', compact('categories'));
     }
 
     public function videoStore(Request $request)
@@ -132,7 +144,7 @@ class GaleriController extends Controller
         $rules = [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'category' => 'nullable|string|in:kegiatan,informasi,tutorial',
+            'category' => 'nullable|string|max:255',
             'duration' => 'nullable|string|max:20',
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ];
@@ -290,7 +302,12 @@ class GaleriController extends Controller
     // Infografis
     public function infografisCreate()
     {
-        return view('admin.galeri.infografis.create');
+        $categories = [];
+        if (Schema::hasTable('gallery_categories')) {
+            $categories = GalleryCategory::where('type', 'infografis')->orderBy('name')->get();
+        }
+
+        return view('admin.galeri.infografis.create', compact('categories'));
     }
 
     public function infografisStore(Request $request)
@@ -298,7 +315,7 @@ class GaleriController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'category' => 'nullable|string|in:haji,umrah,informasi',
+            'category' => 'nullable|string|max:255',
             'file' => 'nullable|image|mimes:jpeg,jpg,png|max:10240', // 10MB max
             'url' => 'nullable|url',
         ], [
@@ -371,5 +388,50 @@ class GaleriController extends Controller
         $infografis->delete();
         
         return redirect()->route('admin.galeri.infografis.index')->with('success', 'Infografis berhasil dihapus');
+    }
+
+    public function kategoriIndex()
+    {
+        $fotoCategories = [];
+        $videoCategories = [];
+        $infografisCategories = [];
+
+        if (Schema::hasTable('gallery_categories')) {
+            $fotoCategories = GalleryCategory::where('type', 'foto')->orderBy('name')->get();
+            $videoCategories = GalleryCategory::where('type', 'video')->orderBy('name')->get();
+            $infografisCategories = GalleryCategory::where('type', 'infografis')->orderBy('name')->get();
+        }
+
+        return view('admin.galeri.kategori', compact('fotoCategories', 'videoCategories', 'infografisCategories'));
+    }
+
+    public function kategoriStore(Request $request)
+    {
+        if (!Schema::hasTable('gallery_categories')) {
+            return back()->with('error', 'Tabel kategori galeri belum tersedia. Jalankan migrasi terlebih dahulu.');
+        }
+
+        $data = $request->validate([
+            'type' => 'required|string|in:foto,video,infografis',
+            'name' => 'required|string|max:255',
+        ]);
+
+        GalleryCategory::firstOrCreate([
+            'type' => $data['type'],
+            'name' => $data['name'],
+        ]);
+
+        return back()->with('success', 'Kategori berhasil ditambahkan.');
+    }
+
+    public function kategoriDestroy($id)
+    {
+        if (!Schema::hasTable('gallery_categories')) {
+            return back()->with('error', 'Tabel kategori galeri belum tersedia. Jalankan migrasi terlebih dahulu.');
+        }
+
+        GalleryCategory::where('id', $id)->delete();
+
+        return back()->with('success', 'Kategori berhasil dihapus.');
     }
 }

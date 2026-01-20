@@ -67,9 +67,15 @@
             <select name="category"
                     style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: white;">
                 <option value="">Pilih Kategori</option>
-                <option value="kegiatan" {{ old('category') == 'kegiatan' ? 'selected' : '' }}>Kegiatan</option>
-                <option value="pelayanan" {{ old('category') == 'pelayanan' ? 'selected' : '' }}>Pelayanan</option>
-                <option value="pembinaan" {{ old('category') == 'pembinaan' ? 'selected' : '' }}>Pembinaan</option>
+                @if(empty($categories))
+                    <option value="" disabled>Belum ada kategori</option>
+                @else
+                    @foreach($categories as $category)
+                        <option value="{{ $category->name }}" {{ old('category') == $category->name ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
+                @endif
             </select>
         </div>
 

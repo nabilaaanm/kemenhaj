@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\PostingController;
+use App\Http\Controllers\PostingPublicController;
 use App\Http\Controllers\Admin\HalamanController;
 use App\Http\Controllers\Admin\GaleriController;
 use App\Http\Controllers\Admin\LayananController;
@@ -13,6 +14,9 @@ use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Admin\PenggunaController;
 use App\Http\Controllers\Admin\SlideshowController;
 use App\Models\Slideshow;
+use App\Models\Posting;
+use App\Models\Regulation;
+use App\Models\Gallery;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ServiceController;
@@ -23,14 +27,165 @@ use Illuminate\Support\Facades\Schema;
 Route::get('/', function () {
     if (!Schema::hasTable('slideshows')) {
         $slides = collect();
-        return view('home', compact('slides'));
+        $popularPosts = collect();
+        $latestPosts = collect();
+        $announcementPosts = collect();
+        $hoaxPosts = collect();
+        $homeVideos = collect();
+        $homeInfografis = collect();
+        $homeFotos = collect();
+        $homeRegulations = collect();
+
+        if (Schema::hasTable('postings')) {
+            $popularPosts = Posting::with('category')
+                ->where('is_active', true)
+                ->orderByDesc('views')
+                ->orderByDesc('published_at')
+                ->take(2)
+                ->get();
+
+            $latestPosts = Posting::with('category')
+                ->where('is_active', true)
+                ->orderByDesc('created_at')
+                ->take(3)
+                ->get();
+
+            $announcementPosts = Posting::with('category')
+                ->where('is_active', true)
+                ->whereHas('category', function ($q) {
+                $q->where('slug', 'pengumuman');
+            })
+                ->orderByDesc('created_at')
+                ->take(3)
+                ->get();
+
+            $hoaxPosts = Posting::with('category')
+                ->where('is_active', true)
+                ->whereHas('category', function ($q) {
+                $q->where('slug', 'klarifikasi-hoax');
+            })
+                ->orderByDesc('created_at')
+                ->take(3)
+                ->get();
+        }
+
+        if (Schema::hasTable('galleries')) {
+            $homeVideos = Gallery::where('type', 'video')->where('is_active', true)
+                ->orderByDesc('created_at')->take(3)->get();
+            $homeInfografis = Gallery::where('type', 'infografis')->where('is_active', true)
+                ->orderByDesc('created_at')->take(3)->get();
+            $homeFotos = Gallery::where('type', 'foto')->where('is_active', true)
+                ->orderByDesc('created_at')->take(3)->get();
+        }
+
+        if (Schema::hasTable('regulations')) {
+            $homeRegulations = Regulation::where('is_active', true)
+                ->orderBy('order')
+                ->orderByDesc('regulation_date')
+                ->take(3)
+                ->get();
+        }
+
+        return view('home', compact('slides', 'popularPosts', 'latestPosts', 'announcementPosts', 'hoaxPosts', 'homeVideos', 'homeInfografis', 'homeFotos', 'homeRegulations'));
     }
 
     $slides = Slideshow::where('is_active', true)
         ->orderBy('order')
         ->orderBy('id')
         ->get();
-    return view('home', compact('slides'));
+
+    $popularPosts = collect();
+    $latestPosts = collect();
+    $announcementPosts = collect();
+    $hoaxPosts = collect();
+    $homeVideos = collect();
+    $homeInfografis = collect();
+    $homeFotos = collect();
+    $homeRegulations = collect();
+
+    if (Schema::hasTable('postings')) {
+        $popularPosts = Posting::with('category')
+            ->where('is_active', true)
+            ->orderByDesc('views')
+            ->orderByDesc('published_at')
+            ->take(2)
+            ->get();
+
+        $latestPosts = Posting::with('category')
+            ->where('is_active', true)
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get();
+
+        $announcementPosts = Posting::with('category')
+            ->where('is_active', true)
+            ->whereHas('category', function ($q) {
+                $q->where('slug', 'pengumuman');
+            })
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get();
+
+        $hoaxPosts = Posting::with('category')
+            ->where('is_active', true)
+            ->whereHas('category', function ($q) {
+                $q->where('slug', 'klarifikasi-hoax');
+            })
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get();
+    }
+    if (Schema::hasTable('postings')) {
+        $popularPosts = Posting::with('category')
+            ->where('is_active', true)
+            ->orderByDesc('views')
+            ->orderByDesc('published_at')
+            ->take(2)
+            ->get();
+
+        $latestPosts = Posting::with('category')
+            ->where('is_active', true)
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get();
+
+        $announcementPosts = Posting::with('category')
+            ->where('is_active', true)
+            ->whereHas('category', function ($q) {
+                $q->where('slug', 'pengumuman');
+            })
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get();
+
+        $hoaxPosts = Posting::with('category')
+            ->where('is_active', true)
+            ->whereHas('category', function ($q) {
+                $q->where('slug', 'klarifikasi-hoax');
+            })
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get();
+    }
+
+    if (Schema::hasTable('galleries')) {
+        $homeVideos = Gallery::where('type', 'video')->where('is_active', true)
+            ->orderByDesc('created_at')->take(3)->get();
+        $homeInfografis = Gallery::where('type', 'infografis')->where('is_active', true)
+            ->orderByDesc('created_at')->take(3)->get();
+        $homeFotos = Gallery::where('type', 'foto')->where('is_active', true)
+            ->orderByDesc('created_at')->take(3)->get();
+    }
+
+    if (Schema::hasTable('regulations')) {
+        $homeRegulations = Regulation::where('is_active', true)
+            ->orderBy('order')
+            ->orderByDesc('regulation_date')
+            ->take(3)
+            ->get();
+    }
+
+    return view('home', compact('slides', 'popularPosts', 'latestPosts', 'announcementPosts', 'hoaxPosts', 'homeVideos', 'homeInfografis', 'homeFotos', 'homeRegulations'));
 })->name('home');
 
 // ==================== AUTH ROUTES (Login) ====================
@@ -50,18 +205,11 @@ Route::get('/data-informasi', function () {
 Route::get('/lk-pih', function () {
     return view('lk-pih');
 });
-Route::get('/berita', function () {
-    return view('berita.berita');
-});
-Route::get('/pengumuman', function () {
-    return view('berita.pengumuman');
-});
-Route::get('/siaran-pers', function () {
-    return view('berita.siaran-pers');
-});
-Route::get('/klarifikasi-hoax', function () {
-    return view('berita.klarifikasi-hoax');
-});
+Route::get('/berita', [PostingPublicController::class, 'berita'])->name('berita');
+Route::get('/pengumuman', [PostingPublicController::class, 'pengumuman'])->name('pengumuman');
+Route::get('/siaran-pers', [PostingPublicController::class, 'siaranPers'])->name('siaran-pers');
+Route::get('/klarifikasi-hoax', [PostingPublicController::class, 'klarifikasiHoax'])->name('klarifikasi-hoax');
+Route::get('/posting/{slug}', [PostingPublicController::class, 'show'])->name('posting.show');
 Route::get('/kontak', [ProfilController::class, 'kontak'])->name('kontak');
 Route::get('/struktur-organisasi', [ProfilController::class, 'strukturOrganisasi'])->name('struktur-organisasi');
 Route::get('/sejarah', function () {
@@ -82,12 +230,14 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
     // Posting - Admin, Editor, Kontributor
     Route::middleware(['role:admin,editor,kontributor'])->prefix('posting')->name('posting.')->group(function () {
         Route::get('/create', [PostingController::class, 'create'])->name('create');
+        Route::post('/create', [PostingController::class, 'store'])->name('store');
         Route::get('/', [PostingController::class, 'index'])->name('index');
+        Route::get('/{id}/edit', [PostingController::class, 'edit'])->name('edit');
+        Route::put('/{id}/edit', [PostingController::class, 'update'])->name('update');
+        Route::delete('/{id}', [PostingController::class, 'destroy'])->name('destroy');
         Route::get('/category', [PostingController::class, 'category'])->name('category');
-        Route::get('/berita', [PostingController::class, 'berita'])->name('berita');
-        Route::get('/pengumuman', [PostingController::class, 'pengumuman'])->name('pengumuman');
-        Route::get('/siaran-pers', [PostingController::class, 'siaranPers'])->name('siaran-pers');
-        Route::get('/hoax', [PostingController::class, 'hoax'])->name('hoax');
+        Route::post('/category', [PostingController::class, 'categoryStore'])->name('category.store');
+        Route::delete('/category/{id}', [PostingController::class, 'categoryDestroy'])->name('category.destroy');
     });
     
     // Halaman - Admin, Editor
@@ -98,6 +248,9 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
     
     // Galeri - Admin, Editor
     Route::middleware(['role:admin,editor'])->prefix('galeri')->name('galeri.')->group(function () {
+        Route::get('/kategori', [GaleriController::class, 'kategoriIndex'])->name('kategori');
+        Route::post('/kategori', [GaleriController::class, 'kategoriStore'])->name('kategori.store');
+        Route::delete('/kategori/{id}', [GaleriController::class, 'kategoriDestroy'])->name('kategori.destroy');
         // Foto
         Route::prefix('foto')->name('foto.')->group(function () {
             Route::get('/create', [GaleriController::class, 'fotoCreate'])->name('create');

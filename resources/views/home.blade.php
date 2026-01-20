@@ -206,40 +206,35 @@
             <h2 class="text-xl font-semibold mb-6" data-i18n="content.popular">Berita Populer</h2>
 
             <div class="grid md:grid-cols-2 gap-6 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
-                
-                <!-- Card -->
-                <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition w-full">
-                    <img src="/berita1.jpg" class="w-full object-cover" style="height: 192px; width: 100%; display: block;">
-                    <div class="p-4">
-                        <span class="inline-block badge-light text-xs font-semibold px-2 py-1 rounded mb-2">
-                            Siaran Pers
-                        </span>
-                        <p class="text-xs text-gray-500 mb-1">8 Januari 2026</p>
-                        <h3 class="font-semibold text-sm mb-2">
-                            Kemenhaj Fokus Penyelenggaraan Haji 1447 H/2026 M
-                        </h3>
-                        <p class="text-xs text-gray-500 line-clamp-2">
-                            Jakarta (Kemenhaj) — Menteri Haji dan Umrah RI menegaskan komitmen pelayanan haji…
-                        </p>
+                @forelse($popularPosts as $post)
+                    <article class="news-card w-full">
+                        <img src="{{ $post->cover_url ?: asset('image/lambang.png') }}" class="news-thumb" style="display: block;">
+                        <div class="news-body">
+                            <span class="news-badge mb-2">
+                                {{ $post->category?->name ?? 'Berita' }}
+                            </span>
+                            <p class="news-meta mb-1">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                            <h3 class="news-title text-sm mb-2">
+                                {{ $post->title }}
+                            </h3>
+                            <p class="news-excerpt text-xs line-clamp-2">
+                                {{ \Illuminate\Support\Str::limit($post->excerpt ?: strip_tags($post->content), 90) }}
+                            </p>
+                            <div class="mt-3">
+                                <a href="{{ route('posting.show', $post->slug) }}" class="btn-readmore">
+                                    Baca Selengkapnya
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                @empty
+                    <div class="text-sm text-gray-500" data-i18n="content.noNews">
+                        Tidak ada berita tersedia
                     </div>
-                </article>
-
-                <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition w-full">
-                    <img src="/berita2.jpg" class="w-full object-cover" style="height: 192px; width: 100%; display: block;">
-                    <div class="p-4">
-                        <span class="inline-block badge-light text-xs font-semibold px-2 py-1 rounded mb-2">
-                            Siaran Pers
-                        </span>
-                        <p class="text-xs text-gray-500 mb-1">8 Januari 2026</p>
-                        <h3 class="font-semibold text-sm mb-2">
-                            Layanan Haji Ramah Perempuan dan Kesehatan Jemaah
-                        </h3>
-                        <p class="text-xs text-gray-500 line-clamp-2">
-                            Kemenhaj memastikan layanan haji semakin inklusif dan ramah jemaah…
-                        </p>
-                    </div>
-                </article>
-
+                @endforelse
             </div>
         </div>
 
@@ -251,44 +246,44 @@
                 <h2 class="text-lg font-semibold mb-4" data-i18n="content.announcement">Pengumuman</h2>
 
                 <div class="space-y-4 text-sm w-full">
-                    <div class="flex gap-3 border-b pb-3 w-full">
-                        <img src="/thumb.jpg" class="object-cover rounded flex-shrink-0" style="width: 56px; height: 56px; min-width: 56px;">
-                        <div class="flex-1 min-w-0">
-                            <p class="font-medium leading-snug">
-                                Pengumuman Seleksi PPIH Layanan Perlindungan Jemaah
-                            </p>
-                            <p class="text-xs text-gray-500">24 Desember 2025</p>
+                    @forelse($announcementPosts as $post)
+                        <div class="flex gap-3 border-b pb-3 w-full">
+                            <img src="{{ $post->cover_url ?: asset('image/lambang.png') }}" class="object-cover rounded flex-shrink-0" style="width: 56px; height: 56px; min-width: 56px;">
+                            <div class="flex-1 min-w-0">
+                                <p class="font-medium leading-snug">
+                                    {{ $post->title }}
+                                </p>
+                                <p class="text-xs text-gray-500">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="flex gap-3 border-b pb-3 w-full">
-                        <img src="/thumb.jpg" class="object-cover rounded flex-shrink-0" style="width: 56px; height: 56px; min-width: 56px;">
-                        <div class="flex-1 min-w-0">
-                            <p class="font-medium leading-snug">
-                                Hasil Seleksi PPIH Arab Saudi Tingkat Pusat
-                            </p>
-                            <p class="text-xs text-gray-500">20 Desember 2025</p>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-3 w-full">
-                        <img src="/thumb.jpg" class="object-cover rounded flex-shrink-0" style="width: 56px; height: 56px; min-width: 56px;">
-                        <div class="flex-1 min-w-0">
-                            <p class="font-medium leading-snug">
-                                Seleksi Petugas Penyelenggara Ibadah Haji Arab Saudi
-                            </p>
-                            <p class="text-xs text-gray-500">6 Desember 2025</p>
-                        </div>
-                    </div>
+                    @empty
+                        <p class="text-sm text-gray-500 text-center py-6" data-i18n="content.noNews">
+                            Tidak ada berita tersedia
+                        </p>
+                    @endforelse
                 </div>
             </div>
 
             <!-- Klarifikasi Hoax -->
             <div class="bg-white rounded-lg shadow-sm p-5 w-full">
                 <h2 class="text-lg font-semibold mb-4" data-i18n="content.hoax">Klarifikasi Hoax</h2>
-                <p class="text-sm text-gray-500 text-center py-6" data-i18n="content.noNews">
-                    Tidak ada berita tersedia
-                </p>
+                <div class="space-y-4 text-sm w-full">
+                    @forelse($hoaxPosts as $post)
+                        <div class="flex gap-3 border-b pb-3 w-full">
+                            <img src="{{ $post->cover_url ?: asset('image/lambang.png') }}" class="object-cover rounded flex-shrink-0" style="width: 56px; height: 56px; min-width: 56px;">
+                            <div class="flex-1 min-w-0">
+                                <p class="font-medium leading-snug">
+                                    {{ $post->title }}
+                                </p>
+                                <p class="text-xs text-gray-500">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-sm text-gray-500 text-center py-6" data-i18n="content.noNews">
+                            Tidak ada berita tersedia
+                        </p>
+                    @endforelse
+                </div>
             </div>
 
         </aside>
@@ -300,61 +295,40 @@
 <section class="container-fixed py-10 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold" data-i18n="content.latestNews">Berita Terkini</h2>
-        <a href="#" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
+        <a href="{{ route('berita') }}" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
             Lihat Semua →
         </a>
     </div>
     <div class="grid md:grid-cols-3 gap-6">
-        <!-- Card 1 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <img src="/berita1.jpg" class="w-full object-cover" style="height: 200px; width: 100%; display: block;">
-            <div class="p-4">
-                <span class="inline-block badge-light text-xs font-semibold px-2 py-1 rounded mb-2">
-                    Siaran Pers
-                </span>
-                <p class="text-xs text-gray-500 mb-2">8 Januari 2026</p>
-                <h3 class="font-semibold text-base mb-2 line-clamp-2">
-                    Kemenhaj Fokus Penyelenggaraan Haji 1447 H/2026 M: Tepat Waktu, Berkualitas
-                </h3>
-                <p class="text-sm text-gray-600 line-clamp-3">
-                    Jakarta (Kemenhaj) — Menteri Haji dan Umrah RI menegaskan komitmen pelayanan haji yang tepat waktu dan berkualitas tinggi...
-                </p>
-            </div>
-        </article>
-
-        <!-- Card 2 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <img src="/berita2.jpg" class="w-full object-cover" style="height: 200px; width: 100%; display: block;">
-            <div class="p-4">
-                <span class="inline-block badge-light text-xs font-semibold px-2 py-1 rounded mb-2">
-                    Siaran Pers
-                </span>
-                <p class="text-xs text-gray-500 mb-2">8 Januari 2026</p>
-                <h3 class="font-semibold text-base mb-2 line-clamp-2">
-                    Layanan Haji Ramah Perempuan dan Kesehatan Jemaah
-                </h3>
-                <p class="text-sm text-gray-600 line-clamp-3">
-                    Kemenhaj memastikan layanan haji semakin inklusif dan ramah jemaah dengan fokus pada kesehatan...
-                </p>
-            </div>
-        </article>
-
-        <!-- Card 3 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <img src="/berita3.jpg" class="w-full object-cover" style="height: 200px; width: 100%; display: block;">
-            <div class="p-4">
-                <span class="inline-block badge-light text-xs font-semibold px-2 py-1 rounded mb-2">
-                    Berita
-                </span>
-                <p class="text-xs text-gray-500 mb-2">5 Januari 2026</p>
-                <h3 class="font-semibold text-base mb-2 line-clamp-2">
-                    Persiapan Haji 1447H/2026M Masuki Tahap Finalisasi
-                </h3>
-                <p class="text-sm text-gray-600 line-clamp-3">
-                    Proses persiapan haji tahun 1447H/2026M telah memasuki tahap finalisasi dengan berbagai persiapan matang...
-                </p>
-            </div>
-        </article>
+        @forelse($latestPosts as $post)
+            <article class="news-card">
+                <img src="{{ $post->cover_url ?: asset('image/lambang.png') }}" class="news-thumb" style="display: block;">
+                <div class="news-body">
+                    <span class="news-badge mb-2">
+                        {{ $post->category?->name ?? 'Berita' }}
+                    </span>
+                    <p class="news-meta mb-2">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                    <h3 class="news-title text-base mb-2 line-clamp-2">
+                        {{ $post->title }}
+                    </h3>
+                    <p class="news-excerpt text-sm line-clamp-3">
+                        {{ \Illuminate\Support\Str::limit($post->excerpt ?: strip_tags($post->content), 120) }}
+                    </p>
+                    <div class="mt-3">
+                        <a href="{{ route('posting.show', $post->slug) }}" class="btn-readmore">
+                            Baca Selengkapnya
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+        @empty
+            <p class="text-sm text-gray-500 text-center py-6 col-span-full">
+                Tidak ada foto tersedia
+            </p>
+        @endforelse
     </div>
 </section>
 
@@ -362,70 +336,53 @@
 <section class="container-fixed py-10 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold" data-i18n="content.video">Video</h2>
-        <a href="#" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
+        <a href="{{ route('galeri.video') }}" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
             Lihat Semua →
         </a>
     </div>
     <div class="grid md:grid-cols-3 gap-6">
-        <!-- Video Card 1 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <div class="relative bg-black" style="height: 200px;">
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition">
-                        <svg class="w-8 h-8 text-gray-800 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"/>
-                        </svg>
+        @forelse($homeVideos as $video)
+            <article class="news-card">
+                <a href="{{ route('galeri.video') }}" style="text-decoration: none; color: inherit;">
+                    <div class="relative">
+                        <img src="{{ $video->video_thumbnail_url ?: $video->image_url }}" alt="{{ $video->title }}"
+                             class="news-thumb" style="display: block;"
+                             onerror="this.src='https://via.placeholder.com/800x450/ECB176/FFFFFF?text=Video'; this.onerror=null;">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-12 h-12 bg-white bg-opacity-90 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-gray-800 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="p-4">
-                <h3 class="font-semibold text-base mb-2 line-clamp-2">
-                    MoU Kementerian Haji dan Umrah RI dengan Kementerian Haji Saudi
-                </h3>
-                <p class="text-xs text-gray-500">12 November 2025</p>
-            </div>
-        </article>
-
-        <!-- Video Card 2 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <div class="relative bg-black" style="height: 200px;">
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition">
-                        <svg class="w-8 h-8 text-gray-800 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"/>
-                        </svg>
+                    <div class="news-body">
+                        <span class="news-badge mb-2">Video</span>
+                        <p class="news-meta mb-2">{{ $video->created_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                        <h3 class="news-title text-base mb-2 line-clamp-2">
+                            {{ $video->title }}
+                        </h3>
+                        @if(!empty($video->description))
+                            <p class="news-excerpt text-sm line-clamp-2">
+                                {{ \Illuminate\Support\Str::limit($video->description, 90) }}
+                            </p>
+                        @endif
+                        <div class="mt-3">
+                            <span class="btn-readmore">
+                                Lihat Video
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/>
+                                </svg>
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="absolute top-2 right-2">
-                    <div class="w-3 h-3 bg-custom-primary rounded-full"></div>
-                </div>
-            </div>
-            <div class="p-4">
-                <h3 class="font-semibold text-base mb-2 line-clamp-2">
-                    Menteri dan Wakil Menteri Haji dan Umrah bertemu dengan Menteri...
-                </h3>
-                <p class="text-xs text-gray-500">8 November 2025</p>
-            </div>
-        </article>
-
-        <!-- Video Card 3 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <div class="relative bg-black" style="height: 200px;">
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition">
-                        <svg class="w-8 h-8 text-gray-800 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            <div class="p-4">
-                <h3 class="font-semibold text-base mb-2 line-clamp-2">
-                    Rumusan Alokasi Kuota Jamaah Haji
-                </h3>
-                <p class="text-xs text-gray-500">8 November 2025</p>
-            </div>
-        </article>
+                </a>
+            </article>
+        @empty
+            <p class="text-sm text-gray-500 text-center py-6 col-span-full" data-i18n="content.noNews">
+                Tidak ada video tersedia
+            </p>
+        @endforelse
     </div>
 </section>
 
@@ -433,92 +390,39 @@
 <section class="container-fixed py-10 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold" data-i18n="content.infographic">Infografis</h2>
-        <a href="#" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
+        <a href="{{ route('galeri.infografis') }}" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
             Lihat Semua →
         </a>
     </div>
     <div class="grid md:grid-cols-3 gap-6">
-        <!-- Infografis Card 1 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6" style="height: 300px;">
-                <div class="text-white mb-4">
-                    <p class="text-sm mb-2">Hasil Seleksi untuk Layanan:</p>
-                    <ul class="text-xs space-y-1">
-                        <li>• Transportasi</li>
-                        <li>• Akomodasi</li>
-                        <li>• Konsumsi</li>
-                        <li>• Bimbingan Ibadah</li>
-                        <li>• Jemaah Lansia dan Disabi</li>
-                        <li>• PKPPJH</li>
-                    </ul>
-                </div>
-                <div class="bg-white p-4 rounded flex items-center justify-center">
-                    <div class="w-24 h-24 bg-gray-200 rounded"></div>
-                </div>
-            </div>
-            <div class="p-4">
-                <h3 class="font-semibold text-base mb-2 line-clamp-2">
-                    Pengumuman Hasil Seleksi PPIH Arab Saudi Tingkat Pusat Tahun...
-                </h3>
-                <p class="text-xs text-gray-500">20 Desember 2025</p>
-            </div>
-        </article>
-
-        <!-- Infografis Card 2 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <div class="bg-custom-primary p-6 flex items-center justify-center" style="height: 300px;">
-                <div class="text-center text-white">
-                    <p class="text-lg font-bold mb-2">Infographic</p>
-                    <div class="flex items-center justify-center gap-2 mt-4">
-                        <button class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                            </svg>
-                        </button>
-                        <span class="text-sm font-semibold">2</span>
-                        <button class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </button>
+        @forelse($homeInfografis as $infografis)
+            <article class="news-card">
+                <a href="{{ route('galeri.infografis') }}" style="text-decoration: none; color: inherit;">
+                    <img src="{{ $infografis->image_url }}" alt="{{ $infografis->title }}"
+                         class="news-thumb" style="display: block;"
+                         onerror="this.src='https://via.placeholder.com/800x1000/ECB176/FFFFFF?text=Infografis'; this.onerror=null;">
+                    <div class="news-body">
+                        <span class="news-badge mb-2">Infografis</span>
+                        <p class="news-meta mb-2">{{ $infografis->created_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                        <h3 class="news-title text-base mb-2 line-clamp-2">
+                            {{ $infografis->title }}
+                        </h3>
+                        <div class="mt-3">
+                            <span class="btn-readmore">
+                                Lihat Infografis
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/>
+                                </svg>
+                            </span>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="p-4">
-                <h3 class="font-semibold text-base mb-2 line-clamp-2">
-                    Daftar Kuota Haji Reguler per Provinsi Tahun 1447H/2026M
-                </h3>
-                <p class="text-xs text-gray-500">8 Desember 2025</p>
-            </div>
-        </article>
-
-        <!-- Infografis Card 3 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <div class="bg-custom-primary p-6 flex items-center justify-center" style="height: 300px;">
-                <div class="text-center text-white">
-                    <p class="text-lg font-bold mb-2">Infographic</p>
-                    <div class="flex items-center justify-center gap-2 mt-4">
-                        <button class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                            </svg>
-                        </button>
-                        <span class="text-sm font-semibold">3</span>
-                        <button class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="p-4">
-                <h3 class="font-semibold text-base mb-2 line-clamp-2">
-                    Informasi Rencana Rekrutmen Petugas Haji
-                </h3>
-                <p class="text-xs text-gray-500">8 November 2025</p>
-            </div>
-        </article>
+                </a>
+            </article>
+        @empty
+            <p class="text-sm text-gray-500 text-center py-6 col-span-full" data-i18n="content.noNews">
+                Tidak ada infografis tersedia
+            </p>
+        @endforelse
     </div>
 </section>
 
@@ -526,52 +430,40 @@
 <section class="container-fixed py-10 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold" data-i18n="content.photos">Foto</h2>
-        <a href="#" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
+        <a href="{{ route('galeri.foto') }}" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
             Lihat Semua →
         </a>
     </div>
     <div class="grid md:grid-cols-3 gap-6">
-        <!-- Foto Card 1 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <img src="/foto1.jpg" class="w-full object-cover" style="height: 200px; width: 100%; display: block;">
-            <div class="p-4">
-                <span class="inline-block badge-light text-xs font-semibold px-2 py-1 rounded mb-2">
-                    Dokumentasi
-                </span>
-                <h3 class="font-semibold text-base mb-2 line-clamp-2">
-                    Dokumentasi Kegiatan Bimtek Pemvisaan Haji 1447H/2026M
-                </h3>
-                <p class="text-xs text-gray-500">15 Januari 2026</p>
-            </div>
-        </article>
-
-        <!-- Foto Card 2 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <img src="/foto2.jpg" class="w-full object-cover" style="height: 200px; width: 100%; display: block;">
-            <div class="p-4">
-                <span class="inline-block badge-light text-xs font-semibold px-2 py-1 rounded mb-2">
-                    Kegiatan
-                </span>
-                <h3 class="font-semibold text-base mb-2 line-clamp-2">
-                    Kunjungan Menteri Haji dan Umrah ke Arab Saudi
-                </h3>
-                <p class="text-xs text-gray-500">10 Januari 2026</p>
-            </div>
-        </article>
-
-        <!-- Foto Card 3 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <img src="/foto3.jpg" class="w-full object-cover" style="height: 200px; width: 100%; display: block;">
-            <div class="p-4">
-                <span class="inline-block badge-light text-xs font-semibold px-2 py-1 rounded mb-2">
-                    Acara
-                </span>
-                <h3 class="font-semibold text-base mb-2 line-clamp-2">
-                    Penandatanganan MoU dengan Kementerian Haji Saudi
-                </h3>
-                <p class="text-xs text-gray-500">5 Januari 2026</p>
-            </div>
-        </article>
+        @forelse($homeFotos as $foto)
+            <article class="news-card">
+                <a href="{{ route('galeri.foto') }}" style="text-decoration: none; color: inherit;">
+                    <img src="{{ $foto->image_url }}" class="news-thumb" style="display: block;"
+                         onerror="this.src='https://via.placeholder.com/800x600/ECB176/FFFFFF?text=Foto'; this.onerror=null;">
+                    <div class="news-body">
+                        <span class="news-badge mb-2">
+                            {{ $foto->category ?: 'Dokumentasi' }}
+                        </span>
+                        <p class="news-meta mb-2">{{ $foto->created_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                        <h3 class="news-title text-base mb-2 line-clamp-2">
+                            {{ $foto->title }}
+                        </h3>
+                        <div class="mt-3">
+                            <span class="btn-readmore">
+                                Lihat Foto
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </article>
+        @empty
+            <p class="text-sm text-gray-500 text-center py-6 col-span-full">
+                Tidak ada foto tersedia
+            </p>
+        @endforelse
     </div>
 </section>
 
@@ -579,94 +471,43 @@
 <section class="container-fixed py-10 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold" data-i18n="content.regulation">Regulasi</h2>
-        <a href="#" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
+        <a href="{{ route('regulasi') }}" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
             Lihat Semua →
         </a>
     </div>
     <div class="grid md:grid-cols-3 gap-6">
-        <!-- Regulasi Card 1 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <div class="p-6 border-b border-gray-200" style="min-height: 200px;">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-12 h-12 bg-custom-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="font-semibold text-base mb-1 line-clamp-2">
-                            Peraturan Menteri Haji dan Umrah Nomor 1 Tahun 2026
-                        </h3>
-                        <p class="text-xs text-gray-500">Tentang Penyelenggaraan Ibadah Haji</p>
-                    </div>
-                </div>
-                <p class="text-sm text-gray-600 line-clamp-3">
-                    Peraturan mengenai tata cara penyelenggaraan ibadah haji tahun 1447H/2026M yang mencakup persiapan, pelaksanaan, dan evaluasi...
-                </p>
-            </div>
-            <div class="p-4 bg-gray-50">
-                <p class="text-xs text-gray-500 mb-2">Tanggal Terbit: 10 Januari 2026</p>
-                <a href="#" class="text-custom-primary text-sm font-semibold hover:underline flex items-center gap-1">
-                    Unduh Dokumen →
-                </a>
-            </div>
-        </article>
-
-        <!-- Regulasi Card 2 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <div class="p-6 border-b border-gray-200" style="min-height: 200px;">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-12 h-12 bg-custom-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="font-semibold text-base mb-1 line-clamp-2">
-                            Keputusan Menteri Haji dan Umrah Nomor 15 Tahun 2025
-                        </h3>
-                        <p class="text-xs text-gray-500">Tentang Kuota Haji Reguler</p>
+        @forelse($homeRegulations as $regulation)
+            <article class="news-card">
+                <div class="news-body">
+                    <span class="news-badge mb-2">
+                        {{ $regulation->badge_text }}
+                    </span>
+                    <p class="news-meta mb-2">Tanggal Terbit: {{ $regulation->regulation_date?->translatedFormat('d F Y') ?? '-' }}</p>
+                    <h3 class="news-title text-base mb-2 line-clamp-2">
+                        {{ $regulation->title }}
+                    </h3>
+                    <p class="news-excerpt text-sm line-clamp-3">
+                        {{ \Illuminate\Support\Str::limit($regulation->description, 140) }}
+                    </p>
+                    <div class="mt-3">
+                        @if($regulation->file_url)
+                            <a href="{{ $regulation->file_url }}" class="btn-readmore" target="_blank" rel="noopener">
+                                Unduh Dokumen
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m0 0l-4-4m4 4l4-4"/>
+                                </svg>
+                            </a>
+                        @else
+                            <span class="text-xs text-gray-400">Dokumen belum tersedia</span>
+                        @endif
                     </div>
                 </div>
-                <p class="text-sm text-gray-600 line-clamp-3">
-                    Keputusan mengenai alokasi kuota haji reguler per provinsi untuk tahun 1447H/2026M beserta ketentuan pendaftaran...
-                </p>
-            </div>
-            <div class="p-4 bg-gray-50">
-                <p class="text-xs text-gray-500 mb-2">Tanggal Terbit: 20 Desember 2025</p>
-                <a href="#" class="text-custom-primary text-sm font-semibold hover:underline flex items-center gap-1">
-                    Unduh Dokumen →
-                </a>
-            </div>
-        </article>
-
-        <!-- Regulasi Card 3 -->
-        <article class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition">
-            <div class="p-6 border-b border-gray-200" style="min-height: 200px;">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-12 h-12 bg-custom-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="font-semibold text-base mb-1 line-clamp-2">
-                            Peraturan Menteri Haji dan Umrah Nomor 8 Tahun 2025
-                        </h3>
-                        <p class="text-xs text-gray-500">Tentang Petugas Penyelenggara Ibadah Haji</p>
-                    </div>
-                </div>
-                <p class="text-sm text-gray-600 line-clamp-3">
-                    Peraturan mengenai rekrutmen, seleksi, dan penugasan petugas penyelenggara ibadah haji (PPIH) untuk tahun 1447H/2026M...
-                </p>
-            </div>
-            <div class="p-4 bg-gray-50">
-                <p class="text-xs text-gray-500 mb-2">Tanggal Terbit: 15 Desember 2025</p>
-                <a href="#" class="text-custom-primary text-sm font-semibold hover:underline flex items-center gap-1">
-                    Unduh Dokumen →
-                </a>
-            </div>
-        </article>
+            </article>
+        @empty
+            <p class="text-sm text-gray-500 text-center py-6 col-span-full" data-i18n="content.noNews">
+                Tidak ada regulasi tersedia
+            </p>
+        @endforelse
     </div>
 </section>
 
@@ -899,6 +740,88 @@
     }
     .btn-custom:hover {
         background-color: #D99D5F;
+    }
+
+    /* Read more button */
+    .btn-readmore {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border: 1px solid rgba(236, 177, 118, 0.6);
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 12px;
+        color: #B87A3A;
+        background: rgba(249, 230, 208, 0.4);
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+    .btn-readmore:hover {
+        background: #ECB176;
+        color: white;
+        border-color: #ECB176;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 14px rgba(236, 177, 118, 0.25);
+    }
+    .btn-readmore svg {
+        width: 14px;
+        height: 14px;
+    }
+    @media (max-width: 640px) {
+        .btn-readmore {
+            font-size: 11px;
+            padding: 6px 10px;
+        }
+    }
+
+    /* News cards */
+    .news-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(17, 24, 39, 0.06);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .news-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 32px rgba(17, 24, 39, 0.12);
+    }
+    .news-thumb {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    @media (max-width: 640px) {
+        .news-thumb {
+            height: 180px;
+        }
+    }
+    .news-body {
+        padding: 16px;
+    }
+    .news-title {
+        font-weight: 700;
+        color: #1f2937;
+        line-height: 1.4;
+    }
+    .news-excerpt {
+        color: #6b7280;
+    }
+    .news-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #B87A3A;
+        background: rgba(236, 177, 118, 0.18);
+    }
+    .news-meta {
+        font-size: 12px;
+        color: #9ca3af;
     }
     
     /* Badge light */

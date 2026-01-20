@@ -198,23 +198,15 @@
         <button class="filter-btn active px-6 py-2 rounded-full text-sm font-medium transition" 
                 data-filter="all" 
                 style="background-color: #ECB176; color: white;">
-            <span data-i18n="gallery.filter.all">Semua</span>
+            <span>Semua</span>
         </button>
-        <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover:border-ECB176" 
-                data-filter="haji"
-                style="color: #374151;">
-            <span data-i18n="gallery.filter.hajj">Haji</span>
-        </button>
-        <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover:border-ECB176" 
-                data-filter="umrah"
-                style="color: #374151;">
-            <span data-i18n="gallery.filter.umrah">Umrah</span>
-        </button>
-        <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover:border-ECB176" 
-                data-filter="informasi"
-                style="color: #374151;">
-            <span data-i18n="gallery.filter.info">Informasi</span>
-        </button>
+        @foreach(($categories ?? []) as $category)
+            <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover:border-ECB176" 
+                    data-filter="{{ \Illuminate\Support\Str::slug($category->name) }}"
+                    style="color: #374151;">
+                <span>{{ $category->name }}</span>
+            </button>
+        @endforeach
     </div>
 
     <!-- Infographic Gallery Grid -->
@@ -223,7 +215,7 @@
             $infografis = $infografis ?? collect([]);
         @endphp
         @forelse($infografis as $infografisItem)
-            <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="{{ $infografisItem->category ?? 'all' }}">
+            <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="{{ \Illuminate\Support\Str::slug($infografisItem->category ?? '') }}">
                 <img src="{{ $infografisItem->image_url }}" 
                      alt="{{ $infografisItem->title }}" 
                      class="w-full h-auto"

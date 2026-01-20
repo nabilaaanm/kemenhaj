@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gallery;
+use App\Models\GalleryCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class GalleryController extends Controller
 {
@@ -17,8 +19,13 @@ class GalleryController extends Controller
         } catch (\Exception $e) {
             $fotos = collect([]);
         }
-        
-        return view('galeri.foto', compact('fotos'));
+
+        $categories = [];
+        if (Schema::hasTable('gallery_categories')) {
+            $categories = GalleryCategory::where('type', 'foto')->orderBy('name')->get();
+        }
+
+        return view('galeri.foto', compact('fotos', 'categories'));
     }
 
     public function video()
@@ -31,8 +38,13 @@ class GalleryController extends Controller
         } catch (\Exception $e) {
             $videos = collect([]);
         }
-        
-        return view('galeri.video', compact('videos'));
+
+        $categories = [];
+        if (Schema::hasTable('gallery_categories')) {
+            $categories = GalleryCategory::where('type', 'video')->orderBy('name')->get();
+        }
+
+        return view('galeri.video', compact('videos', 'categories'));
     }
 
     public function infografis()
@@ -45,7 +57,12 @@ class GalleryController extends Controller
         } catch (\Exception $e) {
             $infografis = collect([]);
         }
-        
-        return view('galeri.infografis', compact('infografis'));
+
+        $categories = [];
+        if (Schema::hasTable('gallery_categories')) {
+            $categories = GalleryCategory::where('type', 'infografis')->orderBy('name')->get();
+        }
+
+        return view('galeri.infografis', compact('infografis', 'categories'));
     }
 }

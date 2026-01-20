@@ -27,6 +27,27 @@ class RegulasiController extends Controller
 
     public function store(Request $request)
     {
+        if (isset($_FILES['file']) && isset($_FILES['file']['error']) && $_FILES['file']['error'] !== UPLOAD_ERR_NO_FILE) {
+            $uploadError = $_FILES['file']['error'];
+            if ($uploadError !== UPLOAD_ERR_OK) {
+                $maxUpload = ini_get('upload_max_filesize');
+                $maxPost = ini_get('post_max_size');
+                $message = 'File gagal di-upload.';
+                if ($uploadError === UPLOAD_ERR_INI_SIZE || $uploadError === UPLOAD_ERR_FORM_SIZE) {
+                    $message = "File gagal di-upload. Ukuran file melebihi batas PHP (upload_max_filesize: {$maxUpload}, post_max_size: {$maxPost}).";
+                } elseif ($uploadError === UPLOAD_ERR_PARTIAL) {
+                    $message = 'File hanya terupload sebagian. Coba ulangi.';
+                } elseif ($uploadError === UPLOAD_ERR_NO_TMP_DIR) {
+                    $message = 'Folder sementara (tmp) tidak tersedia.';
+                } elseif ($uploadError === UPLOAD_ERR_CANT_WRITE) {
+                    $message = 'Gagal menulis file ke disk.';
+                } elseif ($uploadError === UPLOAD_ERR_EXTENSION) {
+                    $message = 'Upload diblok oleh ekstensi PHP.';
+                }
+                return back()->with('error', $message)->withInput();
+            }
+        }
+
         $request->validate([
             'title' => 'required|string|max:500',
             'description' => 'nullable|string',
@@ -86,6 +107,27 @@ class RegulasiController extends Controller
     public function update(Request $request, $id)
     {
         $regulation = Regulation::findOrFail($id);
+
+        if (isset($_FILES['file']) && isset($_FILES['file']['error']) && $_FILES['file']['error'] !== UPLOAD_ERR_NO_FILE) {
+            $uploadError = $_FILES['file']['error'];
+            if ($uploadError !== UPLOAD_ERR_OK) {
+                $maxUpload = ini_get('upload_max_filesize');
+                $maxPost = ini_get('post_max_size');
+                $message = 'File gagal di-upload.';
+                if ($uploadError === UPLOAD_ERR_INI_SIZE || $uploadError === UPLOAD_ERR_FORM_SIZE) {
+                    $message = "File gagal di-upload. Ukuran file melebihi batas PHP (upload_max_filesize: {$maxUpload}, post_max_size: {$maxPost}).";
+                } elseif ($uploadError === UPLOAD_ERR_PARTIAL) {
+                    $message = 'File hanya terupload sebagian. Coba ulangi.';
+                } elseif ($uploadError === UPLOAD_ERR_NO_TMP_DIR) {
+                    $message = 'Folder sementara (tmp) tidak tersedia.';
+                } elseif ($uploadError === UPLOAD_ERR_CANT_WRITE) {
+                    $message = 'Gagal menulis file ke disk.';
+                } elseif ($uploadError === UPLOAD_ERR_EXTENSION) {
+                    $message = 'Upload diblok oleh ekstensi PHP.';
+                }
+                return back()->with('error', $message)->withInput();
+            }
+        }
 
         $request->validate([
             'title' => 'required|string|max:500',

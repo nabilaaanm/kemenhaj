@@ -90,7 +90,9 @@
 
         <div style="margin-bottom: 24px;">
             <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">File PDF</label>
-            <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Format: PDF (Maksimal 10MB)</p>
+            <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">
+                Format: PDF (Maksimal 10MB). Batas server: upload_max_filesize {{ ini_get('upload_max_filesize') }}, post_max_size {{ ini_get('post_max_size') }}.
+            </p>
             <input type="file" name="file" accept="application/pdf"
                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: white;">
         </div>

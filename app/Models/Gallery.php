@@ -64,4 +64,32 @@ class Gallery extends Model
         }
         return $this->url;
     }
+
+    public function getVideoThumbnailUrlAttribute()
+    {
+        if ($this->thumbnail && Storage::disk('public')->exists($this->thumbnail)) {
+            return asset('storage/' . $this->thumbnail);
+        }
+
+        if (!$this->url) {
+            return $this->getImageUrlAttribute();
+        }
+
+        if (strpos($this->url, 'youtube.com') !== false || strpos($this->url, 'youtu.be') !== false) {
+            $videoId = '';
+            if (strpos($this->url, 'youtube.com/watch?v=') !== false) {
+                $parts = parse_url($this->url);
+                parse_str($parts['query'] ?? '', $query);
+                $videoId = $query['v'] ?? '';
+            } elseif (strpos($this->url, 'youtu.be/') !== false) {
+                $parts = parse_url($this->url);
+                $videoId = trim($parts['path'] ?? '', '/');
+            }
+            if ($videoId) {
+                return 'https://img.youtube.com/vi/' . $videoId . '/hqdefault.jpg';
+            }
+        }
+
+        return $this->getImageUrlAttribute();
+    }
 }

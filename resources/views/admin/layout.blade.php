@@ -508,18 +508,6 @@
                     <a href="{{ route('admin.posting.category') }}" class="submenu-item {{ request()->routeIs('admin.posting.category') ? 'active' : '' }}">
                         <span>Kategori</span>
                     </a>
-                    <a href="{{ route('admin.posting.berita') }}" class="submenu-item {{ request()->routeIs('admin.posting.berita') ? 'active' : '' }}">
-                        <span>Berita</span>
-                    </a>
-                    <a href="{{ route('admin.posting.pengumuman') }}" class="submenu-item {{ request()->routeIs('admin.posting.pengumuman') ? 'active' : '' }}">
-                        <span>Pengumuman</span>
-                    </a>
-                    <a href="{{ route('admin.posting.siaran-pers') }}" class="submenu-item {{ request()->routeIs('admin.posting.siaran-pers') ? 'active' : '' }}">
-                        <span>Siaran Pers</span>
-                    </a>
-                    <a href="{{ route('admin.posting.hoax') }}" class="submenu-item {{ request()->routeIs('admin.posting.hoax') ? 'active' : '' }}">
-                        <span>Hoax</span>
-                    </a>
                 </div>
 
                 @if(in_array($userRole, ['admin', 'editor']))
@@ -553,6 +541,9 @@
                     <span class="submenu-arrow">▼</span>
                 </div>
                 <div class="submenu {{ request()->routeIs('admin.galeri.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.galeri.kategori') }}" class="submenu-item {{ request()->routeIs('admin.galeri.kategori*') ? 'active' : '' }}">
+                        <span>Kategori</span>
+                    </a>
                     <a href="{{ route('admin.galeri.foto.create') }}" class="submenu-item {{ request()->routeIs('admin.galeri.foto.create') ? 'active' : '' }}">
                         <span>Tambah Foto</span>
                     </a>

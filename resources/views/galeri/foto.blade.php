@@ -198,23 +198,15 @@
         <button class="filter-btn active px-6 py-2 rounded-full text-sm font-medium transition" 
                 data-filter="all" 
                 style="background-color: #ECB176; color: white;">
-            <span data-i18n="gallery.filter.all">Semua</span>
+            <span>Semua</span>
         </button>
-        <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover:border-ECB176" 
-                data-filter="kegiatan"
-                style="color: #374151;">
-            <span data-i18n="gallery.filter.activity">Kegiatan</span>
-        </button>
-        <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover:border-ECB176" 
-                data-filter="pelayanan"
-                style="color: #374151;">
-            <span data-i18n="gallery.filter.service">Pelayanan</span>
-        </button>
-        <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover:border-ECB176" 
-                data-filter="pembinaan"
-                style="color: #374151;">
-            <span data-i18n="gallery.filter.guidance">Pembinaan</span>
-        </button>
+        @foreach(($categories ?? []) as $category)
+            <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover:border-ECB176" 
+                    data-filter="{{ \Illuminate\Support\Str::slug($category->name) }}"
+                    style="color: #374151;">
+                <span>{{ $category->name }}</span>
+            </button>
+        @endforeach
     </div>
 
     <!-- Photo Gallery Grid -->
@@ -223,7 +215,7 @@
             $fotos = $fotos ?? collect([]);
         @endphp
         @forelse($fotos as $foto)
-            <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="{{ $foto->category ?? 'all' }}">
+            <div class="photo-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="{{ \Illuminate\Support\Str::slug($foto->category ?? '') }}">
                 <img src="{{ $foto->image_url }}" 
                      alt="{{ $foto->title }}" 
                      class="w-full h-48 object-cover"

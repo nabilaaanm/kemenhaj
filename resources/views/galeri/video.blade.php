@@ -205,23 +205,15 @@
         <button class="filter-btn active px-6 py-2 rounded-full text-sm font-medium transition" 
                 data-filter="all" 
                 style="background-color: #ECB176; color: white;">
-            <span data-i18n="gallery.filter.all">Semua</span>
+            <span>Semua</span>
         </button>
-        <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover:border-ECB176" 
-                data-filter="kegiatan"
-                style="color: #374151;">
-            <span data-i18n="gallery.filter.activity">Kegiatan</span>
-        </button>
-        <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover:border-ECB176" 
-                data-filter="informasi"
-                style="color: #374151;">
-            <span data-i18n="gallery.filter.info">Informasi</span>
-        </button>
-        <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover:border-ECB176" 
-                data-filter="tutorial"
-                style="color: #374151;">
-            <span data-i18n="gallery.filter.tutorial">Tutorial</span>
-        </button>
+        @foreach(($categories ?? []) as $category)
+            <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover:border-ECB176" 
+                    data-filter="{{ \Illuminate\Support\Str::slug($category->name) }}"
+                    style="color: #374151;">
+                <span>{{ $category->name }}</span>
+            </button>
+        @endforeach
     </div>
 
     <!-- Video Gallery Grid -->
@@ -237,7 +229,7 @@
             @endphp
             
             <div class="video-item bg-white rounded-lg shadow-sm overflow-hidden" 
-                 data-category="{{ $video->category ?? 'all' }}" 
+                 data-category="{{ \Illuminate\Support\Str::slug($video->category ?? '') }}" 
                  data-video-url="{{ $videoUrl }}"
                  data-video-type="{{ $isEmbedUrl ? 'embed' : ($isDirectFile ? 'file' : 'none') }}">
                 
