@@ -114,39 +114,39 @@
             @if(isset($lkDocuments) && $lkDocuments->count())
                 <div class="space-y-4">
                     @foreach($lkDocuments as $doc)
-                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
-                            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                <div class="flex-1">
-                                    <div class="flex items-center gap-3 mb-2">
+                <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
                                         <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background-color: var(--color-primary-bg);">
                                             <svg class="w-6 h-6" style="color: #111827;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                            </svg>
-                                        </div>
-                                        <div>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
                                             <h3 class="font-semibold text-lg">{{ $doc->title }}</h3>
                                             @if($doc->description)
                                                 <p class="text-sm text-gray-500">{{ $doc->description }}</p>
                                             @endif
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-4 text-sm text-gray-600 mt-3">
-                                        <span class="flex items-center gap-1">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                            </svg>
-                                            {{ $doc->document_date?->format('d F Y') }}
-                                        </span>
-                                    </div>
                                 </div>
-                                <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex items-center gap-4 text-sm text-gray-600 mt-3">
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                            {{ $doc->document_date?->format('d F Y') }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
                                     @if($doc->file_url)
                                         <a href="{{ $doc->file_url }}" target="_blank" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium text-white hover:opacity-90 transition" style="background-color: var(--color-primary);">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                                            </svg>
-                                            <span data-i18n="lkpih.download">Download</span>
-                                        </a>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                                <span data-i18n="lkpih.download">Download</span>
+                            </a>
                                     @endif
                                 </div>
                             </div>
@@ -183,39 +183,39 @@
             @if(isset($pihDocuments) && $pihDocuments->count())
                 <div class="space-y-4">
                     @foreach($pihDocuments as $doc)
-                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
-                            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                <div class="flex-1">
-                                    <div class="flex items-center gap-3 mb-2">
+                <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
                                         <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background-color: var(--color-primary-bg);">
                                             <svg class="w-6 h-6" style="color: #111827;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                                            </svg>
-                                        </div>
-                                        <div>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                    </svg>
+                                </div>
+                                <div>
                                             <h3 class="font-semibold text-lg">{{ $doc->title }}</h3>
                                             @if($doc->description)
                                                 <p class="text-sm text-gray-500">{{ $doc->description }}</p>
                                             @endif
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-4 text-sm text-gray-600 mt-3">
-                                        <span class="flex items-center gap-1">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                            </svg>
-                                            {{ $doc->document_date?->format('d F Y') }}
-                                        </span>
-                                    </div>
                                 </div>
-                                <div class="flex-shrink-0">
+                            </div>
+                            <div class="flex items-center gap-4 text-sm text-gray-600 mt-3">
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                            {{ $doc->document_date?->format('d F Y') }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
                                     @if($doc->file_url)
                                         <a href="{{ $doc->file_url }}" target="_blank" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium text-white hover:opacity-90 transition" style="background-color: var(--color-primary);">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                                            </svg>
-                                            <span data-i18n="lkpih.download">Download</span>
-                                        </a>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                                <span data-i18n="lkpih.download">Download</span>
+                            </a>
                                     @endif
                                 </div>
                             </div>

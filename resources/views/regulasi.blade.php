@@ -117,29 +117,29 @@
         
         @forelse($regulations as $regulation)
             <article class="regulasi-card bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition" data-category="{{ $regulation->category }}">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div class="flex-1">
-                        <span class="inline-block badge-custom text-black text-xs font-bold px-3 py-1 rounded mb-3">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex-1">
+                    <span class="inline-block badge-custom text-black text-xs font-bold px-3 py-1 rounded mb-3">
                             {{ $regulation->badge_text }}
-                        </span>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                    </span>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
                             {{ $regulation->title }}
-                        </h3>
-                        <div class="flex items-center gap-2 text-sm text-gray-500">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
+                    </h3>
+                    <div class="flex items-center gap-2 text-sm text-gray-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
                             <span>{{ $regulation->regulation_date->format('d F Y') }}</span>
-                        </div>
                     </div>
-                    <div class="flex-shrink-0">
+                </div>
+                <div class="flex-shrink-0">
                         @if($regulation->file_url)
                             <a href="{{ $regulation->file_url }}" download class="btn-custom text-black font-semibold px-6 py-2.5 rounded-lg text-sm inline-flex items-center gap-2 hover:bg-opacity-90 transition">
-                                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle;">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                                </svg>
-                                <span data-i18n="regulasi.download" style="vertical-align: middle;">Download</span>
-                            </a>
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        <span data-i18n="regulasi.download" style="vertical-align: middle;">Download</span>
+                    </a>
                         @else
                             <span class="text-gray-400 text-sm">Tidak ada file</span>
                         @endif
@@ -339,33 +339,42 @@
         });
 
         
-        // Search functionality
+        // Filter & search functionality
         const searchInput = document.getElementById('regulasiSearch');
         const searchBtn = document.getElementById('searchBtn');
-        
-        function performSearch() {
-            const searchTerm = searchInput.value.toLowerCase().trim();
-            
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const regulasiCards = document.querySelectorAll('.regulasi-card');
+        let activeCategory = 'all';
+
+        const applyFilters = () => {
+            const searchTerm = (searchInput?.value || '').toLowerCase().trim();
             regulasiCards.forEach(card => {
-                const title = card.querySelector('h3').textContent.toLowerCase();
-                const category = card.querySelector('span').textContent.toLowerCase();
-                
-                if (title.includes(searchTerm) || category.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
+                const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                const category = (card.dataset.category || '').toLowerCase();
+                const matchesCategory = activeCategory === 'all' || category === activeCategory;
+                const matchesSearch = title.includes(searchTerm);
+                card.style.display = matchesCategory && matchesSearch ? 'block' : 'none';
             });
-        }
+        };
         
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                activeCategory = this.dataset.category || 'all';
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                applyFilters();
+            });
+        });
+
         if (searchBtn) {
-            searchBtn.addEventListener('click', performSearch);
+            searchBtn.addEventListener('click', applyFilters);
         }
-        
+
         if (searchInput) {
+            searchInput.addEventListener('input', applyFilters);
             searchInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
-                    performSearch();
+                    applyFilters();
                 }
             });
         }

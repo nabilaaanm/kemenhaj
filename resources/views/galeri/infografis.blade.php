@@ -377,6 +377,37 @@
             }
         });
 
+        // Filter gallery by category
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const infographicItems = document.querySelectorAll('.infographic-item');
+
+        const applyFilter = (filter) => {
+            infographicItems.forEach(item => {
+                const category = (item.dataset.category || '').toLowerCase();
+                item.style.display = (filter === 'all' || category === filter) ? '' : 'none';
+            });
+        };
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const filter = (this.dataset.filter || 'all').toLowerCase();
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.style.backgroundColor = '#ffffff';
+                    btn.style.color = '#374151';
+                    btn.style.borderColor = '#d1d5db';
+                });
+                this.classList.add('active');
+                this.style.backgroundColor = 'var(--color-primary)';
+                this.style.color = '#ffffff';
+                this.style.borderColor = 'var(--color-primary)';
+                applyFilter(filter);
+            });
+        });
+
+        applyFilter('all');
+    });
+
 </script>
 
 </body>

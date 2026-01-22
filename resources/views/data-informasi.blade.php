@@ -109,7 +109,7 @@
                 <!-- Search and Filter -->
                 <div class="mb-6 flex flex-col md:flex-row gap-4">
                     <div class="flex-1 relative">
-                        <input type="text" id="berhakLunasSearch" placeholder="Cari berdasarkan nama atau nomor porsi..."
+                        <input type="text" id="berhakLunasSearch" placeholder="Cari berdasarkan nama atau nomor porsi..." 
                             data-i18n-placeholder="data.berhakLunas.search"
                             class="w-full border rounded-lg px-4 py-2 text-sm focus-custom">
                         <svg class="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -289,9 +289,9 @@
                                 $mapsUrl = 'https://www.google.com/maps?q=' . $item->latitude . ',' . $item->longitude;
                             }
                         @endphp
-                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
-                            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                <div class="flex-1">
+                    <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <div class="flex-1">
                                     <h3 class="text-lg font-semibold mb-2">{{ $item->nama }}</h3>
                                     <p class="text-sm text-gray-600 mb-1">
                                         <span class="font-medium" data-i18n="data.kbihu.label.address">Alamat:</span> {{ $item->alamat }}
@@ -302,16 +302,16 @@
                                         </p>
                                     @endif
                                     @if($item->nama_pimpinan)
-                                        <p class="text-sm text-gray-600 mb-1">
+                                <p class="text-sm text-gray-600 mb-1">
                                             <span class="font-medium" data-i18n="data.kbihu.label.leader">Nama Pimpinan:</span> {{ $item->nama_pimpinan }}
-                                        </p>
+                                </p>
                                     @endif
-                                    <p class="text-sm text-gray-600">
+                                <p class="text-sm text-gray-600">
                                         <span class="font-medium" data-i18n="data.kbihu.label.phone">Telp:</span> {{ $item->telp ?? '-' }}
-                                    </p>
-                                </div>
+                                </p>
+                            </div>
                                 @if($mapsUrl)
-                                    <div class="flex-shrink-0">
+                            <div class="flex-shrink-0">
                                         <a href="{{ $mapsUrl }}" target="_blank" rel="noopener"
                                            class="inline-block px-4 py-2 rounded-lg text-sm font-medium text-white hover:opacity-90 transition"
                                            style="background-color: var(--color-primary);">
@@ -376,14 +376,14 @@
                                         $mapsUrl = 'https://www.google.com/maps?q=' . $item->latitude . ',' . $item->longitude;
                                     }
                                 @endphp
-                                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
                                     <td class="py-3 px-4">{{ $index + 1 }}</td>
                                     <td class="py-3 px-4">{{ $item->nama }}</td>
                                     <td class="py-3 px-4">{{ $item->direktur ?? '-' }}</td>
                                     <td class="py-3 px-4">{{ $item->alamat }}</td>
                                     <td class="py-3 px-4">{{ $item->no_telp ?? '-' }}</td>
                                     <td class="py-3 px-4">{{ $item->terakreditasi ?? '-' }}</td>
-                                    <td class="py-3 px-4">
+                                <td class="py-3 px-4">
                                         @if($mapsUrl)
                                             <a href="{{ $mapsUrl }}" target="_blank" rel="noopener"
                                                class="inline-block px-3 py-1 rounded-lg text-xs font-medium text-white hover:opacity-90 transition"
@@ -393,21 +393,21 @@
                                         @else
                                             -
                                         @endif
-                                    </td>
-                                </tr>
+                                </td>
+                            </tr>
                             @empty
                                 <tr>
                                     <td colspan="7" class="py-6 text-center text-sm text-gray-500">
                                         <span data-i18n="data.ppiu.empty">Belum ada data PPIU.</span>
-                                    </td>
-                                </tr>
+                                </td>
+                            </tr>
                             @endforelse
                             @if($ppiuData->count() > 0)
                                 <tr id="ppiuEmptyResult" style="display: none;">
                                     <td colspan="7" class="py-6 text-center text-sm text-gray-500">
                                         <span data-i18n="data.search.noMatch">Tidak ada data yang cocok.</span>
-                                    </td>
-                                </tr>
+                                </td>
+                            </tr>
                             @endif
                         </tbody>
                     </table>

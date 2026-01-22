@@ -100,9 +100,9 @@
             <a href="{{ $service->url }}" target="_blank" rel="noopener noreferrer" 
                class="layanan-card bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition cursor-pointer block" 
                data-service="{{ Str::slug($service->name) }}">
-                <div class="flex flex-col h-full">
+            <div class="flex flex-col h-full">
                     <!-- Logo/Icon -->
-                    <div class="mb-4 flex-shrink-0">
+                <div class="mb-4 flex-shrink-0">
                         @if($service->icon)
                             <img src="{{ asset('storage/' . $service->icon) }}" 
                                  alt="{{ $service->name }}" 
@@ -112,26 +112,26 @@
                         @else
                             <img src="{{ asset('image/lambang.png') }}" alt="Logo" class="w-24 h-24 object-contain" style="max-width: 96px; max-height: 96px; width: auto; height: auto;">
                         @endif
-                    </div>
-                    
-                    <!-- Content -->
-                    <div class="flex-1 flex flex-col">
+                </div>
+                
+                <!-- Content -->
+                <div class="flex-1 flex flex-col">
                         <h3 class="text-xl font-bold mb-3" style="color: #111827;">
                             {{ $service->name }}
-                        </h3>
-                        <p class="text-gray-600 text-sm leading-relaxed mb-4 flex-1">
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4 flex-1">
                             {{ $service->description ?? 'Layanan digital untuk jamaah haji dan umrah' }}
-                        </p>
-                        
-                        <!-- Arrow Icon -->
-                        <div class="flex justify-end mt-auto">
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                            </svg>
-                        </div>
+                    </p>
+                    
+                    <!-- Arrow Icon -->
+                    <div class="flex justify-end mt-auto">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
                     </div>
                 </div>
-            </a>
+            </div>
+        </a>
         @empty
             <div class="col-span-full text-center py-12">
                 <p class="text-gray-600">Belum ada layanan yang ditampilkan.</p>
@@ -308,11 +308,11 @@
                     if (titleElement && descriptionElement) {
                         const title = titleElement.textContent.toLowerCase();
                         const description = descriptionElement.textContent.toLowerCase();
-                        
-                        if (title.includes(searchTerm) || description.includes(searchTerm)) {
-                            card.style.display = 'block';
-                        } else {
-                            card.style.display = 'none';
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
                         }
                     }
                 });

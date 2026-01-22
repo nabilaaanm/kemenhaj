@@ -209,31 +209,3 @@
     </div>
 </header>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggles = document.querySelectorAll('.dropdown-toggle');
-
-        toggles.forEach((toggle) => {
-            toggle.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const dropdown = this.closest('.dropdown-menu');
-                if (!dropdown) return;
-                document.querySelectorAll('.dropdown-menu').forEach((menu) => {
-                    if (menu !== dropdown) {
-                        menu.classList.remove('active');
-                    }
-                });
-                dropdown.classList.toggle('active');
-            });
-        });
-
-        document.addEventListener('click', function (e) {
-            if (!e.target.closest('.dropdown-menu')) {
-                document.querySelectorAll('.dropdown-menu').forEach((menu) => {
-                    menu.classList.remove('active');
-                });
-            }
-        });
-    });
-</script>
