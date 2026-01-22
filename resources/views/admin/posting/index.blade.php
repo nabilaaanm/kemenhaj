@@ -84,14 +84,14 @@
                                 @endif
                             </td>
                             <td style="padding: 10px; text-align: right;">
-                                <div style="display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
-                                    <a href="{{ route('admin.posting.edit', $post->id) }}" style="padding: 6px 12px; min-width: 64px; text-align: center; background: #3b82f6; color: white; border-radius: 6px; text-decoration: none;">
+                                <div style="display: inline-flex; gap: 8px; align-items: center; flex-wrap: nowrap; justify-content: flex-end;">
+                                    <a href="{{ route('admin.posting.edit', $post->id) }}" style="padding: 6px 12px; min-width: 64px; text-align: center; background: #3b82f6; color: white; border-radius: 6px; text-decoration: none; white-space: nowrap;">
                                         Edit
                                     </a>
                                     <form action="{{ route('admin.posting.destroy', $post->id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Hapus posting ini?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" style="padding: 6px 12px; min-width: 64px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                    <button type="submit" style="padding: 6px 12px; min-width: 64px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap;">
                                         Hapus
                                     </button>
                                     </form>

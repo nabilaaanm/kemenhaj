@@ -11,7 +11,12 @@ class Kbihu extends Model
     protected $fillable = [
         'nama',
         'alamat',
+        'tahun_berdiri',
+        'nama_pimpinan',
         'telp',
+        'latitude',
+        'longitude',
+        'maps_url',
         'order',
         'is_active',
     ];

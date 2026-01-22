@@ -49,10 +49,10 @@
         </div>
 
         <div style="margin-bottom: 24px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">No. Izin <span style="color: #ef4444;">*</span></label>
-            <input type="text" name="no_izin" value="{{ old('no_izin', $data->no_izin) }}" required
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Direktur</label>
+            <input type="text" name="direktur" value="{{ old('direktur', $data->direktur) }}"
                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
-                   placeholder="PPIU-001/2025">
+                   placeholder="Nama direktur">
         </div>
 
         <div style="margin-bottom: 24px;">
@@ -63,12 +63,38 @@
         </div>
 
         <div style="margin-bottom: 24px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Status <span style="color: #ef4444;">*</span></label>
-            <select name="status" required
-                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: white;">
-                <option value="Aktif" {{ old('status', $data->status) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                <option value="Tidak Aktif" {{ old('status', $data->status) == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
-            </select>
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">No Telp</label>
+            <input type="text" name="no_telp" value="{{ old('no_telp', $data->no_telp) }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                   placeholder="08123456789">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Terakreditasi</label>
+            <input type="text" name="terakreditasi" value="{{ old('terakreditasi', $data->terakreditasi) }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                   placeholder="A / B / C">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Latitude</label>
+            <input type="text" name="latitude" value="{{ old('latitude', $data->latitude) }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                   placeholder="-6.7511119">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Longitude</label>
+            <input type="text" name="longitude" value="{{ old('longitude', $data->longitude) }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                   placeholder="108.5463642">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Maps URL</label>
+            <input type="text" name="maps_url" value="{{ old('maps_url', $data->maps_url) }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                   placeholder="https://maps.google.com/?q=...">
         </div>
 
         <div style="margin-bottom: 24px;">

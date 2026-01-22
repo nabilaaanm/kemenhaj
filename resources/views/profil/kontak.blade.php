@@ -76,6 +76,20 @@
         $email = $profil->email ?? null;
         $mapsUrl = $profil->maps_url ?? null;
         $mapsEmbed = $profil->maps_embed ?? null;
+        $mapsEmbedKbihu = $profil->maps_embed_kbihu ?? null;
+        $mapsEmbedUrl = $mapsEmbed;
+        if (empty($mapsEmbedUrl) && !empty($mapsUrl)) {
+            if (str_contains($mapsUrl, '/maps/d/')) {
+                $parsed = parse_url($mapsUrl);
+                $query = [];
+                if (!empty($parsed['query'])) {
+                    parse_str($parsed['query'], $query);
+                }
+                if (!empty($query['mid'])) {
+                    $mapsEmbedUrl = 'https://www.google.com/maps/d/u/5/embed?mid=' . urlencode($query['mid']);
+                }
+            }
+        }
         $hasAlamat = !empty($alamat) || !empty($alamatKeterangan) || !empty($mapsUrl);
         $hasKontak = !empty($telepon) || !empty($teleponAlt) || !empty($email);
     @endphp
@@ -176,7 +190,7 @@
     @endif
 
     <!-- Google Maps Section -->
-    @if(!empty($mapsEmbed))
+    @if(!empty($mapsEmbedUrl))
     <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-12">
         <div class="p-6 border-b">
             <h2 class="text-2xl font-bold" style="color: #374151;" data-i18n="contact.map.title">Lokasi Kami di Peta</h2>
@@ -184,7 +198,7 @@
         </div>
         <div class="relative" style="padding-bottom: 56.25%; height: 0; overflow: hidden;">
             <iframe 
-                src="{{ $mapsEmbed }}" 
+                src="{{ $mapsEmbedUrl }}" 
                 width="100%" 
                 height="100%" 
                 style="position: absolute; top: 0; left: 0; border: 0;" 
@@ -208,6 +222,28 @@
         </div>
     </div>
     @endif
+
+    @if(!empty($mapsEmbedKbihu))
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-12">
+        <div class="p-6 border-b">
+            <h2 class="text-2xl font-bold" style="color: #374151;">Lokasi KBIHU & PPIU di Peta</h2>
+            <p class="text-gray-600 mt-2">Klik peta di bawah untuk melihat lokasi KBIHU dan PPIU di Google My Maps</p>
+        </div>
+        <div class="relative" style="padding-bottom: 56.25%; height: 0; overflow: hidden;">
+            <iframe 
+                src="{{ $mapsEmbedKbihu }}" 
+                width="100%" 
+                height="100%" 
+                style="position: absolute; top: 0; left: 0; border: 0;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Lokasi KBIHU dan PPIU di Kota Cirebon">
+            </iframe>
+        </div>
+    </div>
+    @endif
+
 
 </main>
 

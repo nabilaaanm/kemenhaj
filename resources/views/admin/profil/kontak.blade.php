@@ -190,6 +190,27 @@
             </div>
         </div>
 
+        <!-- KBIHU & PPIU Maps Section -->
+        <div style="background: #ffffff; border-radius: 16px; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06); overflow: hidden; margin-bottom: 24px;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid #e5e7eb;">
+                <h2 style="font-size: 18px; font-weight: 700; color: #374151;">Lokasi KBIHU & PPIU di Peta</h2>
+                <p style="font-size: 13px; color: #6b7280; margin-top: 6px;">Masukkan URL embed Google Maps untuk lokasi gabungan KBIHU dan PPIU di Kota Cirebon.</p>
+            </div>
+            <div style="padding: 16px 20px;">
+                <label style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 6px; display: block;">Embed Google Maps KBIHU & PPIU (URL iframe)</label>
+                <textarea
+                    name="maps_embed_kbihu"
+                    rows="3"
+                    style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 14px; font-family: inherit; resize: vertical;"
+                    placeholder="Contoh: https://www.google.com/maps/d/u/5/embed?mid=..."
+                >{{ old('maps_embed_kbihu', $profil->maps_embed_kbihu ?? '') }}</textarea>
+                @error('maps_embed_kbihu')
+                    <span style="color: #dc2626; font-size: 12px; margin-top: 4px; display: block;">{{ $message }}</span>
+                @enderror
+            </div>
+        </div>
+
+
         <div style="display: flex; justify-content: flex-end;">
             <button type="submit" style="padding: 10px 20px; background-color: #ECB176; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
                 Simpan Perubahan

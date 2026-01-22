@@ -56,10 +56,45 @@
         </div>
 
         <div style="margin-bottom: 24px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Tahun Berdiri</label>
+            <input type="text" name="tahun_berdiri" value="{{ old('tahun_berdiri') }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                   placeholder="Contoh: 2014">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Nama Pimpinan</label>
+            <input type="text" name="nama_pimpinan" value="{{ old('nama_pimpinan') }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                   placeholder="Nama pimpinan">
+        </div>
+
+        <div style="margin-bottom: 24px;">
             <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Telepon</label>
             <input type="text" name="telp" value="{{ old('telp') }}"
                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
                    placeholder="(0231) 486047">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Latitude</label>
+            <input type="text" name="latitude" value="{{ old('latitude') }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                   placeholder="-6.744815529">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Longitude</label>
+            <input type="text" name="longitude" value="{{ old('longitude') }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                   placeholder="108.5404318">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Link Google Maps</label>
+            <input type="text" name="maps_url" value="{{ old('maps_url') }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                   placeholder="https://maps.google.com/?q=...">
         </div>
 
         <div style="margin-bottom: 24px;">

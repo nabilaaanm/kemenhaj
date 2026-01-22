@@ -122,15 +122,15 @@
             </div>
             <div style="grid-column: span 2;">
                 <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Deskripsi Singkat</label>
-                <textarea name="excerpt" rows="3"
+                <textarea name="excerpt" rows="3" class="js-rich-excerpt"
                           style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px;"
-                          placeholder="Ringkasan singkat">{{ old('excerpt') }}</textarea>
+                          placeholder="Ringkasan singkat">{!! old('excerpt') !!}</textarea>
             </div>
             <div style="grid-column: span 2;">
                 <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Isi Lengkap</label>
-                <textarea name="content" rows="8"
+                <textarea name="content" rows="8" class="js-rich-content"
                           style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px;"
-                          placeholder="Tulis isi berita lengkap">{{ old('content') }}</textarea>
+                          placeholder="Tulis isi berita lengkap">{!! old('content') !!}</textarea>
             </div>
             <div>
                 <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Gambar Sampul</label>
@@ -185,4 +185,33 @@
         </div>
     </form>
 </div>
+<script src="https://cdn.tiny.cloud/1/7d9sxbgag2cw1r4ro2xb9fd14o86qhizw4iys2ac1rg5kh7d/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    const baseTinyConfig = {
+        menubar: 'file edit view insert format tools table help',
+        plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help quickbars emoticons',
+        toolbar: [
+            'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter alignright alignjustify',
+            'bullist numlist outdent indent | link image media table | removeformat | preview fullscreen | code'
+        ],
+        toolbar_mode: 'sliding',
+        branding: false,
+        relative_urls: false,
+        remove_script_host: false,
+        convert_urls: true,
+        content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; }'
+    };
+
+    tinymce.init({
+        ...baseTinyConfig,
+        selector: 'textarea.js-rich-excerpt',
+        height: 220
+    });
+
+    tinymce.init({
+        ...baseTinyConfig,
+        selector: 'textarea.js-rich-content',
+        height: 420
+    });
+</script>
 @endsection

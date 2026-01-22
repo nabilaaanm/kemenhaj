@@ -17,6 +17,8 @@ use App\Models\Slideshow;
 use App\Models\Posting;
 use App\Models\Regulation;
 use App\Models\Gallery;
+use App\Models\Kbihu;
+use App\Models\Ppiu;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ServiceController;
@@ -31,6 +33,7 @@ Route::get('/', function () {
         $latestPosts = collect();
         $announcementPosts = collect();
         $hoaxPosts = collect();
+        $pressPosts = collect();
         $homeVideos = collect();
         $homeInfografis = collect();
         $homeFotos = collect();
@@ -67,6 +70,15 @@ Route::get('/', function () {
                 ->orderByDesc('created_at')
                 ->take(3)
                 ->get();
+
+            $pressPosts = Posting::with('category')
+                ->where('is_active', true)
+                ->whereHas('category', function ($q) {
+                $q->where('slug', 'siaran-pers');
+            })
+                ->orderByDesc('created_at')
+                ->take(3)
+                ->get();
         }
 
         if (Schema::hasTable('galleries')) {
@@ -86,7 +98,7 @@ Route::get('/', function () {
                 ->get();
         }
 
-        return view('home', compact('slides', 'popularPosts', 'latestPosts', 'announcementPosts', 'hoaxPosts', 'homeVideos', 'homeInfografis', 'homeFotos', 'homeRegulations'));
+        return view('home', compact('slides', 'popularPosts', 'latestPosts', 'announcementPosts', 'pressPosts', 'hoaxPosts', 'homeVideos', 'homeInfografis', 'homeFotos', 'homeRegulations'));
     }
 
     $slides = Slideshow::where('is_active', true)
@@ -98,6 +110,7 @@ Route::get('/', function () {
     $latestPosts = collect();
     $announcementPosts = collect();
     $hoaxPosts = collect();
+    $pressPosts = collect();
     $homeVideos = collect();
     $homeInfografis = collect();
     $homeFotos = collect();
@@ -134,6 +147,15 @@ Route::get('/', function () {
             ->orderByDesc('created_at')
             ->take(3)
             ->get();
+
+        $pressPosts = Posting::with('category')
+            ->where('is_active', true)
+            ->whereHas('category', function ($q) {
+                $q->where('slug', 'siaran-pers');
+            })
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get();
     }
     if (Schema::hasTable('postings')) {
         $popularPosts = Posting::with('category')
@@ -166,6 +188,15 @@ Route::get('/', function () {
             ->orderByDesc('created_at')
             ->take(3)
             ->get();
+
+        $pressPosts = Posting::with('category')
+            ->where('is_active', true)
+            ->whereHas('category', function ($q) {
+                $q->where('slug', 'siaran-pers');
+            })
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get();
     }
 
     if (Schema::hasTable('galleries')) {
@@ -185,7 +216,7 @@ Route::get('/', function () {
             ->get();
     }
 
-    return view('home', compact('slides', 'popularPosts', 'latestPosts', 'announcementPosts', 'hoaxPosts', 'homeVideos', 'homeInfografis', 'homeFotos', 'homeRegulations'));
+    return view('home', compact('slides', 'popularPosts', 'latestPosts', 'announcementPosts', 'pressPosts', 'hoaxPosts', 'homeVideos', 'homeInfografis', 'homeFotos', 'homeRegulations'));
 })->name('home');
 
 // ==================== AUTH ROUTES (Login) ====================
@@ -200,7 +231,22 @@ Route::get('/visi-misi', function () {
 Route::get('/regulasi', [PublicRegulasiController::class, 'index'])->name('regulasi');
 Route::get('/layanan', [ServiceController::class, 'index'])->name('layanan');
 Route::get('/data-informasi', function () {
-    return view('data-informasi');
+    $kbihuData = collect();
+    $ppiuData = collect();
+    if (Schema::hasTable('kbihu')) {
+        $kbihuData = Kbihu::where('is_active', true)
+            ->orderBy('order')
+            ->orderBy('created_at')
+            ->get();
+    }
+    if (Schema::hasTable('ppiu')) {
+        $ppiuData = Ppiu::where('is_active', true)
+            ->orderBy('order')
+            ->orderBy('created_at')
+            ->get();
+    }
+
+    return view('data-informasi', compact('kbihuData', 'ppiuData'));
 });
 Route::get('/lk-pih', function () {
     return view('lk-pih');
@@ -310,6 +356,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
             Route::get('/', [DataInformasiController::class, 'kbihuIndex'])->name('index');
             Route::get('/create', [DataInformasiController::class, 'kbihuCreate'])->name('create');
             Route::post('/create', [DataInformasiController::class, 'kbihuStore'])->name('store');
+            Route::post('/import', [DataInformasiController::class, 'kbihuImport'])->name('import');
             Route::get('/{id}/edit', [DataInformasiController::class, 'kbihuEdit'])->name('edit');
             Route::post('/{id}/edit', [DataInformasiController::class, 'kbihuUpdate'])->name('update');
             Route::delete('/{id}', [DataInformasiController::class, 'kbihuDestroy'])->name('destroy');
@@ -319,6 +366,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
             Route::get('/', [DataInformasiController::class, 'ppiuIndex'])->name('index');
             Route::get('/create', [DataInformasiController::class, 'ppiuCreate'])->name('create');
             Route::post('/create', [DataInformasiController::class, 'ppiuStore'])->name('store');
+            Route::post('/import', [DataInformasiController::class, 'ppiuImport'])->name('import');
             Route::get('/{id}/edit', [DataInformasiController::class, 'ppiuEdit'])->name('edit');
             Route::post('/{id}/edit', [DataInformasiController::class, 'ppiuUpdate'])->name('update');
             Route::delete('/{id}', [DataInformasiController::class, 'ppiuDestroy'])->name('destroy');

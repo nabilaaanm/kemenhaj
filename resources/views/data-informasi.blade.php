@@ -109,17 +109,18 @@
                 <!-- Search and Filter -->
                 <div class="mb-6 flex flex-col md:flex-row gap-4">
                     <div class="flex-1 relative">
-                        <input type="text" id="berhakLunasSearch" placeholder="Cari berdasarkan nama atau nomor porsi..." 
+                        <input type="text" id="berhakLunasSearch" placeholder="Cari berdasarkan nama atau nomor porsi..."
+                            data-i18n-placeholder="data.berhakLunas.search"
                             class="w-full border rounded-lg px-4 py-2 text-sm focus-custom">
                         <svg class="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </div>
                     <select class="border rounded-lg px-4 py-2 text-sm focus-custom">
-                        <option>Semua Provinsi</option>
-                        <option>Jawa Barat</option>
-                        <option>Jawa Tengah</option>
-                        <option>Jawa Timur</option>
+                        <option data-i18n="data.berhakLunas.province.all">Semua Provinsi</option>
+                        <option data-i18n="data.berhakLunas.province.westJava">Jawa Barat</option>
+                        <option data-i18n="data.berhakLunas.province.centralJava">Jawa Tengah</option>
+                        <option data-i18n="data.berhakLunas.province.eastJava">Jawa Timur</option>
                     </select>
                 </div>
 
@@ -128,30 +129,30 @@
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="border-b border-gray-200">
-                                <th class="text-left py-3 px-4 font-semibold">No</th>
-                                <th class="text-left py-3 px-4 font-semibold">Nama</th>
-                                <th class="text-left py-3 px-4 font-semibold">Nomor Porsi</th>
-                                <th class="text-left py-3 px-4 font-semibold">Provinsi</th>
-                                <th class="text-left py-3 px-4 font-semibold">Status</th>
+                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.no">No</th>
+                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.name">Nama</th>
+                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.queue">Nomor Porsi</th>
+                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.province">Provinsi</th>
+                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.status">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="border-b border-gray-100 hover:bg-gray-50">
                                 <td class="py-3 px-4">1</td>
-                                <td class="py-3 px-4">Contoh Nama Jamaah</td>
+                                <td class="py-3 px-4" data-i18n="data.berhakLunas.sample.name">Contoh Nama Jamaah</td>
                                 <td class="py-3 px-4">123456789</td>
-                                <td class="py-3 px-4">Jawa Barat</td>
+                                <td class="py-3 px-4" data-i18n="data.berhakLunas.sample.province1">Jawa Barat</td>
                                 <td class="py-3 px-4">
-                                    <span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: #F9E6D0; color: #8B6914;">Berhak Lunas</span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: #F9E6D0; color: #8B6914;" data-i18n="data.berhakLunas.sample.status">Berhak Lunas</span>
                                 </td>
                             </tr>
                             <tr class="border-b border-gray-100 hover:bg-gray-50">
                                 <td class="py-3 px-4">2</td>
-                                <td class="py-3 px-4">Contoh Nama Jamaah</td>
+                                <td class="py-3 px-4" data-i18n="data.berhakLunas.sample.name">Contoh Nama Jamaah</td>
                                 <td class="py-3 px-4">123456790</td>
-                                <td class="py-3 px-4">Jawa Tengah</td>
+                                <td class="py-3 px-4" data-i18n="data.berhakLunas.sample.province2">Jawa Tengah</td>
                                 <td class="py-3 px-4">
-                                    <span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: #F9E6D0; color: #8B6914;">Berhak Lunas</span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: #F9E6D0; color: #8B6914;" data-i18n="data.berhakLunas.sample.status">Berhak Lunas</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -161,14 +162,14 @@
                 <!-- Pagination -->
                 <div class="mt-6 flex items-center justify-between">
                     <div class="text-sm text-gray-600">
-                        Menampilkan 1-10 dari 100 data
+                        <span data-i18n="data.berhakLunas.pagination">Menampilkan 1-10 dari 100 data</span>
                     </div>
                     <div class="flex gap-2">
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">Previous</button>
+                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100" data-i18n="data.pagination.prev">Previous</button>
                         <button class="px-3 py-1 border rounded text-sm bg-gray-100">1</button>
                         <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">2</button>
                         <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">3</button>
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">Next</button>
+                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100" data-i18n="data.pagination.next">Next</button>
                     </div>
                 </div>
             </div>
@@ -184,35 +185,35 @@
                 <!-- Statistics Cards -->
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: #ECB176;">
-                        <h3 class="text-sm font-medium mb-2 opacity-90">Total Jamaah Haji</h3>
+                        <h3 class="text-sm font-medium mb-2 opacity-90" data-i18n="data.statistik.card.totalPilgrims">Total Jamaah Haji</h3>
                         <p class="text-3xl font-bold">221,000</p>
-                        <p class="text-sm mt-2 opacity-80">Tahun 1447H/2026M</p>
+                        <p class="text-sm mt-2 opacity-80" data-i18n="data.statistik.card.year">Tahun 1447H/2026M</p>
                     </div>
                     <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: #D99D5F;">
-                        <h3 class="text-sm font-medium mb-2 opacity-90">Jamaah Berangkat</h3>
+                        <h3 class="text-sm font-medium mb-2 opacity-90" data-i18n="data.statistik.card.departed">Jamaah Berangkat</h3>
                         <p class="text-3xl font-bold">198,500</p>
-                        <p class="text-sm mt-2 opacity-80">89.8% dari kuota</p>
+                        <p class="text-sm mt-2 opacity-80" data-i18n="data.statistik.card.quota">89.8% dari kuota</p>
                     </div>
                     <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: #ECB176;">
-                        <h3 class="text-sm font-medium mb-2 opacity-90">Menunggu Keberangkatan</h3>
+                        <h3 class="text-sm font-medium mb-2 opacity-90" data-i18n="data.statistik.card.waiting">Menunggu Keberangkatan</h3>
                         <p class="text-3xl font-bold">22,500</p>
-                        <p class="text-sm mt-2 opacity-80">10.2% dari kuota</p>
+                        <p class="text-sm mt-2 opacity-80" data-i18n="data.statistik.card.waitingQuota">10.2% dari kuota</p>
                     </div>
                     <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: #D99D5F;">
-                        <h3 class="text-sm font-medium mb-2 opacity-90">PPIU Terdaftar</h3>
+                        <h3 class="text-sm font-medium mb-2 opacity-90" data-i18n="data.statistik.card.ppiu">PPIU Terdaftar</h3>
                         <p class="text-3xl font-bold">1,245</p>
-                        <p class="text-sm mt-2 opacity-80">Aktif</p>
+                        <p class="text-sm mt-2 opacity-80" data-i18n="data.statistik.card.active">Aktif</p>
                     </div>
                 </div>
 
                 <!-- Chart Section -->
                 <div class="grid md:grid-cols-2 gap-6">
                     <div class="bg-gray-50 rounded-lg p-6">
-                        <h3 class="font-semibold mb-4">Distribusi Kuota per Provinsi</h3>
+                        <h3 class="font-semibold mb-4" data-i18n="data.statistik.quota.title">Distribusi Kuota per Provinsi</h3>
                         <div class="space-y-3">
                             <div>
                                 <div class="flex justify-between mb-1">
-                                    <span class="text-sm">Jawa Barat</span>
+                                    <span class="text-sm" data-i18n="data.statistik.quota.westJava">Jawa Barat</span>
                                     <span class="text-sm font-medium">27,833</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
@@ -221,7 +222,7 @@
                             </div>
                             <div>
                                 <div class="flex justify-between mb-1">
-                                    <span class="text-sm">Jawa Tengah</span>
+                                    <span class="text-sm" data-i18n="data.statistik.quota.centralJava">Jawa Tengah</span>
                                     <span class="text-sm font-medium">18,500</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
@@ -230,7 +231,7 @@
                             </div>
                             <div>
                                 <div class="flex justify-between mb-1">
-                                    <span class="text-sm">Jawa Timur</span>
+                                    <span class="text-sm" data-i18n="data.statistik.quota.eastJava">Jawa Timur</span>
                                     <span class="text-sm font-medium">15,200</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
@@ -240,7 +241,7 @@
                         </div>
                     </div>
                     <div class="bg-gray-50 rounded-lg p-6">
-                        <h3 class="font-semibold mb-4">Trend Pendaftaran</h3>
+                        <h3 class="font-semibold mb-4" data-i18n="data.statistik.trend.title">Trend Pendaftaran</h3>
                         <div class="h-48 flex items-end justify-between gap-2">
                             <div class="flex-1 bg-gray-300 rounded-t" style="height: 60%;"></div>
                             <div class="flex-1 bg-gray-300 rounded-t" style="height: 75%;"></div>
@@ -249,11 +250,11 @@
                             <div class="flex-1 rounded-t" style="background-color: #ECB176; height: 70%;"></div>
                         </div>
                         <div class="flex justify-between mt-2 text-xs text-gray-600">
-                            <span>Jan</span>
-                            <span>Feb</span>
-                            <span>Mar</span>
-                            <span>Apr</span>
-                            <span>Mei</span>
+                            <span data-i18n="data.month.jan">Jan</span>
+                            <span data-i18n="data.month.feb">Feb</span>
+                            <span data-i18n="data.month.mar">Mar</span>
+                            <span data-i18n="data.month.apr">Apr</span>
+                            <span data-i18n="data.month.may">Mei</span>
                         </div>
                     </div>
                 </div>
@@ -270,7 +271,8 @@
                 <!-- Search -->
                 <div class="mb-6">
                     <div class="relative max-w-md">
-                        <input type="text" placeholder="Cari KBIHU berdasarkan nama atau lokasi..." 
+                        <input type="text" id="kbihuSearch" placeholder="Cari KBIHU berdasarkan nama atau lokasi..."
+                            data-i18n-placeholder="data.kbihu.search"
                             class="w-full border rounded-lg px-4 py-2 text-sm focus-custom">
                         <svg class="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -279,77 +281,56 @@
                 </div>
 
                 <!-- KBHU List -->
-                <div class="space-y-4">
-                    <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                            <div class="flex-1">
-                                <h3 class="text-lg font-semibold mb-2">KBIHU Kota Cirebon</h3>
-                                <p class="text-sm text-gray-600 mb-1">
-                                    <span class="font-medium">Alamat:</span> Jl. Terusan Pemuda, Sunyaragi, Kec. Kesambi, Kota Cirebon, Jawa Barat 45132
-                                </p>
-                                <p class="text-sm text-gray-600">
-                                    <span class="font-medium">Telp:</span> (0231) 486047
-                                </p>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <a href="#" class="inline-block px-4 py-2 rounded-lg text-sm font-medium text-white hover:opacity-90 transition" style="background-color: #ECB176;">
-                                    Detail
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                            <div class="flex-1">
-                                <h3 class="text-lg font-semibold mb-2">KBIHU Bandung</h3>
-                                <p class="text-sm text-gray-600 mb-1">
-                                    <span class="font-medium">Alamat:</span> Jl. Contoh, Bandung, Jawa Barat
-                                </p>
-                                <p class="text-sm text-gray-600">
-                                    <span class="font-medium">Telp:</span> (022) 123456
-                                </p>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <a href="#" class="inline-block px-4 py-2 rounded-lg text-sm font-medium text-white hover:opacity-90 transition" style="background-color: #ECB176;">
-                                    Detail
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                            <div class="flex-1">
-                                <h3 class="text-lg font-semibold mb-2">KBIHU Jakarta</h3>
-                                <p class="text-sm text-gray-600 mb-1">
-                                    <span class="font-medium">Alamat:</span> Jl. M.H. Thamrin No.6, Jakarta Pusat
-                                </p>
-                                <p class="text-sm text-gray-600">
-                                    <span class="font-medium">Telp:</span> 021-3900020
-                                </p>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <a href="#" class="inline-block px-4 py-2 rounded-lg text-sm font-medium text-white hover:opacity-90 transition" style="background-color: #ECB176;">
-                                    Detail
-                                </a>
+                <div class="space-y-4" id="kbihuList">
+                    @forelse($kbihuData as $item)
+                        @php
+                            $mapsUrl = $item->maps_url;
+                            if (!$mapsUrl && $item->latitude !== null && $item->longitude !== null) {
+                                $mapsUrl = 'https://www.google.com/maps?q=' . $item->latitude . ',' . $item->longitude;
+                            }
+                        @endphp
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold mb-2">{{ $item->nama }}</h3>
+                                    <p class="text-sm text-gray-600 mb-1">
+                                        <span class="font-medium" data-i18n="data.kbihu.label.address">Alamat:</span> {{ $item->alamat }}
+                                    </p>
+                                    @if($item->tahun_berdiri)
+                                        <p class="text-sm text-gray-600 mb-1">
+                                            <span class="font-medium" data-i18n="data.kbihu.label.founded">Tahun Berdiri:</span> {{ $item->tahun_berdiri }}
+                                        </p>
+                                    @endif
+                                    @if($item->nama_pimpinan)
+                                        <p class="text-sm text-gray-600 mb-1">
+                                            <span class="font-medium" data-i18n="data.kbihu.label.leader">Nama Pimpinan:</span> {{ $item->nama_pimpinan }}
+                                        </p>
+                                    @endif
+                                    <p class="text-sm text-gray-600">
+                                        <span class="font-medium" data-i18n="data.kbihu.label.phone">Telp:</span> {{ $item->telp ?? '-' }}
+                                    </p>
+                                </div>
+                                @if($mapsUrl)
+                                    <div class="flex-shrink-0">
+                                        <a href="{{ $mapsUrl }}" target="_blank" rel="noopener"
+                                           class="inline-block px-4 py-2 rounded-lg text-sm font-medium text-white hover:opacity-90 transition"
+                                           style="background-color: #ECB176;">
+                                            <span data-i18n="data.maps.open">Buka Maps</span>
+                                        </a>
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Pagination -->
-                <div class="mt-6 flex items-center justify-between">
-                    <div class="text-sm text-gray-600">
-                        Menampilkan 1-10 dari 50 KBIHU
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">Previous</button>
-                        <button class="px-3 py-1 border rounded text-sm bg-gray-100">1</button>
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">2</button>
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">3</button>
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">Next</button>
-                    </div>
+                    @empty
+                        <div class="border border-gray-200 rounded-lg p-6 text-center text-sm text-gray-500">
+                            <span data-i18n="data.kbihu.empty">Belum ada data KBIHU.</span>
+                        </div>
+                    @endforelse
+                    @if($kbihuData->count() > 0)
+                        <div id="kbihuEmptyResult" class="border border-gray-200 rounded-lg p-6 text-center text-sm text-gray-500" style="display: none;">
+                            <span data-i18n="data.search.noMatch">Tidak ada data yang cocok.</span>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -364,17 +345,13 @@
                 <!-- Search and Filter -->
                 <div class="mb-6 flex flex-col md:flex-row gap-4">
                     <div class="flex-1 relative">
-                        <input type="text" placeholder="Cari PPIU berdasarkan nama..." 
+                        <input type="text" id="ppiuSearch" placeholder="Cari PPIU berdasarkan nama..."
+                            data-i18n-placeholder="data.ppiu.search"
                             class="w-full border rounded-lg px-4 py-2 text-sm focus-custom">
                         <svg class="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </div>
-                    <select class="border rounded-lg px-4 py-2 text-sm focus-custom">
-                        <option>Semua Status</option>
-                        <option>Aktif</option>
-                        <option>Tidak Aktif</option>
-                    </select>
                 </div>
 
                 <!-- Table -->
@@ -382,57 +359,58 @@
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="border-b border-gray-200">
-                                <th class="text-left py-3 px-4 font-semibold">No</th>
-                                <th class="text-left py-3 px-4 font-semibold">Nama PPIU</th>
-                                <th class="text-left py-3 px-4 font-semibold">No. Izin</th>
-                                <th class="text-left py-3 px-4 font-semibold">Alamat</th>
-                                <th class="text-left py-3 px-4 font-semibold">Status</th>
+                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.table.no">No</th>
+                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.ppiu.table.name">Nama PPIU</th>
+                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.ppiu.table.director">Direktur</th>
+                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.ppiu.table.address">Alamat Cabang</th>
+                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.ppiu.table.phone">No Telp</th>
+                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.ppiu.table.accreditation">Terakreditasi</th>
+                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.ppiu.table.maps">Maps</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="border-b border-gray-100 hover:bg-gray-50">
-                                <td class="py-3 px-4">1</td>
-                                <td class="py-3 px-4">PT. Contoh Umrah Indonesia</td>
-                                <td class="py-3 px-4">PPIU-001/2025</td>
-                                <td class="py-3 px-4">Jakarta</td>
-                                <td class="py-3 px-4">
-                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Aktif</span>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-gray-100 hover:bg-gray-50">
-                                <td class="py-3 px-4">2</td>
-                                <td class="py-3 px-4">PT. Haji Umrah Sejahtera</td>
-                                <td class="py-3 px-4">PPIU-002/2025</td>
-                                <td class="py-3 px-4">Bandung</td>
-                                <td class="py-3 px-4">
-                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Aktif</span>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-gray-100 hover:bg-gray-50">
-                                <td class="py-3 px-4">3</td>
-                                <td class="py-3 px-4">CV. Umrah Mandiri</td>
-                                <td class="py-3 px-4">PPIU-003/2025</td>
-                                <td class="py-3 px-4">Surabaya</td>
-                                <td class="py-3 px-4">
-                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Aktif</span>
-                                </td>
-                            </tr>
+                        <tbody id="ppiuTableBody">
+                            @forelse($ppiuData as $index => $item)
+                                @php
+                                    $mapsUrl = $item->maps_url;
+                                    if (!$mapsUrl && $item->latitude !== null && $item->longitude !== null) {
+                                        $mapsUrl = 'https://www.google.com/maps?q=' . $item->latitude . ',' . $item->longitude;
+                                    }
+                                @endphp
+                                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                    <td class="py-3 px-4">{{ $index + 1 }}</td>
+                                    <td class="py-3 px-4">{{ $item->nama }}</td>
+                                    <td class="py-3 px-4">{{ $item->direktur ?? '-' }}</td>
+                                    <td class="py-3 px-4">{{ $item->alamat }}</td>
+                                    <td class="py-3 px-4">{{ $item->no_telp ?? '-' }}</td>
+                                    <td class="py-3 px-4">{{ $item->terakreditasi ?? '-' }}</td>
+                                    <td class="py-3 px-4">
+                                        @if($mapsUrl)
+                                            <a href="{{ $mapsUrl }}" target="_blank" rel="noopener"
+                                               class="inline-block px-3 py-1 rounded-lg text-xs font-medium text-white hover:opacity-90 transition"
+                                               style="background-color: #ECB176;">
+                                                <span data-i18n="data.maps.open">Buka Maps</span>
+                                            </a>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="py-6 text-center text-sm text-gray-500">
+                                        <span data-i18n="data.ppiu.empty">Belum ada data PPIU.</span>
+                                    </td>
+                                </tr>
+                            @endforelse
+                            @if($ppiuData->count() > 0)
+                                <tr id="ppiuEmptyResult" style="display: none;">
+                                    <td colspan="7" class="py-6 text-center text-sm text-gray-500">
+                                        <span data-i18n="data.search.noMatch">Tidak ada data yang cocok.</span>
+                                    </td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
-                </div>
-
-                <!-- Pagination -->
-                <div class="mt-6 flex items-center justify-between">
-                    <div class="text-sm text-gray-600">
-                        Menampilkan 1-10 dari 1,245 PPIU
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">Previous</button>
-                        <button class="px-3 py-1 border rounded text-sm bg-gray-100">1</button>
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">2</button>
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">3</button>
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">Next</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -662,6 +640,66 @@
                 document.getElementById('tab-' + targetTab).classList.add('active');
             });
         });
+
+        // PPIU search filtering
+        const ppiuSearch = document.getElementById('ppiuSearch');
+        const ppiuTableBody = document.getElementById('ppiuTableBody');
+        const ppiuEmptyResult = document.getElementById('ppiuEmptyResult');
+        const ppiuRows = ppiuTableBody
+            ? Array.from(ppiuTableBody.querySelectorAll('tr'))
+                .filter(row => row.id !== 'ppiuEmptyResult' && row.querySelectorAll('td').length > 1)
+            : [];
+
+        const filterPpiuRows = () => {
+            const query = (ppiuSearch?.value || '').toLowerCase().trim();
+            let visibleCount = 0;
+
+            ppiuRows.forEach(row => {
+                const matches = row.textContent.toLowerCase().includes(query);
+                row.style.display = matches ? '' : 'none';
+                if (matches) {
+                    visibleCount++;
+                }
+            });
+
+            if (ppiuEmptyResult) {
+                ppiuEmptyResult.style.display = visibleCount === 0 && query !== '' ? '' : 'none';
+            }
+        };
+
+        if (ppiuSearch) {
+            ppiuSearch.addEventListener('input', filterPpiuRows);
+        }
+
+        // KBIHU search filtering
+        const kbihuSearch = document.getElementById('kbihuSearch');
+        const kbihuList = document.getElementById('kbihuList');
+        const kbihuEmptyResult = document.getElementById('kbihuEmptyResult');
+        const kbihuItems = kbihuList
+            ? Array.from(kbihuList.querySelectorAll(':scope > div'))
+                .filter(item => item.id !== 'kbihuEmptyResult')
+            : [];
+
+        const filterKbihuItems = () => {
+            const query = (kbihuSearch?.value || '').toLowerCase().trim();
+            let visibleCount = 0;
+
+            kbihuItems.forEach(item => {
+                const matches = item.textContent.toLowerCase().includes(query);
+                item.style.display = matches ? '' : 'none';
+                if (matches) {
+                    visibleCount++;
+                }
+            });
+
+            if (kbihuEmptyResult) {
+                kbihuEmptyResult.style.display = visibleCount === 0 && query !== '' ? '' : 'none';
+            }
+        };
+
+        if (kbihuSearch) {
+            kbihuSearch.addEventListener('input', filterKbihuItems);
+        }
         
         // Dropdown menu functionality
         const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
@@ -743,7 +781,59 @@
                 'data.berhakLunas.title': 'Daftar Jamaah Berhak Lunas',
                 'data.statistik.title': 'Statistik Haji dan Umrah',
                 'data.kbihu.title': 'Daftar KBIHU (Kelompok Bimbingan Ibadah Haji Umrah)',
-                'data.ppiu.title': 'Daftar PPIU (Penyelenggara Perjalanan Ibadah Umrah)'
+                'data.ppiu.title': 'Daftar PPIU (Penyelenggara Perjalanan Ibadah Umrah)',
+                'data.berhakLunas.search': 'Cari berdasarkan nama atau nomor porsi...',
+                'data.berhakLunas.province.all': 'Semua Provinsi',
+                'data.berhakLunas.province.westJava': 'Jawa Barat',
+                'data.berhakLunas.province.centralJava': 'Jawa Tengah',
+                'data.berhakLunas.province.eastJava': 'Jawa Timur',
+                'data.berhakLunas.table.no': 'No',
+                'data.berhakLunas.table.name': 'Nama',
+                'data.berhakLunas.table.queue': 'Nomor Porsi',
+                'data.berhakLunas.table.province': 'Provinsi',
+                'data.berhakLunas.table.status': 'Status',
+                'data.berhakLunas.sample.name': 'Contoh Nama Jamaah',
+                'data.berhakLunas.sample.province1': 'Jawa Barat',
+                'data.berhakLunas.sample.province2': 'Jawa Tengah',
+                'data.berhakLunas.sample.status': 'Berhak Lunas',
+                'data.berhakLunas.pagination': 'Menampilkan 1-10 dari 100 data',
+                'data.pagination.prev': 'Sebelumnya',
+                'data.pagination.next': 'Berikutnya',
+                'data.statistik.card.totalPilgrims': 'Total Jamaah Haji',
+                'data.statistik.card.year': 'Tahun 1447H/2026M',
+                'data.statistik.card.departed': 'Jamaah Berangkat',
+                'data.statistik.card.quota': '89.8% dari kuota',
+                'data.statistik.card.waiting': 'Menunggu Keberangkatan',
+                'data.statistik.card.waitingQuota': '10.2% dari kuota',
+                'data.statistik.card.ppiu': 'PPIU Terdaftar',
+                'data.statistik.card.active': 'Aktif',
+                'data.statistik.quota.title': 'Distribusi Kuota per Provinsi',
+                'data.statistik.quota.westJava': 'Jawa Barat',
+                'data.statistik.quota.centralJava': 'Jawa Tengah',
+                'data.statistik.quota.eastJava': 'Jawa Timur',
+                'data.statistik.trend.title': 'Trend Pendaftaran',
+                'data.month.jan': 'Jan',
+                'data.month.feb': 'Feb',
+                'data.month.mar': 'Mar',
+                'data.month.apr': 'Apr',
+                'data.month.may': 'Mei',
+                'data.kbihu.search': 'Cari KBIHU berdasarkan nama atau lokasi...',
+                'data.kbihu.label.address': 'Alamat:',
+                'data.kbihu.label.founded': 'Tahun Berdiri:',
+                'data.kbihu.label.leader': 'Nama Pimpinan:',
+                'data.kbihu.label.phone': 'Telp:',
+                'data.kbihu.empty': 'Belum ada data KBIHU.',
+                'data.ppiu.search': 'Cari PPIU berdasarkan nama...',
+                'data.ppiu.table.name': 'Nama PPIU',
+                'data.ppiu.table.director': 'Direktur',
+                'data.ppiu.table.address': 'Alamat Cabang',
+                'data.ppiu.table.phone': 'No Telp',
+                'data.ppiu.table.accreditation': 'Terakreditasi',
+                'data.ppiu.table.maps': 'Maps',
+                'data.ppiu.empty': 'Belum ada data PPIU.',
+                'data.table.no': 'No',
+                'data.maps.open': 'Buka Maps',
+                'data.search.noMatch': 'Tidak ada data yang cocok.'
             },
             en: {
                 // Navigation
@@ -781,7 +871,59 @@
                 'data.berhakLunas.title': 'List of Pilgrims Eligible for Payment',
                 'data.statistik.title': 'Hajj and Umrah Statistics',
                 'data.kbihu.title': 'List of KBIHU (Hajj and Umrah Guidance Group)',
-                'data.ppiu.title': 'List of PPIU (Umrah Travel Organizers)'
+                'data.ppiu.title': 'List of PPIU (Umrah Travel Organizers)',
+                'data.berhakLunas.search': 'Search by name or queue number...',
+                'data.berhakLunas.province.all': 'All Provinces',
+                'data.berhakLunas.province.westJava': 'West Java',
+                'data.berhakLunas.province.centralJava': 'Central Java',
+                'data.berhakLunas.province.eastJava': 'East Java',
+                'data.berhakLunas.table.no': 'No',
+                'data.berhakLunas.table.name': 'Name',
+                'data.berhakLunas.table.queue': 'Queue Number',
+                'data.berhakLunas.table.province': 'Province',
+                'data.berhakLunas.table.status': 'Status',
+                'data.berhakLunas.sample.name': 'Sample Pilgrim Name',
+                'data.berhakLunas.sample.province1': 'West Java',
+                'data.berhakLunas.sample.province2': 'Central Java',
+                'data.berhakLunas.sample.status': 'Eligible',
+                'data.berhakLunas.pagination': 'Showing 1-10 of 100 records',
+                'data.pagination.prev': 'Previous',
+                'data.pagination.next': 'Next',
+                'data.statistik.card.totalPilgrims': 'Total Hajj Pilgrims',
+                'data.statistik.card.year': 'Year 1447H/2026M',
+                'data.statistik.card.departed': 'Pilgrims Departed',
+                'data.statistik.card.quota': '89.8% of quota',
+                'data.statistik.card.waiting': 'Waiting for Departure',
+                'data.statistik.card.waitingQuota': '10.2% of quota',
+                'data.statistik.card.ppiu': 'Registered PPIU',
+                'data.statistik.card.active': 'Active',
+                'data.statistik.quota.title': 'Quota Distribution by Province',
+                'data.statistik.quota.westJava': 'West Java',
+                'data.statistik.quota.centralJava': 'Central Java',
+                'data.statistik.quota.eastJava': 'East Java',
+                'data.statistik.trend.title': 'Registration Trend',
+                'data.month.jan': 'Jan',
+                'data.month.feb': 'Feb',
+                'data.month.mar': 'Mar',
+                'data.month.apr': 'Apr',
+                'data.month.may': 'May',
+                'data.kbihu.search': 'Search KBIHU by name or location...',
+                'data.kbihu.label.address': 'Address:',
+                'data.kbihu.label.founded': 'Founded:',
+                'data.kbihu.label.leader': 'Leader:',
+                'data.kbihu.label.phone': 'Phone:',
+                'data.kbihu.empty': 'No KBIHU data yet.',
+                'data.ppiu.search': 'Search PPIU by name...',
+                'data.ppiu.table.name': 'PPIU Name',
+                'data.ppiu.table.director': 'Director',
+                'data.ppiu.table.address': 'Branch Address',
+                'data.ppiu.table.phone': 'Phone',
+                'data.ppiu.table.accreditation': 'Accreditation',
+                'data.ppiu.table.maps': 'Maps',
+                'data.ppiu.empty': 'No PPIU data yet.',
+                'data.table.no': 'No',
+                'data.maps.open': 'Open Maps',
+                'data.search.noMatch': 'No matching data.'
             }
         };
         

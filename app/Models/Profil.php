@@ -23,6 +23,8 @@ class Profil extends Model
         'website',
         'maps_url',
         'maps_embed',
+        'maps_embed_kbihu',
+        'maps_embed_ppiu',
         'facebook',
         'instagram',
         'twitter',

@@ -70,6 +70,8 @@ class PengaturanController extends Controller
             'website' => 'nullable|string|max:255',
             'maps_url' => 'nullable|string|max:255',
             'maps_embed' => 'nullable|string|max:2000',
+            'maps_embed_kbihu' => 'nullable|string|max:2000',
+            'maps_embed_ppiu' => 'nullable|string|max:2000',
             'facebook' => 'nullable|url|max:255',
             'instagram' => 'nullable|url|max:255',
             'twitter' => 'nullable|url|max:255',
@@ -88,6 +90,8 @@ class PengaturanController extends Controller
             'website',
             'maps_url',
             'maps_embed',
+            'maps_embed_kbihu',
+            'maps_embed_ppiu',
             'facebook',
             'instagram',
             'twitter',
@@ -137,6 +141,8 @@ class PengaturanController extends Controller
             'telepon_alt',
             'maps_url',
             'maps_embed',
+            'maps_embed_kbihu',
+            'maps_embed_ppiu',
         ];
 
         $missing = array_filter($required, function ($column) {
@@ -165,6 +171,12 @@ class PengaturanController extends Controller
             }
             if (in_array('maps_embed', $missing, true)) {
                 $table->text('maps_embed')->nullable()->after('maps_url');
+            }
+            if (in_array('maps_embed_kbihu', $missing, true)) {
+                $table->text('maps_embed_kbihu')->nullable()->after('maps_embed');
+            }
+            if (in_array('maps_embed_ppiu', $missing, true)) {
+                $table->text('maps_embed_ppiu')->nullable()->after('maps_embed_kbihu');
             }
         });
     }
