@@ -119,7 +119,7 @@
 
 <main class="container-fixed py-12 w-full">
     <div class="text-center mb-8">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #111827;">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 page-title" style="color: #111827;">
             {{ $title }}
         </h1>
         <p class="text-lg text-gray-600 max-w-3xl mx-auto">

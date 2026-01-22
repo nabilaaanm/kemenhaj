@@ -185,7 +185,7 @@
     
     <!-- Title Section -->
     <div class="mb-12 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #374151;" data-i18n="gallery.infographics.title">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 page-title" style="color: #374151;" data-i18n="gallery.infographics.title">
             Galeri Infografis
         </h1>
         <p class="text-lg text-gray-600 max-w-2xl mx-auto" data-i18n="gallery.infographics.subtitle">

@@ -80,7 +80,7 @@
             </div>
             
             <!-- VISI Title -->
-            <h1 class="text-5xl md:text-6xl font-bold text-white mb-6" style="letter-spacing: 2px;" data-i18n="visi.title">
+            <h1 class="text-5xl md:text-6xl font-bold text-white mb-6 page-title" style="letter-spacing: 2px;" data-i18n="visi.title">
                 VISI
             </h1>
             

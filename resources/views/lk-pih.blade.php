@@ -71,7 +71,7 @@
     
     <!-- Page Title -->
     <div class="text-center mb-8">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #111827;" data-i18n="lkpih.title">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 page-title" style="color: #111827;" data-i18n="lkpih.title">
             Laporan Keuangan & Penyelenggaraan Ibadah Haji
         </h1>
         <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-i18n="lkpih.subtitle">

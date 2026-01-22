@@ -406,7 +406,7 @@
         <div class="login-form-panel">
             <div class="login-greeting">
                 <img src="{{ asset('image/lambang.png') }}" alt="Logo Kemenhaj">
-                <h1>KEMENTERIAN HAJI DAN UMRAH</h1>
+                <h1 class="page-title">KEMENTERIAN HAJI DAN UMRAH</h1>
                 <p>Kota Cirebon</p>
             </div>
 

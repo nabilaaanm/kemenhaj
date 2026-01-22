@@ -44,12 +44,18 @@
         --color-primary-bg: {{ $primaryBg }};
         --page-bg: #f9fafb;
         --page-text: #111827;
+        --title-text: #111827;
+        --footer-text: #111827;
+        --footer-muted: #4b5563;
         --card-bg: #ffffff;
         --card-border: #e5e7eb;
     }
     html[data-theme="dark"] {
         --page-bg: #0f172a;
         --page-text: #e2e8f0;
+        --title-text: #ffffff;
+        --footer-text: #ffffff;
+        --footer-muted: #cbd5f5;
         --card-bg: #111827;
         --card-border: #1f2937;
     }
@@ -91,6 +97,15 @@
     }
     .hover-border-primary:hover {
         border-color: var(--color-primary) !important;
+    }
+    .page-title {
+        color: var(--title-text) !important;
+    }
+    .footer-text {
+        color: var(--footer-text) !important;
+    }
+    .footer-muted {
+        color: var(--footer-muted) !important;
     }
     .header-container {
         max-width: 1280px;

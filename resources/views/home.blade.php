@@ -84,7 +84,7 @@
                                         {{ $slide->badge }}
                                     </span>
                                 @endif
-                                <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4">
+                                <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4 page-title">
                                     {{ $slide->title }}
                                 </h1>
                                 @if($slide->description)
@@ -111,7 +111,7 @@
                         <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4" data-i18n="hero.slide1.badge">
                             Berita Terkini
                         </span>
-                        <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4" data-i18n="hero.slide1.title">
+                        <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4 page-title" data-i18n="hero.slide1.title">
                             Bimtek Pemvisaan Haji 1447H/2026M Digelar, 
                             Misi Perkuat Akurasi Dokumen Jemaah
                         </h1>
@@ -135,7 +135,7 @@
                         <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4" data-i18n="hero.slide2.badge">
                             Pengumuman
                         </span>
-                        <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4" data-i18n="hero.slide2.title">
+                        <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4 page-title" data-i18n="hero.slide2.title">
                             Kemenhaj Tetap Buka Layanan di Hari Libur, 
                             Percepat Persiapan Haji
                         </h1>
@@ -159,7 +159,7 @@
                         <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4" data-i18n="hero.slide3.badge">
                             Siaran Pers
                         </span>
-                        <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4" data-i18n="hero.slide3.title">
+                        <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4 page-title" data-i18n="hero.slide3.title">
                             Kemenhaj Fokus Penyelenggaraan Haji 1447 H/2026 M: 
                             Tepat Waktu, Berkualitas
                         </h1>

@@ -54,7 +54,7 @@
         <span class="inline-block px-3 py-1 rounded text-xs font-semibold text-white badge-custom">
             {{ $post->category?->name ?? 'Berita' }}
         </span>
-        <h1 class="text-3xl md:text-4xl font-bold mt-4">{{ $post->title }}</h1>
+        <h1 class="text-3xl md:text-4xl font-bold mt-4 page-title">{{ $post->title }}</h1>
         <div class="text-sm text-gray-500 mt-2">
             {{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}
             @if($post->location)
