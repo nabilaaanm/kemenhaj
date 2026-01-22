@@ -144,29 +144,29 @@
 <style>
     /* Header styles */
     .hover-custom:hover {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Input focus */
     .focus-custom:focus {
         outline: none;
-        border-color: #ECB176;
-        box-shadow: 0 0 0 1px #ECB176;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary);
     }
     
     /* Badge primary */
     .badge-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Custom primary color text */
     .text-custom-primary {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Footer */
     .footer-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Dropdown Menu Styles */

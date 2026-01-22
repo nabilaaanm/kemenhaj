@@ -86,13 +86,13 @@
         <div class="mb-12 relative">
             <div class="flex flex-col md:flex-row gap-6">
                 <div class="md:w-1/3 text-right md:pr-8">
-                    <div class="text-2xl font-bold mb-2" style="color: #ECB176;" data-i18n="history.year1">Awal Mula</div>
+                    <div class="text-2xl font-bold mb-2" style="color: var(--color-primary);" data-i18n="history.year1">Awal Mula</div>
                     <div class="text-sm text-gray-500" data-i18n="history.period1">Periode Awal</div>
                 </div>
                 <div class="md:w-2/3 relative">
-                    <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: #ECB176;"></div>
+                    <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: var(--color-primary);"></div>
                     <div class="ml-6 md:ml-8">
-                        <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-4 border-white" style="background-color: #ECB176; margin-left: -8px;"></div>
+                        <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-4 border-white" style="background-color: var(--color-primary); margin-left: -8px;"></div>
                         <div class="bg-white rounded-xl shadow-lg p-6">
                             <h3 class="text-xl font-bold mb-3" style="color: #374151;" data-i18n="history.event1.title">Pembentukan Kantor Perwakilan</h3>
                             <p class="text-gray-700 leading-relaxed" data-i18n="history.event1.description">
@@ -108,13 +108,13 @@
         <div class="mb-12 relative">
             <div class="flex flex-col md:flex-row gap-6">
                 <div class="md:w-1/3 text-right md:pr-8">
-                    <div class="text-2xl font-bold mb-2" style="color: #ECB176;" data-i18n="history.year2">Pengembangan</div>
+                    <div class="text-2xl font-bold mb-2" style="color: var(--color-primary);" data-i18n="history.year2">Pengembangan</div>
                     <div class="text-sm text-gray-500" data-i18n="history.period2">Era Modernisasi</div>
                 </div>
                 <div class="md:w-2/3 relative">
-                    <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: #ECB176;"></div>
+                    <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: var(--color-primary);"></div>
                     <div class="ml-6 md:ml-8">
-                        <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-4 border-white" style="background-color: #ECB176; margin-left: -8px;"></div>
+                        <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-4 border-white" style="background-color: var(--color-primary); margin-left: -8px;"></div>
                         <div class="bg-white rounded-xl shadow-lg p-6">
                             <h3 class="text-xl font-bold mb-3" style="color: #374151;" data-i18n="history.event2.title">Modernisasi Sistem Pelayanan</h3>
                             <p class="text-gray-700 leading-relaxed" data-i18n="history.event2.description">
@@ -130,13 +130,13 @@
         <div class="mb-12 relative">
             <div class="flex flex-col md:flex-row gap-6">
                 <div class="md:w-1/3 text-right md:pr-8">
-                    <div class="text-2xl font-bold mb-2" style="color: #ECB176;" data-i18n="history.year3">Ekspansi</div>
+                    <div class="text-2xl font-bold mb-2" style="color: var(--color-primary);" data-i18n="history.year3">Ekspansi</div>
                     <div class="text-sm text-gray-500" data-i18n="history.period3">Perluasan Layanan</div>
                 </div>
                 <div class="md:w-2/3 relative">
-                    <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: #ECB176;"></div>
+                    <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: var(--color-primary);"></div>
                     <div class="ml-6 md:ml-8">
-                        <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-4 border-white" style="background-color: #ECB176; margin-left: -8px;"></div>
+                        <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-4 border-white" style="background-color: var(--color-primary); margin-left: -8px;"></div>
                         <div class="bg-white rounded-xl shadow-lg p-6">
                             <h3 class="text-xl font-bold mb-3" style="color: #374151;" data-i18n="history.event3.title">Perluasan Jangkauan Pelayanan</h3>
                             <p class="text-gray-700 leading-relaxed" data-i18n="history.event3.description">
@@ -152,13 +152,13 @@
         <div class="mb-12 relative">
             <div class="flex flex-col md:flex-row gap-6">
                 <div class="md:w-1/3 text-right md:pr-8">
-                    <div class="text-2xl font-bold mb-2" style="color: #ECB176;" data-i18n="history.year4">Saat Ini</div>
+                    <div class="text-2xl font-bold mb-2" style="color: var(--color-primary);" data-i18n="history.year4">Saat Ini</div>
                     <div class="text-sm text-gray-500" data-i18n="history.period4">Era Digital</div>
                 </div>
                 <div class="md:w-2/3 relative">
-                    <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: #ECB176;"></div>
+                    <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: var(--color-primary);"></div>
                     <div class="ml-6 md:ml-8">
-                        <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-4 border-white" style="background-color: #ECB176; margin-left: -8px;"></div>
+                        <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-4 border-white" style="background-color: var(--color-primary); margin-left: -8px;"></div>
                         <div class="bg-white rounded-xl shadow-lg p-6">
                             <h3 class="text-xl font-bold mb-3" style="color: #374151;" data-i18n="history.event4.title">Transformasi Digital</h3>
                             <p class="text-gray-700 leading-relaxed" data-i18n="history.event4.description">
@@ -177,7 +177,7 @@
         <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 text-center">
             <div class="max-w-3xl mx-auto">
                 <div class="mb-6">
-                    <svg class="w-16 h-16 mx-auto" style="color: #ECB176;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-16 h-16 mx-auto" style="color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
                     </svg>
                 </div>
@@ -196,29 +196,29 @@
 <style>
     /* Header styles */
     .hover-custom:hover {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Input focus */
     .focus-custom:focus {
         outline: none;
-        border-color: #ECB176;
-        box-shadow: 0 0 0 1px #ECB176;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary);
     }
     
     /* Badge primary */
     .badge-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Custom primary color text */
     .text-custom-primary {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Footer */
     .footer-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Dropdown Menu Styles */

@@ -140,7 +140,7 @@
         }
         
         .close-modal:hover {
-            color: #ECB176;
+            color: var(--color-primary);
         }
         
         .modal-nav {
@@ -197,11 +197,11 @@
     <div class="mb-8 flex flex-wrap gap-3 justify-center">
         <button class="filter-btn active px-6 py-2 rounded-full text-sm font-medium transition" 
                 data-filter="all" 
-                style="background-color: #ECB176; color: white;">
+                style="background-color: var(--color-primary); color: white;">
             <span>Semua</span>
         </button>
         @foreach(($categories ?? []) as $category)
-            <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover:border-ECB176" 
+            <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition bg-white border border-gray-300 hover-border-primary" 
                     data-filter="{{ \Illuminate\Support\Str::slug($category->name) }}"
                     style="color: #374151;">
                 <span>{{ $category->name }}</span>
@@ -234,7 +234,7 @@
     <!-- Load More Button -->
     <div class="text-center">
         <button class="px-8 py-3 rounded-lg font-medium transition hover:opacity-90 text-white" 
-                style="background-color: #ECB176;"
+                style="background-color: var(--color-primary);"
                 data-i18n="gallery.loadMore">
             Muat Lebih Banyak
         </button>
@@ -257,29 +257,29 @@
 <style>
     /* Header styles */
     .hover-custom:hover {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Input focus */
     .focus-custom:focus {
         outline: none;
-        border-color: #ECB176;
-        box-shadow: 0 0 0 1px #ECB176;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary);
     }
     
     /* Badge primary */
     .badge-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Custom primary color text */
     .text-custom-primary {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Footer */
     .footer-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Dropdown Menu Styles */
@@ -340,9 +340,9 @@
     
     
     .filter-btn.active {
-        background-color: #ECB176 !important;
+        background-color: var(--color-primary) !important;
         color: white !important;
-        border-color: #ECB176 !important;
+        border-color: var(--color-primary) !important;
     }
 </style>
 

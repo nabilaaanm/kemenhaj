@@ -419,6 +419,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::post('/umum', [PengaturanController::class, 'updateUmum'])->name('umum.update');
         Route::get('/modul', [PengaturanController::class, 'modul'])->name('modul');
         Route::get('/tampilan', [PengaturanController::class, 'tampilan'])->name('tampilan');
+        Route::post('/tampilan', [PengaturanController::class, 'updateTampilan'])->name('tampilan.update');
         Route::get('/slideshow', [SlideshowController::class, 'index'])->name('slideshow');
         Route::get('/slideshow/create', [SlideshowController::class, 'create'])->name('slideshow.create');
         Route::post('/slideshow', [SlideshowController::class, 'store'])->name('slideshow.store');

@@ -11,8 +11,8 @@
         * { box-sizing: border-box; }
         .container-fixed { max-width: 960px; margin: 0 auto; width: 100%; padding: 0 24px; }
         .hover-custom { transition: color 0.2s; }
-        .hover-custom:hover { color: #ECB176; }
-        .focus-custom:focus { outline: none; border-color: #ECB176; box-shadow: 0 0 0 1px #ECB176; }
+        .hover-custom:hover { color: var(--color-primary); }
+        .focus-custom:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 1px var(--color-primary); }
         .dropdown-menu { position: relative; }
         .dropdown-toggle { cursor: pointer; background: none; border: none; padding: 0; font-size: inherit; font-weight: inherit; color: inherit; }
         .dropdown-toggle svg { transition: transform 0.2s; }
@@ -41,12 +41,9 @@
             transform: translateY(0);
         }
         .dropdown-item { display: block; padding: 10px 20px; color: #374151; text-decoration: none; transition: all 0.2s; font-size: 14px; }
-        .dropdown-item:hover { background-color: #F9E6D0; color: #ECB176; padding-left: 24px; }
+        .dropdown-item:hover { background-color: var(--color-primary-bg); color: var(--color-primary); padding-left: 24px; }
         .dropdown-menu:hover .dropdown-toggle,
-        .dropdown-menu.active .dropdown-toggle { color: #ECB176; }
-        .language-toggle:hover { background-color: #f3f4f6; border-color: #ECB176; }
-        .language-option:hover { background-color: #F9E6D0; }
-        .language-option span:first-child { font-weight: 600; margin-right: 8px; }
+        .dropdown-menu.active .dropdown-toggle { color: var(--color-primary); }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -54,7 +51,7 @@
 
 <main class="container-fixed py-10">
     <div class="mb-6">
-        <span class="inline-block px-3 py-1 rounded text-xs font-semibold text-white" style="background-color: rgba(139, 105, 20, 0.9);">
+        <span class="inline-block px-3 py-1 rounded text-xs font-semibold text-white badge-custom">
             {{ $post->category?->name ?? 'Berita' }}
         </span>
         <h1 class="text-3xl md:text-4xl font-bold mt-4">{{ $post->title }}</h1>
@@ -71,7 +68,7 @@
     @endif
 
     <div class="prose max-w-none">
-        {!! nl2br(e($post->content)) !!}
+        {!! $post->content !!}
     </div>
 
     <div class="mt-10 grid md:grid-cols-2 gap-4 text-sm text-gray-700 bg-white rounded-lg p-4 border">
@@ -107,25 +104,6 @@
                     menu.classList.remove('active');
                 });
             }
-        });
-
-
-            }
-                    option.classList.add('active');
-                } else {
-                    option.classList.remove('active');
-                }
-            });
-        }
-
-
-                e.preventDefault();
-            });
-        }
-
-            option.addEventListener('click', function() {
-                location.reload();
-            });
         });
     });
 </script>

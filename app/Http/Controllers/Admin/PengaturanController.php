@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Profil;
+use App\Models\SiteAppearance;
 use App\Models\TimKemenhaj;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -23,7 +24,47 @@ class PengaturanController extends Controller
 
     public function tampilan()
     {
-        return view('admin.pengaturan.tampilan');
+        $appearance = null;
+        if (Schema::hasTable('site_appearances')) {
+            $appearance = SiteAppearance::first();
+            if (!$appearance) {
+                $appearance = SiteAppearance::create([
+                    'primary_color' => '#ECB176',
+                    'mode' => 'light',
+                ]);
+            }
+        }
+
+        return view('admin.pengaturan.tampilan', compact('appearance'));
+    }
+
+    public function updateTampilan(Request $request)
+    {
+        if (!Schema::hasTable('site_appearances')) {
+            return back()->with('error', 'Tabel pengaturan tampilan belum tersedia. Jalankan migrasi terlebih dahulu.');
+        }
+
+        $request->validate([
+            'primary_color' => ['required', 'regex:/^#([A-Fa-f0-9]{6})$/'],
+            'mode' => 'required|in:light,dark',
+        ], [
+            'primary_color.required' => 'Warna utama wajib dipilih',
+            'primary_color.regex' => 'Format warna tidak valid',
+            'mode.required' => 'Mode tampilan wajib dipilih',
+            'mode.in' => 'Mode tampilan tidak valid',
+        ]);
+
+        $appearance = SiteAppearance::first();
+        $data = $request->only(['primary_color', 'mode']);
+
+        if (!$appearance) {
+            SiteAppearance::create($data);
+        } else {
+            $appearance->update($data);
+        }
+
+        return redirect()->route('admin.pengaturan.tampilan')
+            ->with('success', 'Pengaturan tampilan berhasil disimpan.');
     }
 
     public function slideshow()

@@ -71,7 +71,7 @@
     
     <!-- Page Title -->
     <div class="text-center mb-8">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #8B6914;" data-i18n="data.title">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #111827;" data-i18n="data.title">
             Data dan Informasi
         </h1>
         <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-i18n="data.subtitle">
@@ -102,7 +102,7 @@
         <!-- Berhak Lunas Tab -->
         <div id="tab-berhak-lunas" class="tab-panel active">
             <div class="bg-white rounded-lg shadow-sm p-6">
-                <h2 class="text-2xl font-bold mb-6" style="color: #8B6914;" data-i18n="data.berhakLunas.title">
+                <h2 class="text-2xl font-bold mb-6" style="color: #111827;" data-i18n="data.berhakLunas.title">
                     Daftar Jamaah Berhak Lunas
                 </h2>
                 
@@ -143,7 +143,7 @@
                                 <td class="py-3 px-4">123456789</td>
                                 <td class="py-3 px-4" data-i18n="data.berhakLunas.sample.province1">Jawa Barat</td>
                                 <td class="py-3 px-4">
-                                    <span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: #F9E6D0; color: #8B6914;" data-i18n="data.berhakLunas.sample.status">Berhak Lunas</span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: var(--color-primary-bg); color: #111827;" data-i18n="data.berhakLunas.sample.status">Berhak Lunas</span>
                                 </td>
                             </tr>
                             <tr class="border-b border-gray-100 hover:bg-gray-50">
@@ -152,7 +152,7 @@
                                 <td class="py-3 px-4">123456790</td>
                                 <td class="py-3 px-4" data-i18n="data.berhakLunas.sample.province2">Jawa Tengah</td>
                                 <td class="py-3 px-4">
-                                    <span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: #F9E6D0; color: #8B6914;" data-i18n="data.berhakLunas.sample.status">Berhak Lunas</span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: var(--color-primary-bg); color: #111827;" data-i18n="data.berhakLunas.sample.status">Berhak Lunas</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -178,28 +178,28 @@
         <!-- Statistik Tab -->
         <div id="tab-statistik" class="tab-panel">
             <div class="bg-white rounded-lg shadow-sm p-6">
-                <h2 class="text-2xl font-bold mb-6" style="color: #8B6914;" data-i18n="data.statistik.title">
+                <h2 class="text-2xl font-bold mb-6" style="color: #111827;" data-i18n="data.statistik.title">
                     Statistik Haji dan Umrah
                 </h2>
 
                 <!-- Statistics Cards -->
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: #ECB176;">
+                    <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: var(--color-primary);">
                         <h3 class="text-sm font-medium mb-2 opacity-90" data-i18n="data.statistik.card.totalPilgrims">Total Jamaah Haji</h3>
                         <p class="text-3xl font-bold">221,000</p>
                         <p class="text-sm mt-2 opacity-80" data-i18n="data.statistik.card.year">Tahun 1447H/2026M</p>
                     </div>
-                    <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: #D99D5F;">
+                    <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: var(--color-primary-dark);">
                         <h3 class="text-sm font-medium mb-2 opacity-90" data-i18n="data.statistik.card.departed">Jamaah Berangkat</h3>
                         <p class="text-3xl font-bold">198,500</p>
                         <p class="text-sm mt-2 opacity-80" data-i18n="data.statistik.card.quota">89.8% dari kuota</p>
                     </div>
-                    <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: #ECB176;">
+                    <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: var(--color-primary);">
                         <h3 class="text-sm font-medium mb-2 opacity-90" data-i18n="data.statistik.card.waiting">Menunggu Keberangkatan</h3>
                         <p class="text-3xl font-bold">22,500</p>
                         <p class="text-sm mt-2 opacity-80" data-i18n="data.statistik.card.waitingQuota">10.2% dari kuota</p>
                     </div>
-                    <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: #D99D5F;">
+                    <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: var(--color-primary-dark);">
                         <h3 class="text-sm font-medium mb-2 opacity-90" data-i18n="data.statistik.card.ppiu">PPIU Terdaftar</h3>
                         <p class="text-3xl font-bold">1,245</p>
                         <p class="text-sm mt-2 opacity-80" data-i18n="data.statistik.card.active">Aktif</p>
@@ -217,7 +217,7 @@
                                     <span class="text-sm font-medium">27,833</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="rounded-full h-2" style="background-color: #ECB176; width: 35%;"></div>
+                                    <div class="rounded-full h-2" style="background-color: var(--color-primary); width: 35%;"></div>
                                 </div>
                             </div>
                             <div>
@@ -226,7 +226,7 @@
                                     <span class="text-sm font-medium">18,500</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="rounded-full h-2" style="background-color: #ECB176; width: 23%;"></div>
+                                    <div class="rounded-full h-2" style="background-color: var(--color-primary); width: 23%;"></div>
                                 </div>
                             </div>
                             <div>
@@ -235,7 +235,7 @@
                                     <span class="text-sm font-medium">15,200</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="rounded-full h-2" style="background-color: #ECB176; width: 19%;"></div>
+                                    <div class="rounded-full h-2" style="background-color: var(--color-primary); width: 19%;"></div>
                                 </div>
                             </div>
                         </div>
@@ -245,9 +245,9 @@
                         <div class="h-48 flex items-end justify-between gap-2">
                             <div class="flex-1 bg-gray-300 rounded-t" style="height: 60%;"></div>
                             <div class="flex-1 bg-gray-300 rounded-t" style="height: 75%;"></div>
-                            <div class="flex-1 rounded-t" style="background-color: #ECB176; height: 85%;"></div>
-                            <div class="flex-1 rounded-t" style="background-color: #ECB176; height: 90%;"></div>
-                            <div class="flex-1 rounded-t" style="background-color: #ECB176; height: 70%;"></div>
+                            <div class="flex-1 rounded-t" style="background-color: var(--color-primary); height: 85%;"></div>
+                            <div class="flex-1 rounded-t" style="background-color: var(--color-primary); height: 90%;"></div>
+                            <div class="flex-1 rounded-t" style="background-color: var(--color-primary); height: 70%;"></div>
                         </div>
                         <div class="flex justify-between mt-2 text-xs text-gray-600">
                             <span data-i18n="data.month.jan">Jan</span>
@@ -264,7 +264,7 @@
         <!-- KBHU Tab -->
         <div id="tab-kbihu" class="tab-panel">
             <div class="bg-white rounded-lg shadow-sm p-6">
-                <h2 class="text-2xl font-bold mb-6" style="color: #8B6914;" data-i18n="data.kbihu.title">
+                <h2 class="text-2xl font-bold mb-6" style="color: #111827;" data-i18n="data.kbihu.title">
                     Daftar KBIHU (Kelompok Bimbingan Ibadah Haji Umrah)
                 </h2>
 
@@ -314,7 +314,7 @@
                                     <div class="flex-shrink-0">
                                         <a href="{{ $mapsUrl }}" target="_blank" rel="noopener"
                                            class="inline-block px-4 py-2 rounded-lg text-sm font-medium text-white hover:opacity-90 transition"
-                                           style="background-color: #ECB176;">
+                                           style="background-color: var(--color-primary);">
                                             <span data-i18n="data.maps.open">Buka Maps</span>
                                         </a>
                                     </div>
@@ -338,7 +338,7 @@
         <!-- PPIU Tab -->
         <div id="tab-ppiu" class="tab-panel">
             <div class="bg-white rounded-lg shadow-sm p-6">
-                <h2 class="text-2xl font-bold mb-6" style="color: #8B6914;" data-i18n="data.ppiu.title">
+                <h2 class="text-2xl font-bold mb-6" style="color: #111827;" data-i18n="data.ppiu.title">
                     Daftar PPIU (Penyelenggara Perjalanan Ibadah Umrah)
                 </h2>
 
@@ -387,7 +387,7 @@
                                         @if($mapsUrl)
                                             <a href="{{ $mapsUrl }}" target="_blank" rel="noopener"
                                                class="inline-block px-3 py-1 rounded-lg text-xs font-medium text-white hover:opacity-90 transition"
-                                               style="background-color: #ECB176;">
+                                               style="background-color: var(--color-primary);">
                                                 <span data-i18n="data.maps.open">Buka Maps</span>
                                             </a>
                                         @else
@@ -421,32 +421,24 @@
 @include('partials.footer')
 
 <style>
-    /* Custom Color ECB176 */
-    :root {
-        --color-primary: #ECB176;
-        --color-primary-dark: #D99D5F;
-        --color-primary-light: #F5C99A;
-        --color-primary-bg: #F9E6D0;
-    }
-    
     /* Navigation hover */
     .hover-custom {
         transition: color 0.2s;
     }
     .hover-custom:hover {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Input focus */
     .focus-custom:focus {
         outline: none;
-        border-color: #ECB176;
-        box-shadow: 0 0 0 1px #ECB176;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary);
     }
     
     /* Footer */
     .footer-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Tab Styles */
@@ -457,12 +449,12 @@
     }
     
     .data-tab:hover {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     .data-tab.active {
-        color: #ECB176;
-        border-bottom-color: #ECB176;
+        color: var(--color-primary);
+        border-bottom-color: var(--color-primary);
     }
     
     /* Tab Panel */
@@ -532,15 +524,15 @@
     }
     
     .dropdown-item:hover {
-        background-color: #F9E6D0;
-        color: #ECB176;
+        background-color: var(--color-primary-bg);
+        color: var(--color-primary);
         padding-left: 24px;
     }
     
     /* Active state for dropdown toggle */
     .dropdown-menu:hover .dropdown-toggle,
     .dropdown-menu.active .dropdown-toggle {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     
@@ -655,6 +647,8 @@
                 });
             }
         });
+
+    });
 
 </script>
 

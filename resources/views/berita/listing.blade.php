@@ -16,30 +16,30 @@
             .container-fixed { padding-left: 16px; padding-right: 16px; }
         }
         .hover-custom { transition: color 0.2s; }
-        .hover-custom:hover { color: #ECB176; }
-        .focus-custom:focus { outline: none; border-color: #ECB176; box-shadow: 0 0 0 1px #ECB176; }
-        .btn-custom { background-color: #ECB176; transition: background-color 0.2s; }
-        .btn-custom:hover { background-color: #D99D5F; }
+        .hover-custom:hover { color: var(--color-primary); }
+        .focus-custom:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 1px var(--color-primary); }
+        .btn-custom { background-color: var(--color-primary); transition: background-color 0.2s; }
+        .btn-custom:hover { background-color: var(--color-primary-dark); }
         .btn-readmore {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             padding: 6px 12px;
-            border: 1px solid rgba(236, 177, 118, 0.6);
+            border: 1px solid var(--color-primary);
             border-radius: 999px;
             font-weight: 600;
             font-size: 12px;
-            color: #B87A3A;
-            background: rgba(249, 230, 208, 0.4);
+            color: var(--color-primary-dark);
+            background: #ffffff;
             transition: all 0.2s ease;
             white-space: nowrap;
         }
         .btn-readmore:hover {
-            background: #ECB176;
+            background: var(--color-primary);
             color: white;
-            border-color: #ECB176;
+            border-color: var(--color-primary);
             transform: translateY(-1px);
-            box-shadow: 0 6px 14px rgba(236, 177, 118, 0.25);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
         }
         .btn-readmore svg { width: 14px; height: 14px; }
         @media (max-width: 640px) {
@@ -51,6 +51,9 @@
             overflow: hidden;
             box-shadow: 0 8px 24px rgba(17, 24, 39, 0.06);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
         .news-card:hover {
             transform: translateY(-3px);
@@ -58,7 +61,8 @@
         }
         .news-thumb { width: 100%; height: 200px; object-fit: cover; }
         @media (max-width: 640px) { .news-thumb { height: 180px; } }
-        .news-body { padding: 16px; }
+        .news-body { padding: 16px; display: flex; flex-direction: column; flex: 1; }
+        .news-footer { margin-top: auto; }
         .news-title { font-weight: 700; color: #1f2937; line-height: 1.4; }
         .news-excerpt { color: #6b7280; }
         .news-badge {
@@ -69,7 +73,7 @@
             border-radius: 999px;
             font-size: 11px;
             font-weight: 700;
-            color: #B87A3A;
+            color: var(--color-primary-dark);
             background: rgba(236, 177, 118, 0.18);
         }
         .news-meta { font-size: 12px; color: #9ca3af; }
@@ -101,11 +105,11 @@
             transform: translateY(0);
         }
         .dropdown-item { display: block; padding: 10px 20px; color: #374151; text-decoration: none; transition: all 0.2s; font-size: 14px; }
-        .dropdown-item:hover { background-color: #F9E6D0; color: #ECB176; padding-left: 24px; }
+        .dropdown-item:hover { background-color: var(--color-primary-bg); color: var(--color-primary); padding-left: 24px; }
         .dropdown-menu:hover .dropdown-toggle,
-        .dropdown-menu.active .dropdown-toggle { color: #ECB176; }
-        .language-toggle:hover { background-color: #f3f4f6; border-color: #ECB176; }
-        .language-option:hover { background-color: #F9E6D0; }
+        .dropdown-menu.active .dropdown-toggle { color: var(--color-primary); }
+        .language-toggle:hover { background-color: #f3f4f6; border-color: var(--color-primary); }
+        .language-option:hover { background-color: var(--color-primary-bg); }
         .language-option span:first-child { font-weight: 600; margin-right: 8px; }
     </style>
 </head>
@@ -115,7 +119,7 @@
 
 <main class="container-fixed py-12 w-full">
     <div class="text-center mb-8">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #8B6914;">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #111827;">
             {{ $title }}
         </h1>
         <p class="text-lg text-gray-600 max-w-3xl mx-auto">
@@ -156,10 +160,10 @@
                         {{ $post->title }}
                     </h3>
                     <p class="news-excerpt text-sm mb-4 line-clamp-3">
-                        {{ \Illuminate\Support\Str::limit($post->excerpt ?: strip_tags($post->content), 140) }}
+                        {{ \Illuminate\Support\Str::limit(strip_tags($post->excerpt ?: $post->content), 140) }}
                     </p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs" style="color: #ECB176;">{{ $post->location ?: '#' . ($post->category?->slug ?? 'news') }}</span>
+                    <div class="flex items-center justify-between news-footer">
+                        <span class="text-xs" style="color: var(--color-primary);">{{ $post->location ?: '#' . ($post->category?->slug ?? 'news') }}</span>
                         <a href="{{ route('posting.show', $post->slug) }}" class="btn-readmore">
                             Baca Selengkapnya
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">

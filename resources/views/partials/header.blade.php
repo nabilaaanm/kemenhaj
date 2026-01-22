@@ -1,6 +1,119 @@
+@php
+    use Illuminate\Support\Facades\Schema;
+    $primaryColor = 'var(--color-primary)';
+    $mode = 'light';
+    if (Schema::hasTable('site_appearances')) {
+        $appearance = \App\Models\SiteAppearance::first();
+        if ($appearance?->primary_color) {
+            $primaryColor = $appearance->primary_color;
+        }
+        if ($appearance?->mode) {
+            $mode = $appearance->mode;
+        }
+    }
+    $normalizeHex = function ($hex) {
+        $hex = trim($hex);
+        if ($hex === '') {
+            return 'var(--color-primary)';
+        }
+        if ($hex[0] !== '#') {
+            $hex = '#' . $hex;
+        }
+        return preg_match('/^#([A-Fa-f0-9]{6})$/', $hex) ? strtoupper($hex) : 'var(--color-primary)';
+    };
+    $adjust = function ($hex, $steps) use ($normalizeHex) {
+        $hex = $normalizeHex($hex);
+        $steps = max(-255, min(255, $steps));
+        $hex = str_replace('#', '', $hex);
+        $r = max(0, min(255, hexdec(substr($hex, 0, 2)) + $steps));
+        $g = max(0, min(255, hexdec(substr($hex, 2, 2)) + $steps));
+        $b = max(0, min(255, hexdec(substr($hex, 4, 2)) + $steps));
+        return sprintf('#%02X%02X%02X', $r, $g, $b);
+    };
+    $primaryColor = $normalizeHex($primaryColor);
+    $primaryDark = $adjust($primaryColor, -25);
+    $primaryLight = $adjust($primaryColor, 25);
+    $primaryBg = $adjust($primaryColor, 60);
+@endphp
+
+<style>
+    :root {
+        --color-primary: {{ $primaryColor }};
+        --color-primary-dark: {{ $primaryDark }};
+        --color-primary-light: {{ $primaryLight }};
+        --color-primary-bg: {{ $primaryBg }};
+        --page-bg: #f9fafb;
+        --page-text: #111827;
+        --card-bg: #ffffff;
+        --card-border: #e5e7eb;
+    }
+    html[data-theme="dark"] {
+        --page-bg: #0f172a;
+        --page-text: #e2e8f0;
+        --card-bg: #111827;
+        --card-border: #1f2937;
+    }
+    body {
+        background-color: var(--page-bg) !important;
+        color: var(--page-text) !important;
+    }
+    .bg-white {
+        background-color: var(--card-bg) !important;
+    }
+    .border,
+    .border-b,
+    .border-t,
+    .border-gray-200 {
+        border-color: var(--card-border) !important;
+    }
+    .btn-custom {
+        background-color: var(--color-primary) !important;
+    }
+    .btn-custom:hover {
+        background-color: var(--color-primary-dark) !important;
+    }
+    .hover-custom:hover {
+        color: var(--color-primary) !important;
+    }
+    .focus-custom:focus {
+        border-color: var(--color-primary) !important;
+        box-shadow: 0 0 0 1px var(--color-primary) !important;
+    }
+    .footer-custom {
+        background-color: var(--color-primary) !important;
+    }
+    .badge-custom {
+        background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)) !important;
+        color: #ffffff !important;
+    }
+    .text-custom-primary {
+        color: var(--color-primary) !important;
+    }
+    .hover-border-primary:hover {
+        border-color: var(--color-primary) !important;
+    }
+    .header-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        width: 100%;
+        padding-left: 24px;
+        padding-right: 24px;
+        box-sizing: border-box;
+    }
+    @media (max-width: 640px) {
+        .header-container {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+    }
+</style>
+<script>
+    document.documentElement.setAttribute('data-theme', '{{ $mode }}');
+</script>
+
 <!-- ================= HEADER ================= -->
-<header class="bg-white border-b sticky top-0 z-50 w-full">
-    <div class="container-fixed">
+<header class="bg-white border-b sticky top-0 z-50 w-full" style="border-color: var(--color-primary); background: linear-gradient(180deg, var(--color-primary-bg), #ffffff 65%);">
+    <div class="header-container">
         <div class="flex items-center justify-between" style="height: 64px;">
 
             <!-- Logo -->
@@ -96,3 +209,31 @@
     </div>
 </header>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggles = document.querySelectorAll('.dropdown-toggle');
+
+        toggles.forEach((toggle) => {
+            toggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const dropdown = this.closest('.dropdown-menu');
+                if (!dropdown) return;
+                document.querySelectorAll('.dropdown-menu').forEach((menu) => {
+                    if (menu !== dropdown) {
+                        menu.classList.remove('active');
+                    }
+                });
+                dropdown.classList.toggle('active');
+            });
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.dropdown-menu')) {
+                document.querySelectorAll('.dropdown-menu').forEach((menu) => {
+                    menu.classList.remove('active');
+                });
+            }
+        });
+    });
+</script>

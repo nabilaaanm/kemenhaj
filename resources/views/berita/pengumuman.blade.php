@@ -71,7 +71,7 @@
     
     <!-- Page Title -->
     <div class="text-center mb-8">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #8B6914;" data-i18n="pengumuman.title">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #111827;" data-i18n="pengumuman.title">
             Pengumuman
         </h1>
         <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-i18n="pengumuman.subtitle">
@@ -134,8 +134,8 @@
                     Kementerian Haji dan Umrah mengumumkan dibukanya seleksi untuk Petugas Penyelenggara Ibadah Haji (PPIH) Layanan Perlindungan Jemaah tahun 1447H/2026M.
                 </p>
                 <div class="flex items-center justify-between">
-                    <span class="text-xs" style="color: #ECB176;">#Seleksi PPIH</span>
-                    <a href="#" class="text-sm font-medium hover:underline" style="color: #ECB176;" data-i18n="pengumuman.readMore">
+                    <span class="text-xs" style="color: var(--color-primary);">#Seleksi PPIH</span>
+                    <a href="#" class="text-sm font-medium hover:underline" style="color: var(--color-primary);" data-i18n="pengumuman.readMore">
                         Baca Selengkapnya →
                     </a>
                 </div>
@@ -157,8 +157,8 @@
                     Pengumuman hasil seleksi Petugas Penyelenggara Ibadah Haji (PPIH) Arab Saudi tingkat pusat untuk tahun 1447H/2026M.
                 </p>
                 <div class="flex items-center justify-between">
-                    <span class="text-xs" style="color: #ECB176;">#Hasil Seleksi</span>
-                    <a href="#" class="text-sm font-medium hover:underline" style="color: #ECB176;" data-i18n="pengumuman.readMore">
+                    <span class="text-xs" style="color: var(--color-primary);">#Hasil Seleksi</span>
+                    <a href="#" class="text-sm font-medium hover:underline" style="color: var(--color-primary);" data-i18n="pengumuman.readMore">
                         Baca Selengkapnya →
                     </a>
                 </div>
@@ -180,8 +180,8 @@
                     Dibuka pendaftaran untuk seleksi petugas penyelenggara ibadah haji Arab Saudi untuk tahun 1447H/2026M.
                 </p>
                 <div class="flex items-center justify-between">
-                    <span class="text-xs" style="color: #ECB176;">#Seleksi PPIH</span>
-                    <a href="#" class="text-sm font-medium hover:underline" style="color: #ECB176;" data-i18n="pengumuman.readMore">
+                    <span class="text-xs" style="color: var(--color-primary);">#Seleksi PPIH</span>
+                    <a href="#" class="text-sm font-medium hover:underline" style="color: var(--color-primary);" data-i18n="pengumuman.readMore">
                         Baca Selengkapnya →
                     </a>
                 </div>
@@ -203,41 +203,33 @@
 @include('partials.footer')
 
 <style>
-    /* Custom Color ECB176 */
-    :root {
-        --color-primary: #ECB176;
-        --color-primary-dark: #D99D5F;
-        --color-primary-light: #F5C99A;
-        --color-primary-bg: #F9E6D0;
-    }
-    
     /* Navigation hover */
     .hover-custom {
         transition: color 0.2s;
     }
     .hover-custom:hover {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Input focus */
     .focus-custom:focus {
         outline: none;
-        border-color: #ECB176;
-        box-shadow: 0 0 0 1px #ECB176;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary);
     }
     
     /* Button primary */
     .btn-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
         transition: background-color 0.2s;
     }
     .btn-custom:hover {
-        background-color: #D99D5F;
+        background-color: var(--color-primary-dark);
     }
     
     /* Footer */
     .footer-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Category Tab */
@@ -251,7 +243,7 @@
     }
     
     .category-tab.active {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
         color: #000;
         font-weight: 600;
     }
@@ -329,15 +321,15 @@
     }
     
     .dropdown-item:hover {
-        background-color: #F9E6D0;
-        color: #ECB176;
+        background-color: var(--color-primary-bg);
+        color: var(--color-primary);
         padding-left: 24px;
     }
     
     /* Active state for dropdown toggle */
     .dropdown-menu:hover .dropdown-toggle,
     .dropdown-menu.active .dropdown-toggle {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     

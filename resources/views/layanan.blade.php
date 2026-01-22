@@ -71,7 +71,7 @@
     
     <!-- Page Title -->
     <div class="text-center mb-8">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #8B6914;" data-i18n="layanan.title">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #111827;" data-i18n="layanan.title">
             Layanan Kami
         </h1>
         <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-i18n="layanan.subtitle">
@@ -116,7 +116,7 @@
                     
                     <!-- Content -->
                     <div class="flex-1 flex flex-col">
-                        <h3 class="text-xl font-bold mb-3" style="color: #8B6914;">
+                        <h3 class="text-xl font-bold mb-3" style="color: #111827;">
                             {{ $service->name }}
                         </h3>
                         <p class="text-gray-600 text-sm leading-relaxed mb-4 flex-1">
@@ -144,32 +144,24 @@
 @include('partials.footer')
 
 <style>
-    /* Custom Color ECB176 */
-    :root {
-        --color-primary: #ECB176;
-        --color-primary-dark: #D99D5F;
-        --color-primary-light: #F5C99A;
-        --color-primary-bg: #F9E6D0;
-    }
-    
     /* Navigation hover */
     .hover-custom {
         transition: color 0.2s;
     }
     .hover-custom:hover {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Input focus */
     .focus-custom:focus {
         outline: none;
-        border-color: #ECB176;
-        box-shadow: 0 0 0 1px #ECB176;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary);
     }
     
     /* Footer */
     .footer-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Dropdown Menu Styles */
@@ -230,15 +222,15 @@
     }
     
     .dropdown-item:hover {
-        background-color: #F9E6D0;
-        color: #ECB176;
+        background-color: var(--color-primary-bg);
+        color: var(--color-primary);
         padding-left: 24px;
     }
     
     /* Active state for dropdown toggle */
     .dropdown-menu:hover .dropdown-toggle,
     .dropdown-menu.active .dropdown-toggle {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     

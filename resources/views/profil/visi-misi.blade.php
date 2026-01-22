@@ -71,7 +71,7 @@
     
     <!-- VISI Section -->
     <div class="mb-16" style="width: 100%; max-width: 100%; box-sizing: border-box;">
-        <div class="rounded-2xl p-12 md:p-16 text-center mx-auto" style="max-width: 900px; width: 100%; box-sizing: border-box; background-color: #ECB176;">
+        <div class="rounded-2xl p-12 md:p-16 text-center mx-auto" style="max-width: 900px; width: 100%; box-sizing: border-box; background-color: var(--color-primary);">
             <!-- Star Icon -->
             <div class="flex justify-center mb-6">
                 <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
@@ -103,7 +103,7 @@
             <!-- Card 01 -->
             <article class="misi-card bg-white rounded-xl shadow-sm p-6 relative" style="width: 100%; max-width: 100%; box-sizing: border-box;">
                 <div class="absolute top-4 left-4">
-                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: #ECB176;">01</span>
+                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: var(--color-primary);">01</span>
                 </div>
                 <div class="mt-8">
                     <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="misi.card01.title">Pelayanan Prima</h3>
@@ -116,7 +116,7 @@
             <!-- Card 02 -->
             <article class="misi-card bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 relative" style="width: 100%; max-width: 100%; box-sizing: border-box;">
                 <div class="absolute top-4 left-4">
-                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: #ECB176;">02</span>
+                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: var(--color-primary);">02</span>
                 </div>
                 <div class="mt-8">
                     <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="misi.card02.title">Transparansi & Akuntabilitas</h3>
@@ -129,7 +129,7 @@
             <!-- Card 03 -->
             <article class="misi-card bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 relative" style="width: 100%; max-width: 100%; box-sizing: border-box;">
                 <div class="absolute top-4 left-4">
-                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: #ECB176;">03</span>
+                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: var(--color-primary);">03</span>
                 </div>
                 <div class="mt-8">
                     <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="misi.card03.title">Inovasi Berkelanjutan</h3>
@@ -142,7 +142,7 @@
             <!-- Card 04 -->
             <article class="misi-card bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 relative" style="width: 100%; max-width: 100%; box-sizing: border-box;">
                 <div class="absolute top-4 left-4">
-                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: #ECB176;">04</span>
+                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: var(--color-primary);">04</span>
                 </div>
                 <div class="mt-8">
                     <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="misi.card04.title">Kerjasama Strategis</h3>
@@ -155,7 +155,7 @@
             <!-- Card 05 -->
             <article class="misi-card bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 relative" style="width: 100%; max-width: 100%; box-sizing: border-box;">
                 <div class="absolute top-4 left-4">
-                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: #ECB176;">05</span>
+                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: var(--color-primary);">05</span>
                 </div>
                 <div class="mt-8">
                     <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="misi.card05.title">Pembinaan Spiritual</h3>
@@ -168,7 +168,7 @@
             <!-- Card 06 -->
             <article class="misi-card bg-white rounded-xl shadow-sm p-6 relative" style="width: 100%; max-width: 100%; box-sizing: border-box;">
                 <div class="absolute top-4 left-4">
-                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: #ECB176;">06</span>
+                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: var(--color-primary);">06</span>
                 </div>
                 <div class="mt-8">
                     <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="misi.card06.title">Kesehatan & Keselamatan</h3>
@@ -185,42 +185,34 @@
 @include('partials.footer')
 
 <style>
-    /* Custom Color ECB176 */
-    :root {
-        --color-primary: #ECB176;
-        --color-primary-dark: #D99D5F;
-        --color-primary-light: #F5C99A;
-        --color-primary-bg: #F9E6D0;
-    }
-    
     /* Navigation hover */
     .hover-custom {
         transition: color 0.2s;
     }
     .hover-custom:hover {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Input focus */
     .focus-custom:focus {
         outline: none;
-        border-color: #ECB176;
-        box-shadow: 0 0 0 1px #ECB176;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary);
     }
     
     /* Badge primary */
     .badge-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Custom primary color text */
     .text-custom-primary {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Footer */
     .footer-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Dropdown Menu Styles */
@@ -281,15 +273,15 @@
     }
     
     .dropdown-item:hover {
-        background-color: #F9E6D0;
-        color: #ECB176;
+        background-color: var(--color-primary-bg);
+        color: var(--color-primary);
         padding-left: 24px;
     }
     
     /* Active state for dropdown toggle */
     .dropdown-menu:hover .dropdown-toggle,
     .dropdown-menu.active .dropdown-toggle {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     

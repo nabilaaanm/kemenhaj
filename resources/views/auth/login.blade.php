@@ -184,7 +184,7 @@
         }
         .form-group input:focus {
             outline: none;
-            border-color: #ECB176;
+            border-color: var(--color-primary);
             background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
             box-shadow: 0 0 0 5px rgba(236, 177, 118, 0.15),
                         0 6px 20px rgba(236, 177, 118, 0.2),
@@ -207,7 +207,7 @@
             transition: color 0.2s;
         }
         .input-icon-right:hover {
-            color: #ECB176;
+            color: var(--color-primary);
         }
         .input-icon-right svg {
             width: 100%;
@@ -226,7 +226,7 @@
             z-index: 10;
         }
         .password-toggle:hover {
-            color: #ECB176;
+            color: var(--color-primary);
         }
         .password-toggle svg {
             width: 100%;
@@ -245,13 +245,13 @@
             transition: all 0.2s ease;
         }
         .recover-password a:hover {
-            color: #ECB176;
+            color: var(--color-primary);
             text-decoration: underline;
         }
         .btn-signin {
             width: 100%;
             padding: 18px 24px;
-            background: linear-gradient(135deg, #ECB176 0%, #D99D5F 50%, #ECB176 100%);
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 50%, var(--color-primary) 100%);
             background-size: 200% 200%;
             color: white;
             border: none;
@@ -261,7 +261,7 @@
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 6px 20px rgba(236, 177, 118, 0.35),
-                        0 3px 10px rgba(236, 177, 118, 0.25),
+                        0 3px 10px rgba(0, 0, 0, 0.12),
                         inset 0 1px 0 rgba(255, 255, 255, 0.3);
             letter-spacing: 0.5px;
             position: relative;

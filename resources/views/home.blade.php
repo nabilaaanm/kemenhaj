@@ -190,9 +190,15 @@
 
         <!-- Dots Indicator -->
         <div class="absolute bottom-6 left-1/2 flex gap-2" style="transform: translateX(-50%); z-index: 10;">
+            @if(isset($slides) && $slides->count())
+                @foreach($slides as $index => $slide)
+                    <button class="carousel-dot {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}" aria-label="Slide {{ $index + 1 }}"></button>
+                @endforeach
+            @else
             <button class="carousel-dot active" data-slide="0" aria-label="Slide 1"></button>
             <button class="carousel-dot" data-slide="1" aria-label="Slide 2"></button>
             <button class="carousel-dot" data-slide="2" aria-label="Slide 3"></button>
+            @endif
         </div>
     </div>
 </section>
@@ -207,20 +213,20 @@
 
             <div class="grid md:grid-cols-2 gap-6 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
                 @forelse($popularPosts as $post)
-                    <article class="news-card w-full">
+                    <article class="news-card search-card w-full">
                         <img src="{{ $post->cover_url ?: asset('image/lambang.png') }}" class="news-thumb" style="display: block;">
                         <div class="news-body">
                             <span class="news-badge mb-2">
                                 {{ $post->category?->name ?? 'Berita' }}
                         </span>
                             <p class="news-meta mb-1">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
-                            <h3 class="news-title text-sm mb-2">
+                            <h3 class="news-title search-title text-sm mb-2">
                                 {{ $post->title }}
                         </h3>
                             <p class="news-excerpt text-xs">
-                                {{ $post->excerpt ?: strip_tags($post->content) }}
+                                {{ strip_tags($post->excerpt ?: $post->content) }}
                             </p>
-                            <div class="mt-3">
+                    <div class="mt-3 news-footer">
                                 <a href="{{ route('posting.show', $post->slug) }}" class="btn-readmore">
                                     Baca Selengkapnya
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,14 +253,14 @@
 
                 <div class="space-y-4 text-sm w-full">
                     @forelse($announcementPosts as $post)
-                    <div class="flex gap-3 border-b pb-3 w-full">
+                    <div class="flex gap-3 border-b pb-3 w-full search-card">
                             <img src="{{ $post->cover_url ?: asset('image/lambang.png') }}" class="object-cover rounded flex-shrink-0" style="width: 56px; height: 56px; min-width: 56px;">
                         <div class="flex-1 min-w-0">
-                            <p class="font-medium leading-snug">
+                            <p class="font-medium leading-snug search-title">
                                     {{ $post->title }}
                                 </p>
                                 <p class="text-xs text-gray-500">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
-                                <div class="mt-2">
+                    <div class="mt-2 news-footer">
                                     <a href="{{ route('posting.show', $post->slug) }}" class="btn-readmore">
                                         Baca Selengkapnya
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -278,14 +284,14 @@
 
                 <div class="space-y-4 text-sm w-full">
                     @forelse($pressPosts as $post)
-                        <div class="flex gap-3 border-b pb-3 w-full">
+                        <div class="flex gap-3 border-b pb-3 w-full search-card">
                             <img src="{{ $post->cover_url ?: asset('image/lambang.png') }}" class="object-cover rounded flex-shrink-0" style="width: 56px; height: 56px; min-width: 56px;">
                         <div class="flex-1 min-w-0">
-                            <p class="font-medium leading-snug">
+                            <p class="font-medium leading-snug search-title">
                                     {{ $post->title }}
                                 </p>
                                 <p class="text-xs text-gray-500">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
-                                <div class="mt-2">
+                                <div class="mt-2 news-footer">
                                     <a href="{{ route('posting.show', $post->slug) }}" class="btn-readmore">
                                         Baca Selengkapnya
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -308,14 +314,14 @@
                 <h2 class="text-lg font-semibold mb-4" data-i18n="content.hoax">Klarifikasi Hoax</h2>
                 <div class="space-y-4 text-sm w-full">
                     @forelse($hoaxPosts as $post)
-                        <div class="flex gap-3 border-b pb-3 w-full">
+                        <div class="flex gap-3 border-b pb-3 w-full search-card">
                             <img src="{{ $post->cover_url ?: asset('image/lambang.png') }}" class="object-cover rounded flex-shrink-0" style="width: 56px; height: 56px; min-width: 56px;">
                             <div class="flex-1 min-w-0">
-                                <p class="font-medium leading-snug">
+                                <p class="font-medium leading-snug search-title">
                                     {{ $post->title }}
                                 </p>
                                 <p class="text-xs text-gray-500">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
-                                <div class="mt-2">
+                                <div class="mt-2 news-footer">
                                     <a href="{{ route('posting.show', $post->slug) }}" class="btn-readmore">
                                         Baca Selengkapnya
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -348,20 +354,20 @@
     </div>
     <div class="grid md:grid-cols-3 gap-6">
         @forelse($latestPosts as $post)
-            <article class="news-card">
+            <article class="news-card search-card">
                 <img src="{{ $post->cover_url ?: asset('image/lambang.png') }}" class="news-thumb" style="display: block;">
                 <div class="news-body">
                     <span class="news-badge mb-2">
                         {{ $post->category?->name ?? 'Berita' }}
                 </span>
                     <p class="news-meta mb-2">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
-                    <h3 class="news-title text-base mb-2 line-clamp-2">
+                    <h3 class="news-title search-title text-base mb-2 line-clamp-2">
                         {{ $post->title }}
                 </h3>
                     <p class="news-excerpt text-sm line-clamp-3">
-                        {{ \Illuminate\Support\Str::limit($post->excerpt ?: strip_tags($post->content), 120) }}
+                        {{ \Illuminate\Support\Str::limit(strip_tags($post->excerpt ?: $post->content), 120) }}
                     </p>
-                    <div class="mt-3">
+                    <div class="mt-3 news-footer">
                         <a href="{{ route('posting.show', $post->slug) }}" class="btn-readmore">
                             Baca Selengkapnya
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -389,7 +395,7 @@
     </div>
     <div class="grid md:grid-cols-3 gap-6">
         @forelse($homeVideos as $video)
-            <article class="news-card">
+            <article class="news-card search-card">
                 <a href="{{ route('galeri.video') }}" style="text-decoration: none; color: inherit;">
                     <div class="relative">
                         <img src="{{ $video->video_thumbnail_url ?: $video->image_url }}" alt="{{ $video->title }}"
@@ -406,7 +412,7 @@
                     <div class="news-body">
                         <span class="news-badge mb-2">Video</span>
                         <p class="news-meta mb-2">{{ $video->created_at?->translatedFormat('d F Y') ?? '-' }}</p>
-                        <h3 class="news-title text-base mb-2 line-clamp-2">
+                        <h3 class="news-title search-title text-base mb-2 line-clamp-2">
                             {{ $video->title }}
                 </h3>
                         @if(!empty($video->description))
@@ -414,7 +420,7 @@
                                 {{ \Illuminate\Support\Str::limit($video->description, 90) }}
                             </p>
                         @endif
-                        <div class="mt-3">
+                        <div class="mt-3 news-footer">
                             <span class="btn-readmore">
                                 Lihat Video
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -443,7 +449,7 @@
     </div>
     <div class="grid md:grid-cols-3 gap-6">
         @forelse($homeInfografis as $infografis)
-            <article class="news-card">
+            <article class="news-card search-card">
                 <a href="{{ route('galeri.infografis') }}" style="text-decoration: none; color: inherit;">
                     <img src="{{ $infografis->image_url }}" alt="{{ $infografis->title }}"
                          class="news-thumb" style="display: block;"
@@ -451,10 +457,10 @@
                     <div class="news-body">
                         <span class="news-badge mb-2">Infografis</span>
                         <p class="news-meta mb-2">{{ $infografis->created_at?->translatedFormat('d F Y') ?? '-' }}</p>
-                        <h3 class="news-title text-base mb-2 line-clamp-2">
+                        <h3 class="news-title search-title text-base mb-2 line-clamp-2">
                             {{ $infografis->title }}
                 </h3>
-                        <div class="mt-3">
+                        <div class="mt-3 news-footer">
                             <span class="btn-readmore">
                                 Lihat Infografis
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -483,7 +489,7 @@
     </div>
     <div class="grid md:grid-cols-3 gap-6">
         @forelse($homeFotos as $foto)
-            <article class="news-card">
+            <article class="news-card search-card">
                 <a href="{{ route('galeri.foto') }}" style="text-decoration: none; color: inherit;">
                     <img src="{{ $foto->image_url }}" class="news-thumb" style="display: block;"
                          onerror="this.src='https://via.placeholder.com/800x600/ECB176/FFFFFF?text=Foto'; this.onerror=null;">
@@ -492,10 +498,10 @@
                             {{ $foto->category ?: 'Dokumentasi' }}
                 </span>
                         <p class="news-meta mb-2">{{ $foto->created_at?->translatedFormat('d F Y') ?? '-' }}</p>
-                        <h3 class="news-title text-base mb-2 line-clamp-2">
+                        <h3 class="news-title search-title text-base mb-2 line-clamp-2">
                             {{ $foto->title }}
                 </h3>
-                        <div class="mt-3">
+                        <div class="mt-3 news-footer">
                             <span class="btn-readmore">
                                 Lihat Foto
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -524,13 +530,13 @@
     </div>
     <div class="grid md:grid-cols-3 gap-6">
         @forelse($homeRegulations as $regulation)
-            <article class="news-card">
+            <article class="news-card search-card">
                 <div class="news-body">
                     <span class="news-badge mb-2">
                         {{ $regulation->badge_text }}
                     </span>
                     <p class="news-meta mb-2">Tanggal Terbit: {{ $regulation->regulation_date?->translatedFormat('d F Y') ?? '-' }}</p>
-                    <h3 class="news-title text-base mb-2 line-clamp-2">
+                    <h3 class="news-title search-title text-base mb-2 line-clamp-2">
                         {{ $regulation->title }}
                         </h3>
                     <p class="news-excerpt text-sm line-clamp-3">
@@ -772,42 +778,33 @@
         min-width: 0;
         max-width: 100%;
     }
-    
-    /* Custom Color ECB176 */
-    :root {
-        --color-primary: #ECB176;
-        --color-primary-dark: #D99D5F;
-        --color-primary-light: #F5C99A;
-        --color-primary-bg: #F9E6D0;
-    }
-    
     /* Navigation hover */
     .hover-custom {
         transition: color 0.2s;
     }
     .hover-custom:hover {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Input focus */
     .focus-custom:focus {
         outline: none;
-        border-color: #ECB176;
-        box-shadow: 0 0 0 1px #ECB176;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary);
     }
     
     /* Badge primary */
     .badge-custom {
-        background-color: #ECB176;
+        background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
     }
     
     /* Button primary */
     .btn-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
         transition: background-color 0.2s;
     }
     .btn-custom:hover {
-        background-color: #D99D5F;
+        background-color: var(--color-primary-dark);
     }
 
     /* Read more button */
@@ -816,21 +813,21 @@
         align-items: center;
         gap: 6px;
         padding: 6px 12px;
-        border: 1px solid rgba(236, 177, 118, 0.6);
+        border: 1px solid var(--color-primary);
         border-radius: 999px;
         font-weight: 600;
         font-size: 12px;
-        color: #B87A3A;
-        background: rgba(249, 230, 208, 0.4);
+        color: var(--color-primary-dark);
+        background: #ffffff;
         transition: all 0.2s ease;
         white-space: nowrap;
     }
     .btn-readmore:hover {
-        background: #ECB176;
+        background: var(--color-primary);
         color: white;
-        border-color: #ECB176;
+        border-color: var(--color-primary);
         transform: translateY(-1px);
-        box-shadow: 0 6px 14px rgba(236, 177, 118, 0.25);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
     }
     .btn-readmore svg {
         width: 14px;
@@ -850,6 +847,9 @@
         overflow: hidden;
         box-shadow: 0 8px 24px rgba(17, 24, 39, 0.06);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
     .news-card:hover {
         transform: translateY(-3px);
@@ -867,6 +867,12 @@
     }
     .news-body {
         padding: 16px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    .news-footer {
+        margin-top: auto;
     }
     .news-title {
         font-weight: 700;
@@ -886,8 +892,8 @@
         border-radius: 999px;
         font-size: 11px;
         font-weight: 700;
-        color: #B87A3A;
-        background: rgba(236, 177, 118, 0.18);
+        color: #ffffff;
+        background: linear-gradient(135deg, var(--color-primary-bg), var(--color-primary-light));
     }
     .news-meta {
         font-size: 12px;
@@ -897,8 +903,8 @@
     /* Sidebar cards (Pengumuman & Klarifikasi Hoax) */
     .sidebar-section .bg-white .flex {
         border-bottom: none !important;
-        background: #fff7f0;
-        border: 1px solid #f3e4d4;
+        background: var(--color-primary-bg);
+        border: 1px solid var(--color-primary-light);
         border-radius: 14px;
         padding: 10px 12px;
         align-items: center;
@@ -907,7 +913,8 @@
     .sidebar-section .bg-white .flex:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 20px rgba(17, 24, 39, 0.08);
-        background: #fff4e8;
+        background: linear-gradient(135deg, var(--color-primary-bg), #ffffff);
+        border-color: var(--color-primary);
     }
     .sidebar-section .bg-white img {
         width: 64px;
@@ -935,18 +942,18 @@
     
     /* Badge light */
     .badge-light {
-        background-color: #F9E6D0;
-        color: #B87A3A;
+        background-color: var(--color-primary-bg);
+        color: var(--color-primary-dark);
     }
     
     /* Custom primary color text */
     .text-custom-primary {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Footer */
     .footer-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Line clamp utilities */
@@ -1022,15 +1029,15 @@
     }
     
     .dropdown-item:hover {
-        background-color: #F9E6D0;
-        color: #ECB176;
+        background-color: var(--color-primary-bg);
+        color: var(--color-primary);
         padding-left: 24px;
     }
     
     /* Active state for dropdown toggle */
     .dropdown-menu:hover .dropdown-toggle,
     .dropdown-menu.active .dropdown-toggle {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Carousel Styles */
@@ -1169,6 +1176,103 @@
                 });
             }
         });
+
+        // Header search: filter cards by title on homepage
+        const searchInput = document.getElementById('searchInput');
+        const searchCards = document.querySelectorAll('.search-card');
+
+        const applySearch = () => {
+            if (!searchInput) {
+                return;
+            }
+            const query = searchInput.value.trim().toLowerCase();
+            searchCards.forEach((card) => {
+                const titleEl = card.querySelector('.search-title');
+                const title = titleEl ? titleEl.textContent.trim().toLowerCase() : '';
+                if (!query || title.includes(query)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        };
+
+        if (searchInput) {
+            searchInput.addEventListener('input', applySearch);
+        }
+
+        // Hero carousel functionality
+        const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+        const dots = Array.from(document.querySelectorAll('.carousel-dot'));
+        const prevBtn = document.getElementById('carouselPrev');
+        const nextBtn = document.getElementById('carouselNext');
+        let currentIndex = slides.findIndex((slide) => slide.classList.contains('active'));
+        if (currentIndex < 0) {
+            currentIndex = 0;
+        }
+        let autoTimer = null;
+
+        const updateCarousel = (index) => {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            currentIndex = index;
+        };
+
+        const goNext = () => {
+            if (!slides.length) return;
+            const nextIndex = (currentIndex + 1) % slides.length;
+            updateCarousel(nextIndex);
+        };
+
+        const goPrev = () => {
+            if (!slides.length) return;
+            const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+            updateCarousel(prevIndex);
+        };
+
+        const startAuto = () => {
+            if (autoTimer || slides.length <= 1) return;
+            autoTimer = setInterval(goNext, 5000);
+        };
+
+        const stopAuto = () => {
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+            }
+        };
+
+        if (slides.length) {
+            updateCarousel(currentIndex);
+            startAuto();
+        }
+
+        prevBtn?.addEventListener('click', () => {
+            stopAuto();
+            goPrev();
+            startAuto();
+        });
+        nextBtn?.addEventListener('click', () => {
+            stopAuto();
+            goNext();
+            startAuto();
+        });
+        dots.forEach((dot) => {
+            dot.addEventListener('click', () => {
+                const index = Number(dot.dataset.slide || 0);
+                stopAuto();
+                updateCarousel(index);
+                startAuto();
+            });
+        });
+        const carouselContainer = document.querySelector('.hero-slider-container');
+        carouselContainer?.addEventListener('mouseenter', stopAuto);
+        carouselContainer?.addEventListener('mouseleave', startAuto);
+    });
 
 </script>
 

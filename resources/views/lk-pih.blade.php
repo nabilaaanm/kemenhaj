@@ -71,7 +71,7 @@
     
     <!-- Page Title -->
     <div class="text-center mb-8">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #8B6914;" data-i18n="lkpih.title">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: #111827;" data-i18n="lkpih.title">
             Laporan Keuangan & Penyelenggaraan Ibadah Haji
         </h1>
         <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-i18n="lkpih.subtitle">
@@ -103,7 +103,7 @@
     <div class="mb-12">
         <div class="bg-white rounded-lg shadow-sm p-8">
             <div class="mb-6">
-                <h2 class="text-2xl md:text-3xl font-bold mb-2" style="color: #8B6914;" data-i18n="lkpih.lk.title">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2" style="color: #111827;" data-i18n="lkpih.lk.title">
                     Laporan Keuangan
                 </h2>
                 <p class="text-gray-600" data-i18n="lkpih.lk.subtitle">
@@ -118,8 +118,8 @@
                             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-3 mb-2">
-                                        <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background-color: #F9E6D0;">
-                                            <svg class="w-6 h-6" style="color: #8B6914;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background-color: var(--color-primary-bg);">
+                                            <svg class="w-6 h-6" style="color: #111827;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                             </svg>
                                         </div>
@@ -141,7 +141,7 @@
                                 </div>
                                 <div class="flex-shrink-0">
                                     @if($doc->file_url)
-                                        <a href="{{ $doc->file_url }}" target="_blank" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium text-white hover:opacity-90 transition" style="background-color: #ECB176;">
+                                        <a href="{{ $doc->file_url }}" target="_blank" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium text-white hover:opacity-90 transition" style="background-color: var(--color-primary);">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                             </svg>
@@ -155,8 +155,8 @@
                 </div>
             @else
                 <div class="text-center py-12">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style="background-color: #F9E6D0;">
-                        <svg class="w-8 h-8" style="color: #8B6914;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style="background-color: var(--color-primary-bg);">
+                        <svg class="w-8 h-8" style="color: #111827;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                     </div>
@@ -172,7 +172,7 @@
     <div class="mb-8">
         <div class="bg-white rounded-lg shadow-sm p-8">
             <div class="mb-6">
-                <h2 class="text-2xl md:text-3xl font-bold mb-2" style="color: #8B6914;" data-i18n="lkpih.pih.title">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2" style="color: #111827;" data-i18n="lkpih.pih.title">
                     Penyelenggaraan Ibadah Haji (PIH)
                 </h2>
                 <p class="text-gray-600" data-i18n="lkpih.pih.subtitle">
@@ -187,8 +187,8 @@
                             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-3 mb-2">
-                                        <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background-color: #F9E6D0;">
-                                            <svg class="w-6 h-6" style="color: #8B6914;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background-color: var(--color-primary-bg);">
+                                            <svg class="w-6 h-6" style="color: #111827;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                                             </svg>
                                         </div>
@@ -210,7 +210,7 @@
                                 </div>
                                 <div class="flex-shrink-0">
                                     @if($doc->file_url)
-                                        <a href="{{ $doc->file_url }}" target="_blank" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium text-white hover:opacity-90 transition" style="background-color: #ECB176;">
+                                        <a href="{{ $doc->file_url }}" target="_blank" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium text-white hover:opacity-90 transition" style="background-color: var(--color-primary);">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                             </svg>
@@ -224,8 +224,8 @@
                 </div>
             @else
                 <div class="text-center py-12">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style="background-color: #F9E6D0;">
-                        <svg class="w-8 h-8" style="color: #8B6914;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style="background-color: var(--color-primary-bg);">
+                        <svg class="w-8 h-8" style="color: #111827;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                         </svg>
                     </div>
@@ -242,41 +242,33 @@
 @include('partials.footer')
 
 <style>
-    /* Custom Color ECB176 */
-    :root {
-        --color-primary: #ECB176;
-        --color-primary-dark: #D99D5F;
-        --color-primary-light: #F5C99A;
-        --color-primary-bg: #F9E6D0;
-    }
-    
     /* Navigation hover */
     .hover-custom {
         transition: color 0.2s;
     }
     .hover-custom:hover {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Input focus */
     .focus-custom:focus {
         outline: none;
-        border-color: #ECB176;
-        box-shadow: 0 0 0 1px #ECB176;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary);
     }
     
     /* Button primary */
     .btn-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
         transition: background-color 0.2s;
     }
     .btn-custom:hover {
-        background-color: #D99D5F;
+        background-color: var(--color-primary-dark);
     }
     
     /* Footer */
     .footer-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Dropdown Menu Styles */
@@ -337,15 +329,15 @@
     }
     
     .dropdown-item:hover {
-        background-color: #F9E6D0;
-        color: #ECB176;
+        background-color: var(--color-primary-bg);
+        color: var(--color-primary);
         padding-left: 24px;
     }
     
     /* Active state for dropdown toggle */
     .dropdown-menu:hover .dropdown-toggle,
     .dropdown-menu.active .dropdown-toggle {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     

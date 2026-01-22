@@ -112,7 +112,7 @@
         @if($hasAlamat)
         <div class="bg-white rounded-2xl p-8 shadow-lg">
             <div class="flex items-start gap-4 mb-6">
-                <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #ECB176;">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: var(--color-primary);">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -135,7 +135,7 @@
             @if(!empty($mapsUrl))
             <a href="{{ $mapsUrl }}" target="_blank" rel="noopener noreferrer" 
                class="inline-flex items-center gap-2 text-white px-6 py-3 rounded-lg font-medium transition hover:opacity-90" 
-               style="background-color: #ECB176;">
+               style="background-color: var(--color-primary);">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                 </svg>
@@ -149,7 +149,7 @@
         @if($hasKontak)
         <div class="bg-white rounded-2xl p-8 shadow-lg">
             <div class="flex items-start gap-4 mb-6">
-                <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #ECB176;">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: var(--color-primary);">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                     </svg>
@@ -212,7 +212,7 @@
             @if(!empty($mapsUrl))
             <a href="{{ $mapsUrl }}" target="_blank" rel="noopener noreferrer" 
                class="inline-flex items-center gap-2 text-white px-6 py-3 rounded-lg font-medium transition hover:opacity-90" 
-               style="background-color: #ECB176;">
+               style="background-color: var(--color-primary);">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                 </svg>
@@ -252,29 +252,29 @@
 <style>
     /* Header styles */
     .hover-custom:hover {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Input focus */
     .focus-custom:focus {
         outline: none;
-        border-color: #ECB176;
-        box-shadow: 0 0 0 1px #ECB176;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary);
     }
     
     /* Badge primary */
     .badge-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Custom primary color text */
     .text-custom-primary {
-        color: #ECB176;
+        color: var(--color-primary);
     }
     
     /* Footer */
     .footer-custom {
-        background-color: #ECB176;
+        background-color: var(--color-primary);
     }
     
     /* Dropdown Menu Styles */
