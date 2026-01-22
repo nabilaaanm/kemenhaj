@@ -111,61 +111,60 @@
                 </p>
             </div>
 
-            <!-- Empty State -->
-            <div class="text-center py-12">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style="background-color: #F9E6D0;">
-                    <svg class="w-8 h-8" style="color: #8B6914;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
+            @if(isset($lkDocuments) && $lkDocuments->count())
+                <div class="space-y-4">
+                    @foreach($lkDocuments as $doc)
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background-color: #F9E6D0;">
+                                            <svg class="w-6 h-6" style="color: #8B6914;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold text-lg">{{ $doc->title }}</h3>
+                                            @if($doc->description)
+                                                <p class="text-sm text-gray-500">{{ $doc->description }}</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4 text-sm text-gray-600 mt-3">
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                            {{ $doc->document_date?->format('d F Y') }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    @if($doc->file_url)
+                                        <a href="{{ $doc->file_url }}" target="_blank" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium text-white hover:opacity-90 transition" style="background-color: #ECB176;">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                            </svg>
+                                            <span data-i18n="lkpih.download">Download</span>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
-                <p class="text-gray-500 text-lg" data-i18n="lkpih.lk.empty">
-                    Data laporan keuangan belum tersedia
-                </p>
-            </div>
-
-            <!-- Document List (Hidden by default, will show when data available) -->
-            <div id="lkDocumentList" class="hidden space-y-4">
-                <!-- Example document card structure -->
-                <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-3 mb-2">
-                                <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background-color: #F9E6D0;">
-                                    <svg class="w-6 h-6" style="color: #8B6914;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-semibold text-lg">Laporan Keuangan Tahun 2025</h3>
-                                    <p class="text-sm text-gray-500">Laporan Keuangan Audited - Format PDF</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-4 text-sm text-gray-600 mt-3">
-                                <span class="flex items-center gap-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                    15 Januari 2026
-                                </span>
-                                <span class="flex items-center gap-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                    </svg>
-                                    PDF, 2.5 MB
-                                </span>
-                            </div>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <a href="#" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium text-white hover:opacity-90 transition" style="background-color: #ECB176;">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                                </svg>
-                                <span data-i18n="lkpih.download">Download</span>
-                            </a>
-                        </div>
+            @else
+                <div class="text-center py-12">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style="background-color: #F9E6D0;">
+                        <svg class="w-8 h-8" style="color: #8B6914;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
                     </div>
+                    <p class="text-gray-500 text-lg" data-i18n="lkpih.lk.empty">
+                        Data laporan keuangan belum tersedia
+                    </p>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 
@@ -181,61 +180,60 @@
                 </p>
             </div>
 
-            <!-- Empty State -->
-            <div class="text-center py-12">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style="background-color: #F9E6D0;">
-                    <svg class="w-8 h-8" style="color: #8B6914;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                    </svg>
+            @if(isset($pihDocuments) && $pihDocuments->count())
+                <div class="space-y-4">
+                    @foreach($pihDocuments as $doc)
+                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background-color: #F9E6D0;">
+                                            <svg class="w-6 h-6" style="color: #8B6914;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold text-lg">{{ $doc->title }}</h3>
+                                            @if($doc->description)
+                                                <p class="text-sm text-gray-500">{{ $doc->description }}</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4 text-sm text-gray-600 mt-3">
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                            {{ $doc->document_date?->format('d F Y') }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    @if($doc->file_url)
+                                        <a href="{{ $doc->file_url }}" target="_blank" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium text-white hover:opacity-90 transition" style="background-color: #ECB176;">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                            </svg>
+                                            <span data-i18n="lkpih.download">Download</span>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
-                <p class="text-gray-500 text-lg" data-i18n="lkpih.pih.empty">
-                    Data Penyelenggaraan Ibadah Haji belum tersedia
-                </p>
-            </div>
-
-            <!-- Document List (Hidden by default, will show when data available) -->
-            <div id="pihDocumentList" class="hidden space-y-4">
-                <!-- Example document card structure -->
-                <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-3 mb-2">
-                                <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background-color: #F9E6D0;">
-                                    <svg class="w-6 h-6" style="color: #8B6914;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-semibold text-lg">Laporan Penyelenggaraan Ibadah Haji 1447H/2026M</h3>
-                                    <p class="text-sm text-gray-500">Laporan PIH - Format PDF</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-4 text-sm text-gray-600 mt-3">
-                                <span class="flex items-center gap-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                    20 Januari 2026
-                                </span>
-                                <span class="flex items-center gap-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                    </svg>
-                                    PDF, 1.8 MB
-                                </span>
-                            </div>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <a href="#" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium text-white hover:opacity-90 transition" style="background-color: #ECB176;">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                                </svg>
-                                <span data-i18n="lkpih.download">Download</span>
-                            </a>
-                        </div>
+            @else
+                <div class="text-center py-12">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style="background-color: #F9E6D0;">
+                        <svg class="w-8 h-8" style="color: #8B6914;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
                     </div>
+                    <p class="text-gray-500 text-lg" data-i18n="lkpih.pih.empty">
+                        Data Penyelenggaraan Ibadah Haji belum tersedia
+                    </p>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 
@@ -350,82 +348,8 @@
         color: #ECB176;
     }
     
-    /* Language Selector Styles */
-    .language-selector {
-        position: relative;
-    }
     
-    .language-toggle {
-        background: white;
-        border: 1px solid #d1d5db;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
     
-    .language-toggle:hover {
-        background-color: #f3f4f6;
-        border-color: #ECB176;
-    }
-    
-    .language-toggle svg {
-        transition: transform 0.2s;
-    }
-    
-    .language-selector.active .language-toggle svg {
-        transform: rotate(180deg);
-    }
-    
-    .language-dropdown {
-        position: absolute;
-        top: 100%;
-        right: 0;
-        margin-top: 8px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        min-width: 160px;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-10px);
-        transition: all 0.2s ease;
-        z-index: 1000;
-        padding: 4px 0;
-        border: 1px solid #e5e7eb;
-    }
-    
-    .language-selector.active .language-dropdown {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
-    
-    .language-option {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        padding: 10px 16px;
-        background: none;
-        border: none;
-        text-align: left;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-size: 14px;
-    }
-    
-    .language-option:hover {
-        background-color: #F9E6D0;
-    }
-    
-    .language-option.active {
-        background-color: #F9E6D0;
-        color: #ECB176;
-    }
-    
-    .language-option span:first-child {
-        font-weight: 600;
-        margin-right: 8px;
-    }
 </style>
 
 <script>
@@ -457,189 +381,8 @@
                     menu.classList.remove('active');
                 });
             }
-            // Close language selector when clicking outside
-            if (!e.target.closest('.language-selector')) {
-                document.querySelector('.language-selector')?.classList.remove('active');
-            }
         });
-        
-        // Language Selector functionality
-        const languageToggle = document.getElementById('languageToggle');
-        const languageDropdown = document.getElementById('languageDropdown');
-        const currentLang = document.getElementById('currentLang');
-        const languageOptions = document.querySelectorAll('.language-option');
-        
-        // Get saved language from localStorage or default to ID
-        let currentLanguage = localStorage.getItem('selectedLanguage') || 'id';
-        
-        // Translation object
-        const translations = {
-            id: {
-                // Navigation
-                'nav.home': 'Beranda',
-                'nav.profile': 'Profil',
-                'nav.about': 'Tentang Kami',
-                'nav.vision': 'Visi & Misi',
-                'nav.structure': 'Struktur Organisasi',
-                'nav.history': 'Sejarah',
-                'nav.contact': 'Kontak',
-                'nav.news': 'Berita',
-                'nav.berita': 'Berita',
-                'nav.announcement': 'Pengumuman',
-                'nav.press': 'Siaran Pers',
-                'nav.hoax': 'Klarifikasi Hoax',
-                'nav.services': 'Layanan',
-                'nav.data': 'Data dan Informasi',
-                'nav.lk': 'LK & PIH',
-                'nav.gallery': 'Galeri',
-                'nav.photos': 'Foto',
-                'nav.videos': 'Video',
-                'nav.infographics': 'Infografis',
-                'nav.regulation': 'Regulasi',
-                'search.placeholder': 'Cari berita',
-                'footer.address': 'Alamat',
-                'footer.contact': 'Hubungi Kami',
-                'footer.platform': 'Platform',
-                // LK & PIH
-                'lkpih.title': 'Laporan Keuangan & Penyelenggaraan Ibadah Haji',
-                'lkpih.subtitle': 'Transparansi dan Akuntabilitas Pengelolaan Haji',
-                'lkpih.searchPlaceholder': 'Cari dokumen berdasarkan judul, jenis, atau tanggal...',
-                'lkpih.searchBtn': 'Cari',
-                'lkpih.download': 'Download',
-                'lkpih.lk.title': 'Laporan Keuangan',
-                'lkpih.lk.subtitle': 'Laporan keuangan yang telah diaudit dan disahkan',
-                'lkpih.lk.empty': 'Data laporan keuangan belum tersedia',
-                'lkpih.pih.title': 'Penyelenggaraan Ibadah Haji (PIH)',
-                'lkpih.pih.subtitle': 'Informasi publik yang wajib disediakan dan diumumkan',
-                'lkpih.pih.empty': 'Data Penyelenggaraan Ibadah Haji belum tersedia'
-            },
-            en: {
-                // Navigation
-                'nav.home': 'Home',
-                'nav.profile': 'Profile',
-                'nav.about': 'About Us',
-                'nav.vision': 'Vision & Mission',
-                'nav.structure': 'Organization Structure',
-                'nav.history': 'History',
-                'nav.contact': 'Contact',
-                'nav.news': 'News',
-                'nav.berita': 'News',
-                'nav.announcement': 'Announcement',
-                'nav.press': 'Press Release',
-                'nav.hoax': 'Hoax Clarification',
-                'nav.services': 'Services',
-                'nav.data': 'Data and Information',
-                'nav.lk': 'LK & PIH',
-                'nav.gallery': 'Gallery',
-                'nav.photos': 'Photos',
-                'nav.videos': 'Videos',
-                'nav.infographics': 'Infographics',
-                'nav.regulation': 'Regulation',
-                'search.placeholder': 'Search news',
-                'footer.address': 'Address',
-                'footer.contact': 'Contact Us',
-                'footer.platform': 'Platform',
-                // LK & PIH
-                'lkpih.title': 'Financial Reports & Hajj Implementation',
-                'lkpih.subtitle': 'Transparency and Accountability of Hajj Management',
-                'lkpih.searchPlaceholder': 'Search documents by title, type, or date...',
-                'lkpih.searchBtn': 'Search',
-                'lkpih.download': 'Download',
-                'lkpih.lk.title': 'Financial Reports',
-                'lkpih.lk.subtitle': 'Financial reports that have been audited and approved',
-                'lkpih.lk.empty': 'Financial report data not available',
-                'lkpih.pih.title': 'Hajj Implementation (PIH)',
-                'lkpih.pih.subtitle': 'Public information that must be provided and announced',
-                'lkpih.pih.empty': 'Hajj Implementation data not available'
-            }
-        };
-        
-        // Apply language changes
-        function applyLanguage(lang) {
-            // Update document language
-            document.documentElement.lang = lang;
-            
-            // Update all elements with data-i18n attribute
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (translations[lang] && translations[lang][key]) {
-                    element.textContent = translations[lang][key];
-                }
-            });
-            
-            // Update placeholders
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-                const key = element.getAttribute('data-i18n-placeholder');
-                if (translations[lang] && translations[lang][key]) {
-                    element.placeholder = translations[lang][key];
-                }
-            });
-            
-            // Update title
-            document.title = lang === 'id' 
-                ? 'LK & PIH - Kementerian Haji dan Umrah Kota Cirebon'
-                : 'LK & PIH - Ministry of Hajj and Umrah Cirebon City';
-        }
-        
-        // Initialize language
-        function initLanguage() {
-            const langCode = currentLanguage === 'id' ? 'ID' : 'EN';
-            if (currentLang) {
-                currentLang.textContent = langCode;
-            }
-            
-            // Update active state
-            languageOptions.forEach(option => {
-                if (option.dataset.lang === currentLanguage) {
-                    option.classList.add('active');
-                } else {
-                    option.classList.remove('active');
-                }
-            });
-            
-            // Apply language changes
-            applyLanguage(currentLanguage);
-        }
-        
-        // Toggle language dropdown
-        if (languageToggle) {
-            languageToggle.addEventListener('click', function(e) {
-                e.stopPropagation();
-                document.querySelector('.language-selector')?.classList.toggle('active');
-            });
-        }
-        
-        // Handle language selection
-        languageOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                const selectedLang = this.dataset.lang;
-                const selectedCode = this.dataset.code;
-                
-                // Update current language
-                currentLanguage = selectedLang;
-                if (currentLang) {
-                    currentLang.textContent = selectedCode;
-                }
-                
-                // Save to localStorage
-                localStorage.setItem('selectedLanguage', selectedLang);
-                
-                // Update active state
-                languageOptions.forEach(opt => {
-                    opt.classList.remove('active');
-                });
-                this.classList.add('active');
-                
-                // Apply language
-                applyLanguage(selectedLang);
-                
-                // Close dropdown
-                document.querySelector('.language-selector')?.classList.remove('active');
-            });
-        });
-        
-        // Initialize on page load
-        initLanguage();
+
         
         // Search functionality
         const searchInput = document.getElementById('lkpihSearch');

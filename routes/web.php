@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\HalamanController;
 use App\Http\Controllers\Admin\GaleriController;
 use App\Http\Controllers\Admin\LayananController;
 use App\Http\Controllers\Admin\RegulasiController;
+use App\Http\Controllers\Admin\LkPihController;
 use App\Http\Controllers\Admin\DataInformasiController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Admin\PenggunaController;
@@ -19,6 +20,7 @@ use App\Models\Regulation;
 use App\Models\Gallery;
 use App\Models\Kbihu;
 use App\Models\Ppiu;
+use App\Models\LkPihDocument;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ServiceController;
@@ -249,7 +251,24 @@ Route::get('/data-informasi', function () {
     return view('data-informasi', compact('kbihuData', 'ppiuData'));
 });
 Route::get('/lk-pih', function () {
-    return view('lk-pih');
+    $lkDocuments = collect();
+    $pihDocuments = collect();
+    if (Schema::hasTable('lk_pih_documents')) {
+        $lkDocuments = LkPihDocument::where('type', 'lk')
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->orderByDesc('document_date')
+            ->orderByDesc('created_at')
+            ->get();
+        $pihDocuments = LkPihDocument::where('type', 'pih')
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->orderByDesc('document_date')
+            ->orderByDesc('created_at')
+            ->get();
+    }
+
+    return view('lk-pih', compact('lkDocuments', 'pihDocuments'));
 });
 Route::get('/berita', [PostingPublicController::class, 'berita'])->name('berita');
 Route::get('/pengumuman', [PostingPublicController::class, 'pengumuman'])->name('pengumuman');
@@ -338,6 +357,13 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/{id}/edit', [RegulasiController::class, 'edit'])->name('edit');
         Route::post('/{id}/edit', [RegulasiController::class, 'update'])->name('update');
         Route::delete('/{id}', [RegulasiController::class, 'destroy'])->name('destroy');
+    });
+
+    // LK & PIH - Admin, Editor
+    Route::middleware(['role:admin,editor'])->prefix('lk-pih')->name('lk-pih.')->group(function () {
+        Route::get('/', [LkPihController::class, 'index'])->name('index');
+        Route::post('/upload', [LkPihController::class, 'store'])->name('store');
+        Route::delete('/{id}', [LkPihController::class, 'destroy'])->name('destroy');
     });
     
     // Data Informasi - Admin, Editor

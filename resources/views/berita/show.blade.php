@@ -44,32 +44,8 @@
         .dropdown-item:hover { background-color: #F9E6D0; color: #ECB176; padding-left: 24px; }
         .dropdown-menu:hover .dropdown-toggle,
         .dropdown-menu.active .dropdown-toggle { color: #ECB176; }
-        .language-selector { position: relative; }
-        .language-toggle { background: white; border: 1px solid #d1d5db; cursor: pointer; transition: all 0.2s; }
         .language-toggle:hover { background-color: #f3f4f6; border-color: #ECB176; }
-        .language-toggle svg { transition: transform 0.2s; }
-        .language-selector.active .language-toggle svg { transform: rotate(180deg); }
-        .language-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 8px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            min-width: 160px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.2s ease;
-            z-index: 1000;
-            padding: 4px 0;
-            border: 1px solid #e5e7eb;
-        }
-        .language-selector.active .language-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
-        .language-option { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 10px 16px; background: none; border: none; text-align: left; cursor: pointer; transition: all 0.2s; font-size: 14px; }
         .language-option:hover { background-color: #F9E6D0; }
-        .language-option.active { background-color: #F9E6D0; color: #ECB176; }
         .language-option span:first-child { font-weight: 600; margin-right: 8px; }
     </style>
 </head>
@@ -131,23 +107,10 @@
                     menu.classList.remove('active');
                 });
             }
-            if (!e.target.closest('.language-selector')) {
-                document.querySelector('.language-selector')?.classList.remove('active');
-            }
         });
 
-        const languageToggle = document.getElementById('languageToggle');
-        const currentLang = document.getElementById('currentLang');
-        const languageOptions = document.querySelectorAll('.language-option');
-        let currentLanguage = localStorage.getItem('selectedLanguage') || 'id';
 
-        function initLanguage() {
-            const langCode = currentLanguage === 'id' ? 'ID' : 'EN';
-            if (currentLang) {
-                currentLang.textContent = langCode;
             }
-            languageOptions.forEach(option => {
-                if (option.dataset.lang === currentLanguage) {
                     option.classList.add('active');
                 } else {
                     option.classList.remove('active');
@@ -155,21 +118,12 @@
             });
         }
 
-        initLanguage();
 
-        if (languageToggle) {
-            languageToggle.addEventListener('click', function(e) {
                 e.preventDefault();
-                document.querySelector('.language-selector')?.classList.toggle('active');
             });
         }
 
-        languageOptions.forEach(option => {
             option.addEventListener('click', function() {
-                currentLanguage = this.dataset.lang;
-                localStorage.setItem('selectedLanguage', currentLanguage);
-                initLanguage();
-                document.querySelector('.language-selector')?.classList.remove('active');
                 location.reload();
             });
         });

@@ -80,26 +80,6 @@
                     {{-- Admin dapat mengakses dashboard melalui URL langsung: /admin/dashboard --}}
                 @endif
 
-                <!-- Language Selector -->
-                <div class="relative language-selector">
-                    <button class="language-toggle text-xs font-semibold border px-3 py-1.5 rounded-md hover:bg-gray-100 whitespace-nowrap flex items-center gap-1.5" id="languageToggle">
-                        <span id="currentLang">ID</span>
-                        <svg class="w-3.5 h-3.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-                    <div class="language-dropdown" id="languageDropdown">
-                        <button class="language-option active" data-lang="id" data-code="ID">
-                            <span class="font-semibold">ID</span>
-                            <span class="text-xs text-gray-600">Indonesia</span>
-                        </button>
-                        <button class="language-option" data-lang="en" data-code="EN">
-                            <span class="font-semibold">EN</span>
-                            <span class="text-xs text-gray-600">English</span>
-                        </button>
-                    </div>
-                </div>
-
                 <div class="relative hidden md:block" style="min-width: 150px;">
                     <input type="text" id="searchInput" data-i18n-placeholder="search.placeholder" placeholder="Cari berita"
                         class="border rounded-md pl-9 pr-3 py-1.5 text-sm focus-custom w-full"

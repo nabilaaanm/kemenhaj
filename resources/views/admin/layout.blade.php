@@ -622,6 +622,9 @@
                     <a href="{{ route('admin.data-informasi.ppiu.index') }}" class="submenu-item {{ request()->routeIs('admin.data-informasi.ppiu.*') ? 'active' : '' }}">
                         <span>PPIU</span>
                     </a>
+                    <a href="{{ route('admin.lk-pih.index') }}" class="submenu-item {{ request()->routeIs('admin.lk-pih.*') ? 'active' : '' }}">
+                        <span>LK & PIH</span>
+                    </a>
                 </div>
                 @endif
 
