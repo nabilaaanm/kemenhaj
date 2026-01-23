@@ -28,12 +28,23 @@
                 <p style="font-size: 12px; color: #6b7280; margin-top: 4px;">Format: JPG, PNG, maksimal 2MB</p>
                 <div id="tim_foto_preview" style="margin-top: 12px;"></div>
             </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Urutan</label>
-                <input type="number" name="urutan" id="tim_urutan" value="0" min="0"
-                       style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;">
-                <p style="font-size: 12px; color: #6b7280; margin-top: 4px;">Urutan tampil (0 = pertama)</p>
+
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px;">
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Baris</label>
+                    <select name="baris" id="tim_baris" required
+                            style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;">
+                        <option value="1">Baris 1</option>
+                        <option value="2">Baris 2</option>
+                        <option value="3">Baris 3</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Slot</label>
+                    <select name="slot" id="tim_slot" required
+                            style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;">
+                    </select>
+                </div>
             </div>
             
             <div style="display: flex; gap: 12px; justify-content: flex-end;">
@@ -51,7 +62,44 @@
 <script>
 let timData = @json($tim ?? []);
 
-function openTimModal(id = null) {
+function buildSlotOptions(row, selectedSlot = null) {
+    const slotSelect = document.getElementById('tim_slot');
+    if (!slotSelect) return;
+
+    const slotsByRow = {
+        1: [1, 2, 3, 4],
+        2: [1, 2, 3, 4],
+        3: [1, 2, 3, 4],
+    };
+    const slots = slotsByRow[row] || [];
+    const usedSlots = new Set();
+
+    timData.forEach(member => {
+        if (Number(member.baris) === Number(row) && member.slot) {
+            usedSlots.add(Number(member.slot));
+        }
+    });
+
+    if (selectedSlot) {
+        usedSlots.delete(Number(selectedSlot));
+    }
+
+    slotSelect.innerHTML = '';
+    slots.forEach(slot => {
+        const option = document.createElement('option');
+        option.value = slot;
+        option.textContent = `Slot ${slot}`;
+        if (usedSlots.has(slot)) {
+            option.disabled = true;
+        }
+        if (Number(selectedSlot) === slot) {
+            option.selected = true;
+        }
+        slotSelect.appendChild(option);
+    });
+}
+
+function openTimModal(id = null, defaultRow = null) {
     const modal = document.getElementById('timModal');
     const form = document.getElementById('timForm');
     const title = document.getElementById('modalTitle');
@@ -60,6 +108,8 @@ function openTimModal(id = null) {
     form.reset();
     document.getElementById('tim_foto_preview').innerHTML = '';
     
+    const barisSelect = document.getElementById('tim_baris');
+
     if (id) {
         const member = timData.find(t => t.id === id);
         if (member) {
@@ -77,7 +127,10 @@ function openTimModal(id = null) {
             
             document.getElementById('tim_nama').value = member.nama || '';
             document.getElementById('tim_jabatan').value = member.jabatan || '';
-            document.getElementById('tim_urutan').value = member.urutan || 0;
+            if (barisSelect) {
+                barisSelect.value = member.baris || 1;
+            }
+            buildSlotOptions(Number(barisSelect?.value || 1), member.slot || null);
             
             if (member.foto_url) {
                 document.getElementById('tim_foto_preview').innerHTML = 
@@ -92,6 +145,10 @@ function openTimModal(id = null) {
         if (methodInput) {
             methodInput.remove();
         }
+        if (barisSelect) {
+            barisSelect.value = defaultRow || 1;
+        }
+        buildSlotOptions(Number(barisSelect?.value || 1));
     }
     
     modal.style.display = 'flex';
@@ -109,6 +166,7 @@ function closeTimModal() {
 
 document.addEventListener('DOMContentLoaded', function() {
     const fotoInput = document.getElementById('tim_foto');
+    const barisSelect = document.getElementById('tim_baris');
     if (fotoInput) {
         fotoInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -120,6 +178,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 reader.readAsDataURL(file);
             }
+        });
+    }
+    if (barisSelect) {
+        barisSelect.addEventListener('change', function() {
+            buildSlotOptions(Number(barisSelect.value));
         });
     }
     

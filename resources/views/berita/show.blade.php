@@ -44,6 +44,10 @@
         .dropdown-item:hover { background-color: var(--color-primary-bg); color: var(--color-primary); padding-left: 24px; }
         .dropdown-menu:hover .dropdown-toggle,
         .dropdown-menu.active .dropdown-toggle { color: var(--color-primary); }
+        .badge-custom {
+            background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary-light));
+            color: #ffffff;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">

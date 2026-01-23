@@ -758,13 +758,30 @@
     <script>
         function toggleSubmenu(element) {
             const submenu = element.nextElementSibling;
-            if (submenu) {
-                submenu.classList.toggle('active');
-                element.classList.toggle('active');
-                const arrow = element.querySelector('.submenu-arrow');
-                if (arrow) {
-                    arrow.textContent = submenu.classList.contains('active') ? '▲' : '▼';
+            if (!submenu) {
+                return;
+            }
+
+            document.querySelectorAll('.menu-item.has-submenu').forEach(item => {
+                if (item === element) {
+                    return;
                 }
+                const sibling = item.nextElementSibling;
+                if (sibling && sibling.classList.contains('submenu')) {
+                    sibling.classList.remove('active');
+                }
+                item.classList.remove('active');
+                const arrow = item.querySelector('.submenu-arrow');
+                if (arrow) {
+                    arrow.textContent = '▼';
+                }
+            });
+
+            submenu.classList.toggle('active');
+            element.classList.toggle('active');
+            const arrow = element.querySelector('.submenu-arrow');
+            if (arrow) {
+                arrow.textContent = submenu.classList.contains('active') ? '▲' : '▼';
             }
         }
 

@@ -893,7 +893,7 @@
         font-size: 11px;
         font-weight: 700;
         color: #ffffff;
-        background: linear-gradient(135deg, var(--color-primary-bg), var(--color-primary-light));
+        background: linear-gradient(90deg, var(--color-primary-dark), var(--color-primary-light));
     }
     .news-meta {
         font-size: 12px;

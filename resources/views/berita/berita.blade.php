@@ -123,7 +123,7 @@
         <article class="berita-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition" data-category="siaran-pers">
             <div class="relative">
                 <img src="/berita1.jpg" class="w-full object-cover" style="height: 200px; width: 100%; display: block;">
-                <span class="absolute top-3 left-3 px-3 py-1 rounded text-xs font-semibold text-white" style="background-color: rgba(139, 105, 20, 0.9);" data-i18n="berita.category.siaranPers">Siaran Pers</span>
+                <span class="absolute top-3 left-3 px-3 py-1 rounded text-xs font-semibold text-white" style="background: linear-gradient(90deg, var(--color-primary-dark), var(--color-primary-light));" data-i18n="berita.category.siaranPers">Siaran Pers</span>
             </div>
             <div class="p-5">
                 <p class="text-xs text-gray-500 mb-2">8 Januari 2026</p>
@@ -146,7 +146,7 @@
         <article class="berita-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition" data-category="siaran-pers">
             <div class="relative">
                 <img src="/berita2.jpg" class="w-full object-cover" style="height: 200px; width: 100%; display: block;">
-                <span class="absolute top-3 left-3 px-3 py-1 rounded text-xs font-semibold text-white" style="background-color: rgba(139, 105, 20, 0.9);" data-i18n="berita.category.siaranPers">Siaran Pers</span>
+                <span class="absolute top-3 left-3 px-3 py-1 rounded text-xs font-semibold text-white" style="background: linear-gradient(90deg, var(--color-primary-dark), var(--color-primary-light));" data-i18n="berita.category.siaranPers">Siaran Pers</span>
             </div>
             <div class="p-5">
                 <p class="text-xs text-gray-500 mb-2">8 Januari 2026</p>
@@ -215,7 +215,7 @@
         <article class="berita-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition" data-category="siaran-pers">
             <div class="relative">
                 <img src="/berita2.jpg" class="w-full object-cover" style="height: 200px; width: 100%; display: block;">
-                <span class="absolute top-3 left-3 px-3 py-1 rounded text-xs font-semibold text-white" style="background-color: rgba(139, 105, 20, 0.9);" data-i18n="berita.category.siaranPers">Siaran Pers</span>
+                <span class="absolute top-3 left-3 px-3 py-1 rounded text-xs font-semibold text-white" style="background: linear-gradient(90deg, var(--color-primary-dark), var(--color-primary-light));" data-i18n="berita.category.siaranPers">Siaran Pers</span>
             </div>
             <div class="p-5">
                 <p class="text-xs text-gray-500 mb-2">2 Januari 2026</p>

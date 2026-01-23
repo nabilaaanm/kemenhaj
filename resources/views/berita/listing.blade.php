@@ -73,8 +73,8 @@
             border-radius: 999px;
             font-size: 11px;
             font-weight: 700;
-            color: var(--color-primary-dark);
-            background: rgba(236, 177, 118, 0.18);
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary-light));
         }
         .news-meta { font-size: 12px; color: #9ca3af; }
         .dropdown-menu { position: relative; }

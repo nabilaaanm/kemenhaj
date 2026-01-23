@@ -15,13 +15,15 @@ class TimKemenhaj extends Model
         'nama',
         'jabatan',
         'foto',
-        'urutan',
+        'baris',
+        'slot',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
-        'urutan' => 'integer',
+        'baris' => 'integer',
+        'slot' => 'integer',
     ];
 
     public function getFotoUrlAttribute()

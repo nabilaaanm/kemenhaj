@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('jabatan');
             $table->string('foto')->nullable();
             $table->integer('urutan')->default(0);
+            $table->unsignedTinyInteger('baris')->nullable();
+            $table->unsignedTinyInteger('slot')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

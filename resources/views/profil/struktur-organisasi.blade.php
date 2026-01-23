@@ -99,10 +99,11 @@
             Bagan Struktur Organisasi
         </h2>
         <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 overflow-hidden">
-            <div class="w-full">
+            <div class="w-full flex justify-center">
                 <img src="{{ $strukturGambarUrl }}" 
                      alt="Struktur Organisasi Kementerian Haji dan Umrah Kota Cirebon" 
                      class="w-full h-auto rounded-lg"
+                     style="max-width: 1100px; max-height: 520px; object-fit: contain;"
                      onerror="this.src='https://via.placeholder.com/1200x800/ECB176/FFFFFF?text=Struktur+Organisasi+Kemenhaj+Cirebon'; this.onerror=null;">
             </div>
         </div>
@@ -116,20 +117,45 @@
         
         <!-- Staff Grid -->
         @if(!empty($tim) && $tim->count() > 0)
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-                @foreach($tim as $member)
-                    <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 text-center">
-                        <div class="mb-4">
-                            <img src="{{ $member->foto_url }}" 
-                                 alt="{{ $member->nama }}" 
-                                 class="w-full aspect-square object-cover rounded-lg mb-3"
-                                 onerror="this.src='https://via.placeholder.com/300x300/ECB176/FFFFFF?text=Staff'; this.onerror=null;">
-                        </div>
-                        <h3 class="font-semibold text-gray-800 mb-1">{{ $member->nama }}</h3>
-                        <p class="text-sm text-gray-600">{{ $member->jabatan }}</p>
+            @php
+                $maxRows = 3;
+                $rows = [];
+                foreach ($tim as $member) {
+                    $baris = (int) ($member->baris ?? 0);
+                    $slot = (int) ($member->slot ?? 0);
+                    $rowKey = $baris >= 1 && $baris <= $maxRows ? $baris : $maxRows;
+                    if ($slot >= 1 && $slot <= 4) {
+                        $rows[$rowKey][$slot] = $member;
+                    }
+                }
+                for ($row = 1; $row <= $maxRows; $row++) {
+                    $rows[$row] = $rows[$row] ?? [];
+                }
+            @endphp
+            @for($rowIndex = 1; $rowIndex <= $maxRows; $rowIndex++)
+                @if(count($rows[$rowIndex]) > 0)
+                    <div class="grid grid-cols-4 gap-6 mb-8">
+                        @for($col = 1; $col <= 4; $col++)
+                            @php $member = $rows[$rowIndex][$col] ?? null; @endphp
+                            @if($member)
+                                <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 text-center">
+                                    <div class="mb-4">
+                                        <img src="{{ $member->foto_url }}" 
+                                             alt="{{ $member->nama }}" 
+                                             class="w-full aspect-square object-cover rounded-lg mb-3"
+                                             style="object-position: 50% 20%;"
+                                             onerror="this.src='https://via.placeholder.com/300x300/ECB176/FFFFFF?text=Staff'; this.onerror=null;">
+                                    </div>
+                                    <h3 class="font-semibold text-gray-800 mb-1">{{ $member->nama }}</h3>
+                                    <p class="text-sm text-gray-600">{{ $member->jabatan }}</p>
+                                </div>
+                            @else
+                                <div></div>
+                            @endif
+                        @endfor
                     </div>
-                @endforeach
-            </div>
+                @endif
+            @endfor
         @else
             <div class="text-center text-gray-500 bg-white rounded-xl shadow-sm p-8">
                 Belum ada data tim.

@@ -85,7 +85,10 @@ class PengaturanController extends Controller
     public function profilStruktur()
     {
         $profil = Profil::first();
-        $tim = TimKemenhaj::orderBy('urutan')->orderBy('id')->get();
+        $tim = TimKemenhaj::orderByRaw('baris is null, baris')
+            ->orderByRaw('slot is null, slot')
+            ->orderBy('id')
+            ->get();
         return view('admin.profil.struktur', compact('profil', 'tim'));
     }
 
@@ -138,6 +141,16 @@ class PengaturanController extends Controller
             'twitter',
             'youtube',
         ]);
+
+        if ($request->boolean('hapus_struktur_gambar') && !$request->hasFile('struktur_gambar')) {
+            if ($profil && $profil->struktur_gambar) {
+                $oldPath = public_path('storage/struktur/' . $profil->struktur_gambar);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+            $data['struktur_gambar'] = null;
+        }
 
         if ($request->hasFile('struktur_gambar')) {
             $file = $request->file('struktur_gambar');
@@ -252,11 +265,11 @@ class PengaturanController extends Controller
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'urutan' => 'nullable|integer|min:0',
+            'baris' => 'required|integer|min:1|max:3',
+            'slot' => 'required|integer|min:1|max:4',
         ]);
 
-        $data = $request->only(['nama', 'jabatan', 'urutan']);
-        $data['urutan'] = $data['urutan'] ?? 0;
+        $data = $request->only(['nama', 'jabatan', 'baris', 'slot']);
 
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
@@ -267,7 +280,7 @@ class PengaturanController extends Controller
 
         TimKemenhaj::create($data);
 
-        return redirect()->route('admin.pengaturan.profil')
+        return redirect()->route('admin.profil.struktur')
             ->with('success', 'Anggota tim berhasil ditambahkan.');
     }
 
@@ -277,12 +290,12 @@ class PengaturanController extends Controller
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'urutan' => 'nullable|integer|min:0',
+            'baris' => 'required|integer|min:1|max:3',
+            'slot' => 'required|integer|min:1|max:4',
         ]);
 
         $tim = TimKemenhaj::findOrFail($id);
-        $data = $request->only(['nama', 'jabatan', 'urutan']);
-        $data['urutan'] = $data['urutan'] ?? 0;
+        $data = $request->only(['nama', 'jabatan', 'baris', 'slot']);
 
         if ($request->hasFile('foto')) {
             // Hapus foto lama jika ada
@@ -297,7 +310,7 @@ class PengaturanController extends Controller
 
         $tim->update($data);
 
-        return redirect()->route('admin.pengaturan.profil')
+        return redirect()->route('admin.profil.struktur')
             ->with('success', 'Anggota tim berhasil diperbarui.');
     }
 
@@ -312,7 +325,7 @@ class PengaturanController extends Controller
         
         $tim->delete();
 
-        return redirect()->route('admin.pengaturan.profil')
+        return redirect()->route('admin.profil.struktur')
             ->with('success', 'Anggota tim berhasil dihapus.');
     }
 }

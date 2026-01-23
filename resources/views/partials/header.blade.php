@@ -115,6 +115,10 @@
         padding-right: 24px;
         box-sizing: border-box;
     }
+    .dropdown-content {
+        margin-top: 0 !important;
+        z-index: 9999 !important;
+    }
     @media (max-width: 640px) {
         .header-container {
             padding-left: 16px;
