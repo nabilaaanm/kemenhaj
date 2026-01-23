@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\DataInformasiController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Admin\PenggunaController;
 use App\Http\Controllers\Admin\SlideshowController;
+use App\Http\Controllers\PageController;
 use App\Models\Slideshow;
 use App\Models\Posting;
 use App\Models\Regulation;
@@ -230,6 +231,7 @@ Route::post('/kemenhaj-admin-secure', [AuthController::class, 'login'])->name('l
 Route::get('/visi-misi', function () {
     return view('profil.visi-misi');
 });
+Route::get('/halaman/{slug}', [PageController::class, 'show'])->name('page.show');
 Route::get('/regulasi', [PublicRegulasiController::class, 'index'])->name('regulasi');
 Route::get('/layanan', [ServiceController::class, 'index'])->name('layanan');
 Route::get('/data-informasi', function () {
@@ -307,8 +309,12 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
     
     // Halaman - Admin, Editor
     Route::middleware(['role:admin,editor'])->prefix('halaman')->name('halaman.')->group(function () {
+        Route::post('/create', [HalamanController::class, 'store'])->name('store');
         Route::get('/create', [HalamanController::class, 'create'])->name('create');
         Route::get('/', [HalamanController::class, 'index'])->name('index');
+        Route::get('/{id}/edit', [HalamanController::class, 'edit'])->name('edit');
+        Route::post('/{id}/edit', [HalamanController::class, 'update'])->name('update');
+        Route::delete('/{id}', [HalamanController::class, 'destroy'])->name('destroy');
     });
     
     // Galeri - Admin, Editor

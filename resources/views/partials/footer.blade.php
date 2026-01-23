@@ -1,6 +1,6 @@
 <!-- ================= FOOTER ================= -->
-<footer class="footer-custom mt-12 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
-    <div class="container-fixed py-10">
+<footer class="footer-custom mt-12 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box; background-color: var(--color-primary);">
+    <div class="container-fixed py-10" style="max-width: 1280px; margin: 0 auto; width: 100%; padding-left: 24px; padding-right: 24px; box-sizing: border-box;">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             <!-- Column 1: Logo & Social Media -->
             <div>
