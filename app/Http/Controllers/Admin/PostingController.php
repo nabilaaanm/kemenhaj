@@ -104,7 +104,6 @@ class PostingController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'nullable|exists:posting_categories,id',
-            'excerpt' => 'nullable|string',
             'content' => 'nullable|string',
             'cover_image' => 'nullable|image|max:4096',
             'editor_name' => 'nullable|string|max:255',
@@ -130,7 +129,10 @@ class PostingController extends Controller
         }
 
         $data['slug'] = $slug;
-        $data['is_active'] = $request->boolean('is_active', true);
+        $userRole = \Illuminate\Support\Facades\Session::get('user.role', 'kontributor');
+        $data['is_active'] = $userRole === 'kontributor'
+            ? false
+            : $request->boolean('is_active', true);
 
         if ($request->hasFile('cover_image')) {
             $file = $request->file('cover_image');
@@ -176,7 +178,6 @@ class PostingController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'category_id' => 'nullable|exists:posting_categories,id',
-            'excerpt' => 'nullable|string',
             'content' => 'nullable|string',
             'cover_image' => 'nullable|image|max:4096',
             'editor_name' => 'nullable|string|max:255',

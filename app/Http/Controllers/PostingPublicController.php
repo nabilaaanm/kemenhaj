@@ -36,6 +36,11 @@ class PostingPublicController extends Controller
         return $this->listByCategory('berita', 'Berita', 'Berita Terkini');
     }
 
+    public function terbaru()
+    {
+        return $this->listByCategory(null, 'Berita Terkini', 'Semua kategori terbaru');
+    }
+
     public function siaranPers()
     {
         return $this->listByCategory('siaran-pers', 'Siaran Pers', 'Siaran Pers Resmi Kementerian Haji dan Umrah');

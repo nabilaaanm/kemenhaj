@@ -505,9 +505,11 @@
                     <a href="{{ route('admin.posting.index') }}" class="submenu-item {{ request()->routeIs('admin.posting.index') ? 'active' : '' }}">
                         <span>Lihat</span>
                     </a>
+                    @if(in_array($userRole, ['admin', 'editor']))
                     <a href="{{ route('admin.posting.category') }}" class="submenu-item {{ request()->routeIs('admin.posting.category') ? 'active' : '' }}">
                         <span>Kategori</span>
                     </a>
+                    @endif
                 </div>
 
                 @if(in_array($userRole, ['admin', 'editor']))
@@ -652,7 +654,7 @@
                 </div>
                 @endif
 
-                @if($userRole === 'admin')
+                @if(in_array($userRole, ['admin', 'editor']))
                 <!-- Pengaturan -->
                 <div class="menu-item has-submenu {{ request()->routeIs('admin.pengaturan.*') ? 'active' : '' }}" onclick="toggleSubmenu(this)">
                     <div style="display: flex; align-items: center; gap: 12px;">
@@ -668,38 +670,27 @@
                     <a href="{{ route('admin.pengaturan.umum') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.umum') ? 'active' : '' }}">
                         <span>Umum</span>
                     </a>
-                    <a href="{{ route('admin.pengaturan.modul') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.modul') ? 'active' : '' }}">
-                        <span>Modul</span>
-                    </a>
                     <a href="{{ route('admin.pengaturan.tampilan') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.tampilan') ? 'active' : '' }}">
                         <span>Tampilan</span>
                     </a>
                     <a href="{{ route('admin.pengaturan.slideshow') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.slideshow') ? 'active' : '' }}">
                         <span>Slideshow</span>
                     </a>
+                    @if($userRole === 'admin')
                     <a href="{{ route('admin.pengaturan.pengguna') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.pengguna') ? 'active' : '' }}">
                         <span>Pengguna</span>
                     </a>
+                    @endif
                 </div>
 
                 <!-- Panduan Pengguna -->
+                @endif
                 <a href="{{ route('admin.pengaturan.panduan') }}" class="menu-item {{ request()->routeIs('admin.pengaturan.panduan') ? 'active' : '' }}">
                     <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>
                     <span>Panduan Pengguna</span>
                 </a>
-                @endif
-                
-                <!-- Panduan Pengguna untuk Editor dan Kontributor -->
-                @if(in_array($userRole, ['editor', 'kontributor']))
-                <a href="{{ route('admin.pengaturan.panduan') }}" class="menu-item {{ request()->routeIs('admin.pengaturan.panduan') ? 'active' : '' }}">
-                    <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                    </svg>
-                    <span>Panduan Pengguna</span>
-                </a>
-                @endif
             </nav>
         </aside>
 

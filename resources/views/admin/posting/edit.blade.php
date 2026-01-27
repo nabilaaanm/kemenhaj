@@ -69,11 +69,6 @@
                        style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px;">
             </div>
             <div style="grid-column: span 2;">
-                <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Deskripsi Singkat</label>
-                <textarea name="excerpt" rows="3" class="js-rich-excerpt"
-                          style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px;">{!! old('excerpt', $post->excerpt) !!}</textarea>
-            </div>
-            <div style="grid-column: span 2;">
                 <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Isi Lengkap</label>
                 <textarea name="content" rows="8" class="js-rich-content"
                           style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px;">{!! old('content', $post->content) !!}</textarea>
@@ -118,10 +113,12 @@
                 <input type="text" name="source" value="{{ old('source', $post->source) }}"
                        style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px;">
             </div>
-            <div style="display: flex; align-items: center; gap: 8px; margin-top: 28px;">
-                <input type="checkbox" name="is_active" value="1" {{ old('is_active', $post->is_active) ? 'checked' : '' }}>
-                <label style="font-weight: 600; color: #374151;">Tampilkan di publik</label>
-            </div>
+            @if(in_array(session('user.role', 'kontributor'), ['admin', 'editor']))
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 28px;">
+                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', $post->is_active) ? 'checked' : '' }}>
+                    <label style="font-weight: 600; color: #374151;">Tampilkan di publik</label>
+                </div>
+            @endif
         </div>
 
         <div style="margin-top: 24px; display: flex; gap: 12px;">
@@ -150,12 +147,6 @@
         convert_urls: true,
         content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; }'
     };
-
-    tinymce.init({
-        ...baseTinyConfig,
-        selector: 'textarea.js-rich-excerpt',
-        height: 220
-    });
 
     tinymce.init({
         ...baseTinyConfig,

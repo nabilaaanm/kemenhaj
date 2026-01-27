@@ -65,6 +65,13 @@
         .news-footer { margin-top: auto; }
         .news-title { font-weight: 700; color: #1f2937; line-height: 1.4; }
         .news-excerpt { color: #6b7280; }
+        .news-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
         .news-badge {
             display: inline-flex;
             align-items: center;
@@ -77,6 +84,23 @@
             background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary-light));
         }
         .news-meta { font-size: 12px; color: #9ca3af; }
+        .view-meta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #6b7280;
+            background: var(--color-primary-bg);
+            border: 1px solid var(--color-primary-light);
+            padding: 2px 8px;
+            border-radius: 999px;
+            width: fit-content;
+        }
+        .view-meta svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--color-primary);
+        }
         .dropdown-menu { position: relative; }
         .dropdown-toggle { cursor: pointer; background: none; border: none; padding: 0; font-size: inherit; font-weight: inherit; color: inherit; }
         .dropdown-toggle svg { transition: transform 0.2s; }
@@ -153,14 +177,32 @@
                     <span class="news-badge mb-2">
                         {{ $post->category?->name ?? $title }}
                     </span>
-                    <p class="news-meta mb-2">
-                        {{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}
-                    </p>
+                    <div class="news-meta-row mb-2">
+                        <p class="news-meta">
+                            {{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}
+                        </p>
+                        <p class="view-meta">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/>
+                                <circle cx="12" cy="12" r="3" stroke-width="2"></circle>
+                            </svg>
+                            {{ number_format($post->views ?? 0) }}x dilihat
+                        </p>
+                    </div>
                     <h3 class="news-title text-base mb-3 line-clamp-2">
                         {{ $post->title }}
                     </h3>
+                    @php
+                        $rawContent = $post->content ?? '';
+                        $excerptText = '';
+                        if (preg_match('/<p[^>]*>(.*?)<\/p>/si', $rawContent, $match)) {
+                            $excerptText = trim(strip_tags($match[1]));
+                        } else {
+                            $excerptText = trim(strip_tags($rawContent));
+                        }
+                    @endphp
                     <p class="news-excerpt text-sm mb-4 line-clamp-3">
-                        {{ \Illuminate\Support\Str::limit(strip_tags($post->excerpt ?: $post->content), 140) }}
+                        {{ \Illuminate\Support\Str::limit($excerptText, 140) }}
                     </p>
                     <div class="flex items-center justify-between news-footer">
                         <span class="text-xs" style="color: var(--color-primary);">{{ $post->location ?: '#' . ($post->category?->slug ?? 'news') }}</span>

@@ -273,6 +273,7 @@ Route::get('/lk-pih', function () {
     return view('lk-pih', compact('lkDocuments', 'pihDocuments'));
 });
 Route::get('/berita', [PostingPublicController::class, 'berita'])->name('berita');
+Route::get('/berita-terkini', [PostingPublicController::class, 'terbaru'])->name('berita.terkini');
 Route::get('/pengumuman', [PostingPublicController::class, 'pengumuman'])->name('pengumuman');
 Route::get('/siaran-pers', [PostingPublicController::class, 'siaranPers'])->name('siaran-pers');
 Route::get('/klarifikasi-hoax', [PostingPublicController::class, 'klarifikasiHoax'])->name('klarifikasi-hoax');
@@ -297,6 +298,10 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/create', [PostingController::class, 'create'])->name('create');
         Route::post('/create', [PostingController::class, 'store'])->name('store');
         Route::get('/', [PostingController::class, 'index'])->name('index');
+    });
+
+    // Posting - Admin & Editor only
+    Route::middleware(['role:admin,editor'])->prefix('posting')->name('posting.')->group(function () {
         Route::get('/{id}/edit', [PostingController::class, 'edit'])->name('edit');
         Route::put('/{id}/edit', [PostingController::class, 'update'])->name('update');
         Route::delete('/{id}', [PostingController::class, 'destroy'])->name('destroy');
@@ -419,11 +424,10 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::delete('/tim/{id}', [PengaturanController::class, 'timDestroy'])->name('tim.destroy');
     });
 
-    // Pengaturan - Admin Only
-    Route::middleware(['role:admin'])->prefix('pengaturan')->name('pengaturan.')->group(function () {
+    // Pengaturan - Admin & Editor
+    Route::middleware(['role:admin,editor'])->prefix('pengaturan')->name('pengaturan.')->group(function () {
         Route::get('/umum', [PengaturanController::class, 'umum'])->name('umum');
         Route::post('/umum', [PengaturanController::class, 'updateUmum'])->name('umum.update');
-        Route::get('/modul', [PengaturanController::class, 'modul'])->name('modul');
         Route::get('/tampilan', [PengaturanController::class, 'tampilan'])->name('tampilan');
         Route::post('/tampilan', [PengaturanController::class, 'updateTampilan'])->name('tampilan.update');
         Route::get('/slideshow', [SlideshowController::class, 'index'])->name('slideshow');
@@ -432,8 +436,10 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/slideshow/{id}/edit', [SlideshowController::class, 'edit'])->name('slideshow.edit');
         Route::put('/slideshow/{id}', [SlideshowController::class, 'update'])->name('slideshow.update');
         Route::delete('/slideshow/{id}', [SlideshowController::class, 'destroy'])->name('slideshow.destroy');
-        
-        // Manajemen Pengguna - Admin Only
+    });
+
+    // Pengaturan - Admin Only (Pengguna)
+    Route::middleware(['role:admin'])->prefix('pengaturan')->name('pengaturan.')->group(function () {
         Route::get('/pengguna', [PenggunaController::class, 'index'])->name('pengguna');
         Route::get('/pengguna/create', [PenggunaController::class, 'create'])->name('pengguna.create');
         Route::post('/pengguna', [PenggunaController::class, 'store'])->name('pengguna.store');

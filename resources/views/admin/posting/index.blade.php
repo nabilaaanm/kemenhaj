@@ -51,6 +51,10 @@
         </a>
     </div>
 
+    @php
+        $isEditor = in_array(session('user.role', 'kontributor'), ['admin', 'editor']);
+    @endphp
+
     @if($posts->isEmpty())
         <div style="padding: 14px 16px; border: 1px dashed #d1d5db; border-radius: 10px; color: #6b7280;">
             Belum ada posting.
@@ -64,7 +68,9 @@
                         <th style="padding: 10px;">Kategori</th>
                         <th style="padding: 10px;">Tanggal</th>
                         <th style="padding: 10px;">Status</th>
-                        <th style="padding: 10px; text-align: right;">Aksi</th>
+                        @if($isEditor)
+                            <th style="padding: 10px; text-align: center;">Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -83,20 +89,22 @@
                                     <span style="padding: 4px 10px; background: #fee2e2; color: #991b1b; border-radius: 999px; font-size: 12px; font-weight: 600;">Nonaktif</span>
                                 @endif
                             </td>
-                            <td style="padding: 10px; text-align: right;">
-                                <div style="display: inline-flex; gap: 8px; align-items: center; flex-wrap: nowrap; justify-content: flex-end;">
-                                    <a href="{{ route('admin.posting.edit', $post->id) }}" style="padding: 6px 12px; min-width: 64px; text-align: center; background: #3b82f6; color: white; border-radius: 6px; text-decoration: none; white-space: nowrap;">
-                                        Edit
-                                    </a>
-                                    <form action="{{ route('admin.posting.destroy', $post->id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Hapus posting ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" style="padding: 6px 12px; min-width: 64px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap;">
-                                        Hapus
-                                    </button>
-                                    </form>
-                                </div>
-                            </td>
+                            @if($isEditor)
+                                <td style="padding: 10px; text-align: center;">
+                                    <div style="display: inline-flex; gap: 8px; align-items: center; flex-wrap: nowrap; justify-content: center;">
+                                        <a href="{{ route('admin.posting.edit', $post->id) }}" style="padding: 6px 12px; min-width: 64px; text-align: center; background: #3b82f6; color: white; border-radius: 6px; text-decoration: none; white-space: nowrap;">
+                                            Edit
+                                        </a>
+                                        <form action="{{ route('admin.posting.destroy', $post->id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Hapus posting ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" style="padding: 6px 12px; min-width: 64px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap;">
+                                            Hapus
+                                        </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>

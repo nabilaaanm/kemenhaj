@@ -7,7 +7,46 @@
     <link rel="apple-touch-icon" href="{{ asset('image/lambang.png') }}">
     <title>Login - Kementerian Haji dan Umrah Kota Cirebon</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @php
+        use Illuminate\Support\Facades\Schema;
+        $primaryColor = '#ECB176';
+        if (Schema::hasTable('site_appearances')) {
+            $appearance = \App\Models\SiteAppearance::first();
+            if ($appearance?->primary_color) {
+                $primaryColor = $appearance->primary_color;
+            }
+        }
+        $normalizeHex = function ($hex) {
+            $hex = trim($hex);
+            if ($hex === '') {
+                return '#ECB176';
+            }
+            if ($hex[0] !== '#') {
+                $hex = '#' . $hex;
+            }
+            return preg_match('/^#([A-Fa-f0-9]{6})$/', $hex) ? strtoupper($hex) : '#ECB176';
+        };
+        $adjust = function ($hex, $steps) use ($normalizeHex) {
+            $hex = $normalizeHex($hex);
+            $steps = max(-255, min(255, $steps));
+            $hex = str_replace('#', '', $hex);
+            $r = max(0, min(255, hexdec(substr($hex, 0, 2)) + $steps));
+            $g = max(0, min(255, hexdec(substr($hex, 2, 2)) + $steps));
+            $b = max(0, min(255, hexdec(substr($hex, 4, 2)) + $steps));
+            return sprintf('#%02X%02X%02X', $r, $g, $b);
+        };
+        $primaryColor = $normalizeHex($primaryColor);
+        $primaryDark = $adjust($primaryColor, -25);
+        $primaryLight = $adjust($primaryColor, 25);
+        $primaryBg = $adjust($primaryColor, 60);
+    @endphp
     <style>
+        :root {
+            --color-primary: {{ $primaryColor }};
+            --color-primary-dark: {{ $primaryDark }};
+            --color-primary-light: {{ $primaryLight }};
+            --color-primary-bg: {{ $primaryBg }};
+        }
         * {
             box-sizing: border-box;
             margin: 0;
@@ -251,9 +290,9 @@
         .btn-signin {
             width: 100%;
             padding: 18px 24px;
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 50%, var(--color-primary) 100%);
+            background: linear-gradient(135deg, #ECB176 0%, #D99D5F 50%, #ECB176 100%);
             background-size: 200% 200%;
-            color: white;
+            color: #ffffff;
             border: none;
             border-radius: 18px;
             font-size: 16px;

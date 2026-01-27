@@ -219,12 +219,30 @@
                             <span class="news-badge mb-2">
                                 {{ $post->category?->name ?? 'Berita' }}
                         </span>
-                            <p class="news-meta mb-1">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                            <div class="news-meta-row mb-1">
+                                <p class="news-meta">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                                <p class="view-meta">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/>
+                                        <circle cx="12" cy="12" r="3" stroke-width="2"></circle>
+                                    </svg>
+                                    {{ number_format($post->views ?? 0) }}x dilihat
+                                </p>
+                            </div>
                             <h3 class="news-title search-title text-sm mb-2">
                                 {{ $post->title }}
                         </h3>
+                            @php
+                                $rawContent = $post->content ?? '';
+                                $excerptText = '';
+                                if (preg_match('/<p[^>]*>(.*?)<\/p>/si', $rawContent, $match)) {
+                                    $excerptText = trim(strip_tags($match[1]));
+                                } else {
+                                    $excerptText = trim(strip_tags($rawContent));
+                                }
+                            @endphp
                             <p class="news-excerpt text-xs">
-                                {{ strip_tags($post->excerpt ?: $post->content) }}
+                                {{ \Illuminate\Support\Str::limit($excerptText, 160) }}
                             </p>
                     <div class="mt-3 news-footer">
                                 <a href="{{ route('posting.show', $post->slug) }}" class="btn-readmore">
@@ -259,7 +277,16 @@
                             <p class="font-medium leading-snug search-title">
                                     {{ $post->title }}
                                 </p>
+                            <div class="news-meta-row">
                                 <p class="text-xs text-gray-500">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                                <p class="view-meta">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/>
+                                        <circle cx="12" cy="12" r="3" stroke-width="2"></circle>
+                                    </svg>
+                                    {{ number_format($post->views ?? 0) }}x dilihat
+                                </p>
+                            </div>
                     <div class="mt-2 news-footer">
                                     <a href="{{ route('posting.show', $post->slug) }}" class="btn-readmore">
                                         Baca Selengkapnya
@@ -290,7 +317,16 @@
                             <p class="font-medium leading-snug search-title">
                                     {{ $post->title }}
                                 </p>
-                                <p class="text-xs text-gray-500">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                                <div class="news-meta-row">
+                                    <p class="text-xs text-gray-500">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                                    <p class="view-meta">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/>
+                                            <circle cx="12" cy="12" r="3" stroke-width="2"></circle>
+                                        </svg>
+                                        {{ number_format($post->views ?? 0) }}x dilihat
+                                    </p>
+                                </div>
                                 <div class="mt-2 news-footer">
                                     <a href="{{ route('posting.show', $post->slug) }}" class="btn-readmore">
                                         Baca Selengkapnya
@@ -320,7 +356,16 @@
                                 <p class="font-medium leading-snug search-title">
                                     {{ $post->title }}
                                 </p>
-                                <p class="text-xs text-gray-500">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                                <div class="news-meta-row">
+                                    <p class="text-xs text-gray-500">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                                    <p class="view-meta">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/>
+                                            <circle cx="12" cy="12" r="3" stroke-width="2"></circle>
+                                        </svg>
+                                        {{ number_format($post->views ?? 0) }}x dilihat
+                                    </p>
+                                </div>
                                 <div class="mt-2 news-footer">
                                     <a href="{{ route('posting.show', $post->slug) }}" class="btn-readmore">
                                         Baca Selengkapnya
@@ -348,7 +393,7 @@
 <section class="container-fixed py-10 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold" data-i18n="content.latestNews">Berita Terkini</h2>
-        <a href="{{ route('berita') }}" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
+        <a href="{{ route('berita.terkini') }}" class="btn-seeall" data-i18n="content.seeAll">
             Lihat Semua →
         </a>
     </div>
@@ -360,12 +405,30 @@
                     <span class="news-badge mb-2">
                         {{ $post->category?->name ?? 'Berita' }}
                 </span>
-                    <p class="news-meta mb-2">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                    <div class="news-meta-row mb-2">
+                        <p class="news-meta">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                        <p class="view-meta">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/>
+                                <circle cx="12" cy="12" r="3" stroke-width="2"></circle>
+                            </svg>
+                            {{ number_format($post->views ?? 0) }}x
+                        </p>
+                    </div>
                     <h3 class="news-title search-title text-base mb-2 line-clamp-2">
                         {{ $post->title }}
                 </h3>
+                    @php
+                        $rawContent = $post->content ?? '';
+                        $excerptText = '';
+                        if (preg_match('/<p[^>]*>(.*?)<\/p>/si', $rawContent, $match)) {
+                            $excerptText = trim(strip_tags($match[1]));
+                        } else {
+                            $excerptText = trim(strip_tags($rawContent));
+                        }
+                    @endphp
                     <p class="news-excerpt text-sm line-clamp-3">
-                        {{ \Illuminate\Support\Str::limit(strip_tags($post->excerpt ?: $post->content), 120) }}
+                        {{ \Illuminate\Support\Str::limit($excerptText, 120) }}
                     </p>
                     <div class="mt-3 news-footer">
                         <a href="{{ route('posting.show', $post->slug) }}" class="btn-readmore">
@@ -389,7 +452,7 @@
 <section class="container-fixed py-10 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold" data-i18n="content.video">Video</h2>
-        <a href="{{ route('galeri.video') }}" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
+        <a href="{{ route('galeri.video') }}" class="btn-seeall" data-i18n="content.seeAll">
             Lihat Semua →
         </a>
     </div>
@@ -443,7 +506,7 @@
 <section class="container-fixed py-10 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold" data-i18n="content.infographic">Infografis</h2>
-        <a href="{{ route('galeri.infografis') }}" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
+        <a href="{{ route('galeri.infografis') }}" class="btn-seeall" data-i18n="content.seeAll">
             Lihat Semua →
         </a>
     </div>
@@ -483,7 +546,7 @@
 <section class="container-fixed py-10 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold" data-i18n="content.photos">Foto</h2>
-        <a href="{{ route('galeri.foto') }}" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
+        <a href="{{ route('galeri.foto') }}" class="btn-seeall" data-i18n="content.seeAll">
             Lihat Semua →
         </a>
     </div>
@@ -524,7 +587,7 @@
 <section class="container-fixed py-10 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold" data-i18n="content.regulation">Regulasi</h2>
-        <a href="{{ route('regulasi') }}" class="text-custom-primary font-semibold hover:underline flex items-center gap-1" data-i18n="content.seeAll">
+        <a href="{{ route('regulasi') }}" class="btn-seeall" data-i18n="content.seeAll">
             Lihat Semua →
         </a>
     </div>
@@ -839,6 +902,30 @@
             padding: 6px 10px;
         }
     }
+    .btn-seeall {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #ffffff;
+        background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary-light));
+        box-shadow: 0 8px 16px rgba(17, 24, 39, 0.12);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+    .btn-seeall:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(17, 24, 39, 0.18);
+        background: var(--color-primary);
+    }
+    @media (max-width: 640px) {
+        .btn-seeall {
+            font-size: 12px;
+            padding: 7px 14px;
+        }
+    }
 
     /* News cards */
     .news-card {
@@ -899,11 +986,36 @@
         font-size: 12px;
         color: #9ca3af;
     }
+    .news-meta-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .view-meta {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        color: var(--color-primary-dark);
+        background: #ffffff;
+        border: 1px solid var(--color-primary);
+        padding: 2px 8px;
+        border-radius: 999px;
+        width: fit-content;
+        box-shadow: 0 6px 14px rgba(17, 24, 39, 0.08);
+    }
+    .view-meta svg {
+        width: 14px;
+        height: 14px;
+        stroke: var(--color-primary-dark);
+    }
 
     /* Sidebar cards (Pengumuman & Klarifikasi Hoax) */
     .sidebar-section .bg-white .flex {
         border-bottom: none !important;
-        background: var(--color-primary-bg);
+        background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary-bg));
         border: 1px solid var(--color-primary-light);
         border-radius: 14px;
         padding: 10px 12px;
@@ -913,7 +1025,7 @@
     .sidebar-section .bg-white .flex:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 20px rgba(17, 24, 39, 0.08);
-        background: linear-gradient(135deg, var(--color-primary-bg), #ffffff);
+        background: var(--color-primary-bg);
         border-color: var(--color-primary);
     }
     .sidebar-section .bg-white img {

@@ -10,7 +10,6 @@ class Posting extends Model
         'category_id',
         'title',
         'slug',
-        'excerpt',
         'content',
         'cover_image',
         'editor_name',
