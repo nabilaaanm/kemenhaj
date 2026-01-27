@@ -243,11 +243,13 @@
         padding: 8px 16px;
         color: #374151;
         text-decoration: none;
-        transition: background-color 0.2s;
+        transition: all 0.2s;
     }
     
     .dropdown-item:hover {
-        background-color: #f3f4f6;
+        background-color: var(--color-primary-bg);
+        color: var(--color-primary);
+        padding-left: 24px;
     }
     
     

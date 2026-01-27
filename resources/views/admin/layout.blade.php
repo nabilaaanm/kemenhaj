@@ -643,6 +643,9 @@
                     <a href="{{ route('admin.profil.struktur') }}" class="submenu-item {{ request()->routeIs('admin.profil.struktur') ? 'active' : '' }}">
                         <span>Struktur & Tim Kemenhaj</span>
                     </a>
+                    <a href="{{ route('admin.profil.sejarah') }}" class="submenu-item {{ request()->routeIs('admin.profil.sejarah') ? 'active' : '' }}">
+                        <span>Sejarah</span>
+                    </a>
                     <a href="{{ route('admin.profil.kontak') }}" class="submenu-item {{ request()->routeIs('admin.profil.kontak') ? 'active' : '' }}">
                         <span>Kontak</span>
                     </a>

@@ -24,6 +24,9 @@
             position: relative;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         .container-fixed {
             max-width: 1280px;
@@ -52,6 +55,9 @@
             max-width: 100%;
             box-sizing: border-box;
         }
+        main {
+            flex: 1;
+        }
         
         /* Prevent text scaling on zoom */
         h1, h2, h3, h4, h5, h6, p, span, a, button {
@@ -68,126 +74,78 @@
 
 <!-- ================= MAIN CONTENT ================= -->
 <main class="container-fixed py-12 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
+    @php
+        $rawSejarah = $profil?->sejarah_konten ?? '';
+        $decodedSejarah = json_decode($rawSejarah, true);
+        $sejarahCards = is_array($decodedSejarah) ? $decodedSejarah : [];
+        $hasCustomSejarah = !empty($profil?->sejarah_judul)
+            || !empty($profil?->sejarah_subjudul)
+            || !empty($rawSejarah);
+    @endphp
     
     <!-- Title Section -->
     <div class="mb-12 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 page-title" style="color: #374151;" data-i18n="history.title">
-            Sejarah Kementerian Haji dan Umrah Kota Cirebon
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 page-title" style="color: #374151;">
+            {{ $profil?->sejarah_judul ?? 'Sejarah Kementerian Haji dan Umrah Kota Cirebon' }}
         </h1>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto" data-i18n="history.subtitle">
-            Perjalanan panjang dalam melayani jemaah haji dan umrah di Kota Cirebon
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+            {{ $profil?->sejarah_subjudul ?? 'Perjalanan panjang dalam melayani jemaah haji dan umrah di Kota Cirebon' }}
         </p>
     </div>
 
-    <!-- Timeline Section -->
-    <div class="max-w-4xl mx-auto">
-        
-        <!-- Timeline Item 1 -->
-        <div class="mb-12 relative">
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="md:w-1/3 text-right md:pr-8">
-                    <div class="text-2xl font-bold mb-2" style="color: var(--color-primary);" data-i18n="history.year1">Awal Mula</div>
-                    <div class="text-sm text-gray-500" data-i18n="history.period1">Periode Awal</div>
-                </div>
-                <div class="md:w-2/3 relative">
-                    <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: var(--color-primary);"></div>
-                    <div class="ml-6 md:ml-8">
-                        <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-4 border-white" style="background-color: var(--color-primary); margin-left: -8px;"></div>
-                        <div class="bg-white rounded-xl shadow-lg p-6">
-                            <h3 class="text-xl font-bold mb-3" style="color: #374151;" data-i18n="history.event1.title">Pembentukan Kantor Perwakilan</h3>
-                            <p class="text-gray-700 leading-relaxed" data-i18n="history.event1.description">
-                                Kementerian Haji dan Umrah Kota Cirebon didirikan sebagai perwakilan resmi untuk melayani jemaah haji dan umrah di wilayah Kota Cirebon dan sekitarnya. Pada periode awal ini, fokus utama adalah membangun infrastruktur dasar dan sistem pelayanan kepada jemaah.
-                            </p>
+    @if($hasCustomSejarah)
+        @if(!empty($sejarahCards))
+            <div class="max-w-4xl mx-auto">
+                @foreach($sejarahCards as $card)
+                    @php
+                        $emptyCard = empty($card['label']) && empty($card['period']) && empty($card['title']) && empty($card['description']);
+                    @endphp
+                    @continue($emptyCard)
+                    <div class="mb-12 relative">
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="md:w-1/3 text-right md:pr-8">
+                                <div class="text-2xl font-bold mb-2" style="color: var(--color-primary);">
+                                    {{ $card['label'] ?? '' }}
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    {{ $card['period'] ?? '' }}
+                                </div>
+                            </div>
+                            <div class="md:w-2/3 relative">
+                                <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: var(--color-primary);"></div>
+                                <div class="ml-6 md:ml-8">
+                                    <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-4 border-white" style="background-color: var(--color-primary); margin-left: -8px;"></div>
+                                    <div class="bg-white rounded-xl shadow-lg p-6">
+                                        <h3 class="text-xl font-bold mb-3" style="color: #374151;">
+                                            {{ $card['title'] ?? '' }}
+                                        </h3>
+                                        <p class="text-gray-700 leading-relaxed">
+                                            {!! nl2br(e($card['description'] ?? '')) !!}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endforeach
             </div>
-        </div>
-
-        <!-- Timeline Item 2 -->
-        <div class="mb-12 relative">
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="md:w-1/3 text-right md:pr-8">
-                    <div class="text-2xl font-bold mb-2" style="color: var(--color-primary);" data-i18n="history.year2">Pengembangan</div>
-                    <div class="text-sm text-gray-500" data-i18n="history.period2">Era Modernisasi</div>
-                </div>
-                <div class="md:w-2/3 relative">
-                    <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: var(--color-primary);"></div>
-                    <div class="ml-6 md:ml-8">
-                        <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-4 border-white" style="background-color: var(--color-primary); margin-left: -8px;"></div>
-                        <div class="bg-white rounded-xl shadow-lg p-6">
-                            <h3 class="text-xl font-bold mb-3" style="color: #374151;" data-i18n="history.event2.title">Modernisasi Sistem Pelayanan</h3>
-                            <p class="text-gray-700 leading-relaxed" data-i18n="history.event2.description">
-                                Kemenhaj Kota Cirebon mulai mengadopsi teknologi informasi dalam sistem pelayanan haji dan umrah. Sistem komputerisasi diperkenalkan untuk memudahkan pendaftaran, pembayaran, dan pelacakan dokumen jemaah. Hal ini meningkatkan efisiensi dan transparansi pelayanan.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Timeline Item 3 -->
-        <div class="mb-12 relative">
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="md:w-1/3 text-right md:pr-8">
-                    <div class="text-2xl font-bold mb-2" style="color: var(--color-primary);" data-i18n="history.year3">Ekspansi</div>
-                    <div class="text-sm text-gray-500" data-i18n="history.period3">Perluasan Layanan</div>
-                </div>
-                <div class="md:w-2/3 relative">
-                    <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: var(--color-primary);"></div>
-                    <div class="ml-6 md:ml-8">
-                        <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-4 border-white" style="background-color: var(--color-primary); margin-left: -8px;"></div>
-                        <div class="bg-white rounded-xl shadow-lg p-6">
-                            <h3 class="text-xl font-bold mb-3" style="color: #374151;" data-i18n="history.event3.title">Perluasan Jangkauan Pelayanan</h3>
-                            <p class="text-gray-700 leading-relaxed" data-i18n="history.event3.description">
-                                Kemenhaj Kota Cirebon memperluas jangkauan pelayanannya tidak hanya untuk Kota Cirebon, tetapi juga melayani jemaah dari kabupaten-kabupaten sekitarnya. Program pembinaan dan bimbingan jemaah haji ditingkatkan untuk memastikan persiapan yang lebih baik sebelum keberangkatan.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Timeline Item 4 -->
-        <div class="mb-12 relative">
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="md:w-1/3 text-right md:pr-8">
-                    <div class="text-2xl font-bold mb-2" style="color: var(--color-primary);" data-i18n="history.year4">Saat Ini</div>
-                    <div class="text-sm text-gray-500" data-i18n="history.period4">Era Digital</div>
-                </div>
-                <div class="md:w-2/3 relative">
-                    <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: var(--color-primary);"></div>
-                    <div class="ml-6 md:ml-8">
-                        <div class="absolute left-0 top-2 w-4 h-4 rounded-full border-4 border-white" style="background-color: var(--color-primary); margin-left: -8px;"></div>
-                        <div class="bg-white rounded-xl shadow-lg p-6">
-                            <h3 class="text-xl font-bold mb-3" style="color: #374151;" data-i18n="history.event4.title">Transformasi Digital</h3>
-                            <p class="text-gray-700 leading-relaxed" data-i18n="history.event4.description">
-                                Kemenhaj Kota Cirebon terus berinovasi dengan mengimplementasikan sistem digital yang lebih canggih. Pelayanan online, aplikasi mobile, dan sistem terintegrasi memudahkan jemaah dalam mengakses informasi dan layanan. Komitmen untuk memberikan pelayanan terbaik dengan standar internasional terus dipertahankan dan ditingkatkan.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Vision Statement -->
-    <div class="mt-16 mb-8">
-        <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12 text-center">
+        @else
             <div class="max-w-3xl mx-auto">
-                <div class="mb-6">
-                    <svg class="w-16 h-16 mx-auto" style="color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
-                    </svg>
+                <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+                    <div class="prose max-w-none text-gray-700 leading-relaxed">
+                        {!! nl2br(e($rawSejarah)) !!}
+                    </div>
                 </div>
-                <h2 class="text-3xl font-bold mb-6" style="color: #374151;" data-i18n="history.commitment.title">Komitmen Kami</h2>
-                <p class="text-lg text-gray-700 leading-relaxed" data-i18n="history.commitment.description">
-                    Kementerian Haji dan Umrah Kota Cirebon berkomitmen untuk terus memberikan pelayanan terbaik kepada jemaah haji dan umrah dengan mengedepankan profesionalitas, transparansi, dan akuntabilitas. Kami akan terus berinovasi dan berkembang untuk memastikan setiap jemaah mendapatkan pengalaman ibadah yang bermakna dan memuaskan.
-                </p>
+            </div>
+        @endif
+    @else
+        <div class="max-w-3xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-lg p-10 text-center">
+                <div class="text-2xl font-bold mb-2" style="color: var(--color-primary);">Coming Soon</div>
+                <p class="text-gray-600">Sejarah belum tersedia saat ini.</p>
             </div>
         </div>
-    </div>
+    @endif
 
 </main>
 
@@ -269,11 +227,13 @@
         padding: 8px 16px;
         color: #374151;
         text-decoration: none;
-        transition: background-color 0.2s;
+        transition: all 0.2s;
     }
     
     .dropdown-item:hover {
-        background-color: #f3f4f6;
+        background-color: var(--color-primary-bg);
+        color: var(--color-primary);
+        padding-left: 24px;
     }
     
     

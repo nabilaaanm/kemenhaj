@@ -157,12 +157,24 @@
         padding-right: 24px;
         box-sizing: border-box;
     }
+    .footer-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        width: 100%;
+        padding-left: 24px;
+        padding-right: 24px;
+        box-sizing: border-box;
+    }
     .dropdown-content {
         margin-top: 0 !important;
         z-index: 9999 !important;
     }
     @media (max-width: 640px) {
         .header-container {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        .footer-container {
             padding-left: 16px;
             padding-right: 16px;
         }

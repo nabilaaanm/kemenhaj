@@ -98,6 +98,12 @@ class PengaturanController extends Controller
         return view('admin.profil.kontak', compact('profil'));
     }
 
+    public function profilSejarah()
+    {
+        $profil = Profil::first();
+        return view('admin.profil.sejarah', compact('profil'));
+    }
+
     public function updateProfil(Request $request)
     {
         $this->ensureProfilColumns();
@@ -106,6 +112,14 @@ class PengaturanController extends Controller
             'struktur_organisasi' => 'nullable|string',
             'struktur_subjudul' => 'nullable|string|max:255',
             'struktur_gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'sejarah_judul' => 'nullable|string|max:255',
+            'sejarah_subjudul' => 'nullable|string|max:255',
+            'sejarah_konten' => 'nullable|string',
+            'sejarah_cards' => 'nullable|array',
+            'sejarah_cards.*.label' => 'nullable|string|max:255',
+            'sejarah_cards.*.period' => 'nullable|string|max:255',
+            'sejarah_cards.*.title' => 'nullable|string|max:255',
+            'sejarah_cards.*.description' => 'nullable|string',
             'alamat' => 'nullable|string|max:255',
             'alamat_keterangan' => 'nullable|string|max:255',
             'telepon' => 'nullable|string|max:50',
@@ -126,6 +140,9 @@ class PengaturanController extends Controller
         $data = $request->only([
             'struktur_organisasi',
             'struktur_subjudul',
+            'sejarah_judul',
+            'sejarah_subjudul',
+            'sejarah_konten',
             'alamat',
             'alamat_keterangan',
             'telepon',
@@ -141,6 +158,30 @@ class PengaturanController extends Controller
             'twitter',
             'youtube',
         ]);
+
+        $cards = collect($request->input('sejarah_cards', []))
+            ->map(function ($card) {
+                return [
+                    'label' => trim((string) ($card['label'] ?? '')),
+                    'period' => trim((string) ($card['period'] ?? '')),
+                    'title' => trim((string) ($card['title'] ?? '')),
+                    'description' => trim((string) ($card['description'] ?? '')),
+                ];
+            })
+            ->filter(function ($card) {
+                return $card['label'] !== ''
+                    || $card['period'] !== ''
+                    || $card['title'] !== ''
+                    || $card['description'] !== '';
+            })
+            ->values()
+            ->all();
+
+        if (!empty($cards)) {
+            $data['sejarah_konten'] = json_encode($cards, JSON_UNESCAPED_UNICODE);
+        } else {
+            $data['sejarah_konten'] = null;
+        }
 
         if ($request->boolean('hapus_struktur_gambar') && !$request->hasFile('struktur_gambar')) {
             if ($profil && $profil->struktur_gambar) {
@@ -191,6 +232,9 @@ class PengaturanController extends Controller
         $required = [
             'struktur_subjudul',
             'struktur_gambar',
+            'sejarah_judul',
+            'sejarah_subjudul',
+            'sejarah_konten',
             'alamat_keterangan',
             'telepon_alt',
             'maps_url',
@@ -213,6 +257,15 @@ class PengaturanController extends Controller
             }
             if (in_array('struktur_gambar', $missing, true)) {
                 $table->string('struktur_gambar')->nullable()->after('struktur_subjudul');
+            }
+            if (in_array('sejarah_judul', $missing, true)) {
+                $table->string('sejarah_judul')->nullable()->after('struktur_gambar');
+            }
+            if (in_array('sejarah_subjudul', $missing, true)) {
+                $table->string('sejarah_subjudul')->nullable()->after('sejarah_judul');
+            }
+            if (in_array('sejarah_konten', $missing, true)) {
+                $table->text('sejarah_konten')->nullable()->after('sejarah_subjudul');
             }
             if (in_array('alamat_keterangan', $missing, true)) {
                 $table->string('alamat_keterangan')->nullable()->after('alamat');

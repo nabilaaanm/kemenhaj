@@ -8,8 +8,57 @@
     <title>{{ $page->title }} - Kementerian Haji dan Umrah Kota Cirebon</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        * { box-sizing: border-box; }
-        .container-fixed { max-width: 1280px; margin: 0 auto; width: 100%; padding: 0 24px; }
+        * {
+            box-sizing: border-box;
+        }
+        html {
+            overflow-x: hidden;
+            width: 100%;
+            font-size: 16px;
+        }
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            min-width: 320px;
+            max-width: 100vw;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+        .container-fixed {
+            max-width: 1280px;
+            margin: 0 auto;
+            width: 100%;
+            padding-left: 24px;
+            padding-right: 24px;
+            box-sizing: border-box;
+        }
+        @media (max-width: 640px) {
+            .container-fixed {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+
+        /* Prevent zoom layout shift */
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Fixed dimensions for all containers */
+        header, main, section, footer {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Prevent text scaling on zoom */
+        h1, h2, h3, h4, h5, h6, p, span, a, button {
+            text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+        }
         .hover-custom { transition: color 0.2s; }
         .hover-custom:hover { color: var(--color-primary); }
         .focus-custom:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 1px var(--color-primary); }

@@ -279,9 +279,7 @@ Route::get('/klarifikasi-hoax', [PostingPublicController::class, 'klarifikasiHoa
 Route::get('/posting/{slug}', [PostingPublicController::class, 'show'])->name('posting.show');
 Route::get('/kontak', [ProfilController::class, 'kontak'])->name('kontak');
 Route::get('/struktur-organisasi', [ProfilController::class, 'strukturOrganisasi'])->name('struktur-organisasi');
-Route::get('/sejarah', function () {
-    return view('profil.sejarah');
-});
+Route::get('/sejarah', [ProfilController::class, 'sejarah'])->name('sejarah');
 Route::get('/foto', [GalleryController::class, 'foto'])->name('galeri.foto');
 Route::get('/video', [GalleryController::class, 'video'])->name('galeri.video');
 Route::get('/infografis', [GalleryController::class, 'infografis'])->name('galeri.infografis');
@@ -414,6 +412,8 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::post('/struktur', [PengaturanController::class, 'updateProfil'])->name('struktur.update');
         Route::get('/kontak', [PengaturanController::class, 'profilKontak'])->name('kontak');
         Route::post('/kontak', [PengaturanController::class, 'updateProfil'])->name('kontak.update');
+        Route::get('/sejarah', [PengaturanController::class, 'profilSejarah'])->name('sejarah');
+        Route::post('/sejarah', [PengaturanController::class, 'updateProfil'])->name('sejarah.update');
         Route::post('/tim', [PengaturanController::class, 'timStore'])->name('tim.store');
         Route::put('/tim/{id}', [PengaturanController::class, 'timUpdate'])->name('tim.update');
         Route::delete('/tim/{id}', [PengaturanController::class, 'timDestroy'])->name('tim.destroy');

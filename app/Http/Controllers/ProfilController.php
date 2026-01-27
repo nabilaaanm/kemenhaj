@@ -19,4 +19,10 @@ class ProfilController extends Controller
         $tim = TimKemenhaj::orderBy('urutan')->orderBy('id')->get();
         return view('profil.struktur-organisasi', compact('profil', 'tim'));
     }
+
+    public function sejarah()
+    {
+        $profil = Profil::first();
+        return view('profil.sejarah', compact('profil'));
+    }
 }
