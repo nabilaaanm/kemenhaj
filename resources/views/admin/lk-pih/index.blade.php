@@ -8,15 +8,15 @@
     <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 24px;">
         <button type="button" id="lkImportButton"
                 style="padding: 10px 20px; background-color: #f3f4f6; color: #374151; border-radius: 8px; border: 1px solid #e5e7eb; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; cursor: pointer;">
-            <svg style="width: 18px; height: 18px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m0 0l3.5-3.5M12 16l-3.5-3.5M4 20h16"/>
+            <svg style="width: 20px; height: 20px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 12v7m0 0l3-3m-3 3l-3-3M8 7h8a2 2 0 012 2v3H6V9a2 2 0 012-2z"/>
             </svg>
             Import LK
         </button>
         <button type="button" id="pihImportButton"
                 style="padding: 10px 20px; background-color: #f3f4f6; color: #374151; border-radius: 8px; border: 1px solid #e5e7eb; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; cursor: pointer;">
-            <svg style="width: 18px; height: 18px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m0 0l3.5-3.5M12 16l-3.5-3.5M4 20h16"/>
+            <svg style="width: 20px; height: 20px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 12v7m0 0l3-3m-3 3l-3-3M8 7h8a2 2 0 012 2v3H6V9a2 2 0 012-2z"/>
             </svg>
             Import PIH
         </button>

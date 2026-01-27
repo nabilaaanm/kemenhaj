@@ -10,15 +10,16 @@ class BerhakLunas extends Model
     
     protected $fillable = [
         'nama',
+        'nama_ayah',
         'nomor_porsi',
-        'provinsi',
         'status',
-        'order',
+        'keterangan',
+        'kbihu',
+        'nomor_paspor',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
-        'order' => 'integer',
     ];
 }

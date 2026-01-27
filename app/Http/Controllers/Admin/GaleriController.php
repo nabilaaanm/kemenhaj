@@ -91,6 +91,85 @@ class GaleriController extends Controller
         return view('admin.galeri.foto.index', compact('fotos'));
     }
 
+    public function fotoEdit($id)
+    {
+        $categories = [];
+        if (Schema::hasTable('gallery_categories')) {
+            $categories = GalleryCategory::where('type', 'foto')->orderBy('name')->get();
+        }
+
+        $foto = Gallery::where('type', 'foto')->findOrFail($id);
+        return view('admin.galeri.foto.edit', compact('foto', 'categories'));
+    }
+
+    public function fotoUpdate(Request $request, $id)
+    {
+        $foto = Gallery::where('type', 'foto')->findOrFail($id);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category' => 'nullable|string|max:255',
+            'file' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
+            'url' => 'nullable|url',
+        ], [
+            'title.required' => 'Judul wajib diisi',
+            'file.image' => 'File harus berupa gambar',
+            'file.mimes' => 'File harus berformat JPEG, JPG, atau PNG',
+            'file.max' => 'Ukuran file maksimal 5MB',
+            'url.url' => 'URL tidak valid',
+        ]);
+
+        $hasFile = $request->hasFile('file');
+        $hasUrl = trim((string) $request->url) !== '';
+
+        if (!$hasFile && !$hasUrl && !$foto->file_path && !$foto->url) {
+            return back()->with('error', 'Harus mengupload file atau memasukkan URL')->withInput();
+        }
+
+        $data = [
+            'title' => $request->title,
+            'description' => $request->description,
+            'category' => $request->category,
+        ];
+
+        try {
+            if ($hasFile) {
+                if ($foto->file_path && Storage::exists('public/' . $foto->file_path)) {
+                    Storage::delete('public/' . $foto->file_path);
+                }
+
+                $file = $request->file('file');
+                $directory = storage_path('app/public/foto');
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+
+                $filename = 'foto/' . Str::random(20) . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('', $filename, 'public');
+
+                if (!Storage::disk('public')->exists($filename)) {
+                    return back()->with('error', 'Gagal menyimpan file. Pastikan folder storage memiliki permission yang benar.')->withInput();
+                }
+
+                $data['file_path'] = $filename;
+                $data['url'] = null;
+            } elseif ($hasUrl) {
+                if ($foto->file_path && Storage::exists('public/' . $foto->file_path)) {
+                    Storage::delete('public/' . $foto->file_path);
+                }
+                $data['url'] = $request->url;
+                $data['file_path'] = null;
+            }
+
+            $foto->update($data);
+
+            return redirect()->route('admin.galeri.foto.index')->with('success', 'Foto berhasil diperbarui');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memperbarui foto: ' . $e->getMessage())->withInput();
+        }
+    }
+
     public function fotoDestroy($id)
     {
         $foto = Gallery::findOrFail($id);
@@ -282,6 +361,138 @@ class GaleriController extends Controller
         return view('admin.galeri.video.index', compact('videos'));
     }
 
+    public function videoEdit($id)
+    {
+        $categories = [];
+        if (Schema::hasTable('gallery_categories')) {
+            $categories = GalleryCategory::where('type', 'video')->orderBy('name')->get();
+        }
+
+        $video = Gallery::where('type', 'video')->findOrFail($id);
+        return view('admin.galeri.video.edit', compact('video', 'categories'));
+    }
+
+    public function videoUpdate(Request $request, $id)
+    {
+        $video = Gallery::where('type', 'video')->findOrFail($id);
+
+        $hasUrl = !empty($request->url);
+        $hasFile = $request->hasFile('file');
+
+        if ($hasUrl) {
+            // Skip file upload error checks when URL is provided
+        } elseif (!$hasFile && isset($_FILES['file']) && isset($_FILES['file']['error'])) {
+            $uploadError = $_FILES['file']['error'];
+            if ($uploadError === UPLOAD_ERR_INI_SIZE || $uploadError === UPLOAD_ERR_FORM_SIZE) {
+                $maxUpload = ini_get('upload_max_filesize');
+                $maxPost = ini_get('post_max_size');
+                return back()->with('error', "File gagal di-upload. Ukuran file melebihi batas PHP (upload_max_filesize: {$maxUpload}, post_max_size: {$maxPost}). Silakan gunakan URL video atau perbesar batas upload di PHP.")->withInput();
+            }
+        }
+
+        $maxUploadBytes = $this->convertToBytes(ini_get('upload_max_filesize'));
+        $maxPostBytes = $this->convertToBytes(ini_get('post_max_size'));
+        $maxAllowed = min($maxUploadBytes, $maxPostBytes) / 1024;
+
+        $rules = [
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category' => 'nullable|string|max:255',
+            'duration' => 'nullable|string|max:20',
+            'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            'file' => 'nullable|mimes:mp4|max:' . $maxAllowed,
+            'url' => $hasUrl ? 'required|url' : 'nullable|url',
+        ];
+
+        $request->validate($rules, [
+            'title.required' => 'Judul wajib diisi',
+            'file.mimes' => 'File harus berformat MP4',
+            'file.max' => 'Ukuran file melebihi batas maksimal (' . ini_get('upload_max_filesize') . '). Silakan gunakan URL video atau perbesar batas upload di PHP.',
+            'url.required' => 'Harus mengupload file atau memasukkan URL video',
+            'url.url' => 'URL tidak valid',
+            'thumbnail.image' => 'Thumbnail harus berupa gambar',
+        ]);
+
+        if (!$hasFile && !$hasUrl && !$video->file_path && !$video->url) {
+            return back()->with('error', 'Harus mengupload file atau memasukkan URL video (YouTube/Vimeo)')->withInput();
+        }
+
+        $data = [
+            'title' => $request->title,
+            'description' => $request->description,
+            'category' => $request->category,
+            'duration' => $request->duration,
+        ];
+
+        try {
+            if ($hasFile && !$hasUrl) {
+                $file = $request->file('file');
+                if ($file->getSize() > $maxUploadBytes) {
+                    return back()->with('error', 'Ukuran file melebihi batas maksimal (' . ini_get('upload_max_filesize') . '). Silakan gunakan URL video atau perbesar batas upload di PHP.')->withInput();
+                }
+
+                $directory = storage_path('app/public/video');
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+
+                $filename = 'video/' . Str::random(20) . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('', $filename, 'public');
+
+                if (!Storage::disk('public')->exists($filename)) {
+                    return back()->with('error', 'Gagal menyimpan file. Pastikan folder storage memiliki permission yang benar.')->withInput();
+                }
+
+                if ($video->file_path && Storage::exists('public/' . $video->file_path)) {
+                    Storage::delete('public/' . $video->file_path);
+                }
+
+                $data['file_path'] = $filename;
+                $data['url'] = null;
+            } elseif ($hasUrl) {
+                $url = $request->url;
+                $isValidVideoUrl = false;
+
+                if (strpos($url, 'youtube.com') !== false || strpos($url, 'youtu.be') !== false || strpos($url, 'vimeo.com') !== false) {
+                    $isValidVideoUrl = true;
+                }
+
+                if (!$isValidVideoUrl) {
+                    return back()->with('error', 'URL video tidak valid. Gunakan link YouTube atau Vimeo.')->withInput();
+                }
+
+                if ($video->file_path && Storage::exists('public/' . $video->file_path)) {
+                    Storage::delete('public/' . $video->file_path);
+                }
+
+                $data['url'] = $url;
+                $data['file_path'] = null;
+            }
+
+            if ($request->hasFile('thumbnail')) {
+                if ($video->thumbnail && Storage::exists('public/' . $video->thumbnail)) {
+                    Storage::delete('public/' . $video->thumbnail);
+                }
+
+                $thumbnail = $request->file('thumbnail');
+                $thumbnailDir = storage_path('app/public/video/thumbnails');
+                if (!file_exists($thumbnailDir)) {
+                    mkdir($thumbnailDir, 0755, true);
+                }
+
+                $thumbnailName = 'video/thumbnails/' . Str::random(20) . '.' . $thumbnail->getClientOriginalExtension();
+                $thumbnail->storeAs('', $thumbnailName, 'public');
+                $data['thumbnail'] = $thumbnailName;
+            }
+
+            $video->update($data);
+
+            return redirect()->route('admin.galeri.video.index')->with('success', 'Video berhasil diperbarui');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memperbarui video: ' . $e->getMessage())->withInput();
+        }
+    }
+
     public function videoDestroy($id)
     {
         $video = Gallery::findOrFail($id);
@@ -375,6 +586,85 @@ class GaleriController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
         return view('admin.galeri.infografis.index', compact('infografis'));
+    }
+
+    public function infografisEdit($id)
+    {
+        $categories = [];
+        if (Schema::hasTable('gallery_categories')) {
+            $categories = GalleryCategory::where('type', 'infografis')->orderBy('name')->get();
+        }
+
+        $infografis = Gallery::where('type', 'infografis')->findOrFail($id);
+        return view('admin.galeri.infografis.edit', compact('infografis', 'categories'));
+    }
+
+    public function infografisUpdate(Request $request, $id)
+    {
+        $infografis = Gallery::where('type', 'infografis')->findOrFail($id);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category' => 'nullable|string|max:255',
+            'file' => 'nullable|image|mimes:jpeg,jpg,png|max:10240',
+            'url' => 'nullable|url',
+        ], [
+            'title.required' => 'Judul wajib diisi',
+            'file.image' => 'File harus berupa gambar',
+            'file.mimes' => 'File harus berformat JPEG, JPG, atau PNG',
+            'file.max' => 'Ukuran file maksimal 10MB',
+            'url.url' => 'URL tidak valid',
+        ]);
+
+        $hasFile = $request->hasFile('file');
+        $hasUrl = trim((string) $request->url) !== '';
+
+        if (!$hasFile && !$hasUrl && !$infografis->file_path && !$infografis->url) {
+            return back()->with('error', 'Harus mengupload file atau memasukkan URL')->withInput();
+        }
+
+        $data = [
+            'title' => $request->title,
+            'description' => $request->description,
+            'category' => $request->category,
+        ];
+
+        try {
+            if ($hasFile) {
+                if ($infografis->file_path && Storage::exists('public/' . $infografis->file_path)) {
+                    Storage::delete('public/' . $infografis->file_path);
+                }
+
+                $file = $request->file('file');
+                $directory = storage_path('app/public/infografis');
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+
+                $filename = 'infografis/' . Str::random(20) . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('', $filename, 'public');
+
+                if (!Storage::disk('public')->exists($filename)) {
+                    return back()->with('error', 'Gagal menyimpan file. Pastikan folder storage memiliki permission yang benar.')->withInput();
+                }
+
+                $data['file_path'] = $filename;
+                $data['url'] = null;
+            } elseif ($hasUrl) {
+                if ($infografis->file_path && Storage::exists('public/' . $infografis->file_path)) {
+                    Storage::delete('public/' . $infografis->file_path);
+                }
+                $data['url'] = $request->url;
+                $data['file_path'] = null;
+            }
+
+            $infografis->update($data);
+
+            return redirect()->route('admin.galeri.infografis.index')->with('success', 'Infografis berhasil diperbarui');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memperbarui infografis: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function infografisDestroy($id)

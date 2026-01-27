@@ -117,7 +117,10 @@
     </div>
 
     @if($post->cover_url)
-        <img src="{{ $post->cover_url }}" alt="{{ $post->title }}" class="w-full rounded-lg mb-6" style="max-height: 420px; object-fit: cover;">
+        <div class="w-full rounded-lg mb-6" style="max-height: 420px; background-color: #f3f4f6; display: flex; align-items: center; justify-content: center;">
+            <img src="{{ $post->cover_url }}" alt="{{ $post->title }}" class="w-full rounded-lg"
+                 style="max-height: 420px; object-fit: contain;">
+        </div>
     @endif
 
     <div class="prose max-w-none">

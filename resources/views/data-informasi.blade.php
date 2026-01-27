@@ -106,72 +106,72 @@
                     Daftar Jamaah Berhak Lunas
                 </h2>
                 
-                <!-- Search and Filter -->
-                <div class="mb-6 flex flex-col md:flex-row gap-4">
+                <!-- Search -->
+                <form class="mb-6 flex flex-col md:flex-row gap-4" method="GET" action="{{ url('/data-informasi') }}">
                     <div class="flex-1 relative">
-                        <input type="text" id="berhakLunasSearch" placeholder="Cari berdasarkan nama atau nomor porsi..." 
-                            data-i18n-placeholder="data.berhakLunas.search"
-                            class="w-full border rounded-lg px-4 py-2 text-sm focus-custom">
-                        <svg class="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <input type="text" id="berhakLunasSearch" name="nomor_porsi"
+                            value="{{ $berhakLunasQuery ?? '' }}"
+                            placeholder="Masukkan nomor porsi..." 
+                            class="w-full border rounded-xl px-4 py-3 text-sm focus-custom"
+                            style="background: #f8fafc; border-color: #e5e7eb;">
+                        <svg class="w-5 h-5 absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </div>
-                    <select class="border rounded-lg px-4 py-2 text-sm focus-custom">
-                        <option data-i18n="data.berhakLunas.province.all">Semua Provinsi</option>
-                        <option data-i18n="data.berhakLunas.province.westJava">Jawa Barat</option>
-                        <option data-i18n="data.berhakLunas.province.centralJava">Jawa Tengah</option>
-                        <option data-i18n="data.berhakLunas.province.eastJava">Jawa Timur</option>
-                    </select>
-                </div>
+                    <button type="submit" class="px-5 py-3 rounded-xl text-sm font-semibold text-white btn-custom" style="min-width: 120px;">
+                        Cari
+                    </button>
+                    <a href="{{ url('/data-informasi') }}" class="px-5 py-3 rounded-xl text-sm font-semibold reset-btn"
+                       style="min-width: 120px; text-align: center; background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb;">
+                        Reset
+                    </a>
+                </form>
 
-                <!-- Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-200">
-                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.no">No</th>
-                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.name">Nama</th>
-                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.queue">Nomor Porsi</th>
-                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.province">Provinsi</th>
-                                <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.status">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b border-gray-100 hover:bg-gray-50">
-                                <td class="py-3 px-4">1</td>
-                                <td class="py-3 px-4" data-i18n="data.berhakLunas.sample.name">Contoh Nama Jamaah</td>
-                                <td class="py-3 px-4">123456789</td>
-                                <td class="py-3 px-4" data-i18n="data.berhakLunas.sample.province1">Jawa Barat</td>
-                                <td class="py-3 px-4">
-                                    <span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: var(--color-primary-bg); color: #111827;" data-i18n="data.berhakLunas.sample.status">Berhak Lunas</span>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-gray-100 hover:bg-gray-50">
-                                <td class="py-3 px-4">2</td>
-                                <td class="py-3 px-4" data-i18n="data.berhakLunas.sample.name">Contoh Nama Jamaah</td>
-                                <td class="py-3 px-4">123456790</td>
-                                <td class="py-3 px-4" data-i18n="data.berhakLunas.sample.province2">Jawa Tengah</td>
-                                <td class="py-3 px-4">
-                                    <span class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: var(--color-primary-bg); color: #111827;" data-i18n="data.berhakLunas.sample.status">Berhak Lunas</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                @if(!empty($berhakLunasSearched) && $berhakLunasSearched)
+                    <!-- Table -->
+                    <div class="overflow-x-auto rounded-xl border border-gray-100" style="background: #ffffff;">
+                        <table class="w-full text-sm">
+                            <thead style="background: #f8fafc;">
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.no">No</th>
+                                    <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.queue">Nomor Porsi</th>
+                                    <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.name">Nama</th>
+                                    <th class="text-left py-3 px-4 font-semibold">Nama Ayah</th>
+                                    <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.status">Status</th>
+                                    <th class="text-left py-3 px-4 font-semibold">Keterangan</th>
+                                    <th class="text-left py-3 px-4 font-semibold">KBIHU</th>
+                                    <th class="text-left py-3 px-4 font-semibold">No Paspor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($berhakLunasResults as $index => $item)
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                        <td class="py-3 px-4 text-gray-600">{{ $index + 1 }}</td>
+                                        <td class="py-3 px-4 font-medium text-gray-800">{{ $item->nomor_porsi }}</td>
+                                        <td class="py-3 px-4 font-semibold text-gray-900">{{ $item->nama }}</td>
+                                        <td class="py-3 px-4 text-gray-600">{{ $item->nama_ayah ?? '-' }}</td>
+                                        <td class="py-3 px-4">
+                                            <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                                                style="background-color: var(--color-primary-bg); color: #111827;">
+                                                {{ $item->status }}
+                                            </span>
+                                        </td>
+                                        <td class="py-3 px-4 text-gray-600">{{ $item->keterangan ?? '-' }}</td>
+                                        <td class="py-3 px-4 text-gray-600">{{ $item->kbihu ?? '-' }}</td>
+                                        <td class="py-3 px-4 text-gray-600">{{ $item->nomor_paspor ?? '-' }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td class="py-4 px-4 text-center text-gray-500" colspan="8">
+                                            Data tidak ditemukan.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
 
-                <!-- Pagination -->
-                <div class="mt-6 flex items-center justify-between">
-                    <div class="text-sm text-gray-600">
-                        <span data-i18n="data.berhakLunas.pagination">Menampilkan 1-10 dari 100 data</span>
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100" data-i18n="data.pagination.prev">Previous</button>
-                        <button class="px-3 py-1 border rounded text-sm bg-gray-100">1</button>
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">2</button>
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100">3</button>
-                        <button class="px-3 py-1 border rounded text-sm hover:bg-gray-100" data-i18n="data.pagination.next">Next</button>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -533,6 +533,13 @@
     .dropdown-menu:hover .dropdown-toggle,
     .dropdown-menu.active .dropdown-toggle {
         color: var(--color-primary);
+    }
+    .reset-btn:hover {
+        background: #ffffff;
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+        transform: translateY(-1px);
     }
     
     

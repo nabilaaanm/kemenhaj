@@ -215,7 +215,11 @@
             $infografis = $infografis ?? collect([]);
         @endphp
         @forelse($infografis as $infografisItem)
-            <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden" data-category="{{ \Illuminate\Support\Str::slug($infografisItem->category ?? '') }}">
+            <div class="infographic-item bg-white rounded-lg shadow-sm overflow-hidden"
+                 data-category="{{ \Illuminate\Support\Str::slug($infografisItem->category ?? '') }}"
+                 data-src="{{ $infografisItem->image_url }}"
+                 data-title="{{ $infografisItem->title }}"
+                 data-description="{{ e($infografisItem->description ?? '') }}">
                 <img src="{{ $infografisItem->image_url }}" 
                      alt="{{ $infografisItem->title }}" 
                      class="w-full h-auto"
@@ -249,6 +253,10 @@
     <div class="modal-nav modal-next" id="nextInfographic">&#10095;</div>
     <div class="modal-content">
         <img id="modalImage" src="" alt="Infographic">
+        <div class="modal-caption">
+            <h3 id="modalTitle"></h3>
+            <p id="modalDescription"></p>
+        </div>
     </div>
 </div>
 
@@ -304,6 +312,20 @@
     .dropdown-menu:hover .dropdown-toggle svg,
     .dropdown-menu.active .dropdown-toggle svg {
         transform: rotate(180deg);
+    }
+    .modal-caption {
+        margin-top: 12px;
+        text-align: center;
+        color: #e5e7eb;
+    }
+    .modal-caption h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+    .modal-caption p {
+        font-size: 14px;
+        color: #cbd5f5;
     }
     
     .dropdown-content {
@@ -406,6 +428,86 @@
         });
 
         applyFilter('all');
+
+        // Modal functionality
+        const modal = document.getElementById('infographicModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDescription = document.getElementById('modalDescription');
+        const closeModalBtn = document.querySelector('#infographicModal .close-modal');
+        const prevBtn = document.getElementById('prevInfographic');
+        const nextBtn = document.getElementById('nextInfographic');
+
+        let activeItems = [];
+        let activeIndex = 0;
+
+        const getVisibleItems = () => {
+            return Array.from(infographicItems).filter(item => item.style.display !== 'none');
+        };
+
+        const openModal = (index) => {
+            activeItems = getVisibleItems();
+            if (activeItems.length === 0) return;
+            activeIndex = Math.max(0, Math.min(index, activeItems.length - 1));
+            const item = activeItems[activeIndex];
+            modalImage.src = item.dataset.src || item.querySelector('img')?.src || '';
+            modalImage.alt = item.dataset.title || 'Infographic';
+            if (modalTitle) {
+                modalTitle.textContent = item.dataset.title || '';
+            }
+            if (modalDescription) {
+                const desc = item.dataset.description || '';
+                modalDescription.textContent = desc;
+                modalDescription.style.display = desc ? '' : 'none';
+            }
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeModal = () => {
+            modal.classList.remove('active');
+            modalImage.src = '';
+            if (modalTitle) modalTitle.textContent = '';
+            if (modalDescription) modalDescription.textContent = '';
+            document.body.style.overflow = '';
+        };
+
+        const showPrev = () => {
+            if (!activeItems.length) return;
+            activeIndex = (activeIndex - 1 + activeItems.length) % activeItems.length;
+            openModal(activeIndex);
+        };
+
+        const showNext = () => {
+            if (!activeItems.length) return;
+            activeIndex = (activeIndex + 1) % activeItems.length;
+            openModal(activeIndex);
+        };
+
+        infographicItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const visibleItems = getVisibleItems();
+                const index = visibleItems.indexOf(item);
+                openModal(index === -1 ? 0 : index);
+            });
+        });
+
+        closeModalBtn?.addEventListener('click', closeModal);
+        prevBtn?.addEventListener('click', showPrev);
+        nextBtn?.addEventListener('click', showNext);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!modal.classList.contains('active')) return;
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowLeft') showPrev();
+            if (e.key === 'ArrowRight') showNext();
+        });
     });
 
 </script>

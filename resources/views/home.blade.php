@@ -79,11 +79,6 @@
                         <div class="absolute inset-0 bg-black/55"></div>
                         <div class="container-fixed relative h-full flex items-center">
                             <div class="text-white hero-content" style="max-width: 640px; width: 100%; min-width: 0; box-sizing: border-box;">
-                                @if($slide->badge)
-                                    <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4">
-                                        {{ $slide->badge }}
-                                    </span>
-                                @endif
                                 <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4 page-title">
                                     {{ $slide->title }}
                                 </h1>
@@ -108,9 +103,6 @@
                 <div class="absolute inset-0 bg-black/55"></div>
                 <div class="container-fixed relative h-full flex items-center">
                     <div class="text-white hero-content" style="max-width: 640px; width: 100%; min-width: 0; box-sizing: border-box;">
-                        <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4" data-i18n="hero.slide1.badge">
-                            Berita Terkini
-                        </span>
                         <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4 page-title" data-i18n="hero.slide1.title">
                             Bimtek Pemvisaan Haji 1447H/2026M Digelar, 
                             Misi Perkuat Akurasi Dokumen Jemaah
@@ -132,9 +124,6 @@
                 <div class="absolute inset-0 bg-black/55"></div>
                 <div class="container-fixed relative h-full flex items-center">
                     <div class="text-white hero-content" style="max-width: 640px; width: 100%; min-width: 0; box-sizing: border-box;">
-                        <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4" data-i18n="hero.slide2.badge">
-                            Pengumuman
-                        </span>
                         <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4 page-title" data-i18n="hero.slide2.title">
                             Kemenhaj Tetap Buka Layanan di Hari Libur, 
                             Percepat Persiapan Haji
@@ -156,9 +145,6 @@
                 <div class="absolute inset-0 bg-black/55"></div>
                 <div class="container-fixed relative h-full flex items-center">
                     <div class="text-white hero-content" style="max-width: 640px; width: 100%; min-width: 0; box-sizing: border-box;">
-                        <span class="inline-block badge-custom text-black text-xs font-semibold px-4 py-1 rounded-full mb-4" data-i18n="hero.slide3.badge">
-                            Siaran Pers
-                        </span>
                         <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-4 page-title" data-i18n="hero.slide3.title">
                             Kemenhaj Fokus Penyelenggaraan Haji 1447 H/2026 M: 
                             Tepat Waktu, Berkualitas
@@ -458,42 +444,75 @@
     </div>
     <div class="grid md:grid-cols-3 gap-6">
         @forelse($homeVideos as $video)
-            <article class="news-card search-card">
-                <a href="{{ route('galeri.video') }}" style="text-decoration: none; color: inherit;">
-                    <div class="relative">
-                        <img src="{{ $video->video_thumbnail_url ?: $video->image_url }}" alt="{{ $video->title }}"
-                             class="news-thumb" style="display: block;"
-                             onerror="this.src='https://via.placeholder.com/800x450/ECB176/FFFFFF?text=Video'; this.onerror=null;">
-                <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-12 h-12 bg-white bg-opacity-90 rounded-full flex items-center justify-center">
-                                <svg class="w-6 h-6 text-gray-800 ml-1" fill="currentColor" viewBox="0 0 24 24">
+            @php
+                $videoUrl = $video->video_url;
+                $isEmbedUrl = $video->url && (strpos($video->url, 'youtube.com') !== false || strpos($video->url, 'youtu.be') !== false || strpos($video->url, 'vimeo.com') !== false);
+                $isDirectFile = $video->file_path && !empty($video->file_path);
+                $embedUrl = '';
+                if ($isEmbedUrl && $video->url) {
+                    $url = $video->url;
+                    if (strpos($url, 'youtube.com/watch?v=') !== false) {
+                        $parts = parse_url($url);
+                        parse_str($parts['query'] ?? '', $query);
+                        $videoId = $query['v'] ?? '';
+                        if ($videoId) {
+                            $embedUrl = 'https://www.youtube.com/embed/' . $videoId;
+                        }
+                    } elseif (strpos($url, 'youtu.be/') !== false) {
+                        $parts = parse_url($url);
+                        $path = trim($parts['path'] ?? '', '/');
+                        if ($path) {
+                            $embedUrl = 'https://www.youtube.com/embed/' . $path;
+                        }
+                    } elseif (strpos($url, 'youtube.com/embed/') !== false) {
+                        $embedUrl = $url;
+                    } elseif (strpos($url, 'vimeo.com/') !== false) {
+                        $parts = parse_url($url);
+                        $path = trim($parts['path'] ?? '', '/');
+                        if ($path) {
+                            $embedUrl = 'https://player.vimeo.com/video/' . $path;
+                        }
+                    }
+                }
+                $thumbnailUrl = $video->video_thumbnail_url ?: $video->image_url;
+            @endphp
+            <article class="news-card search-card home-video-item"
+                     role="button"
+                     tabindex="0"
+                     data-video-url="{{ $videoUrl }}"
+                     data-embed-url="{{ $embedUrl }}"
+                     data-video-type="{{ $isEmbedUrl ? 'embed' : ($isDirectFile ? 'file' : 'none') }}">
+                <div class="home-video-thumb">
+                    <img src="{{ $thumbnailUrl }}" alt="{{ $video->title }}"
+                         class="news-thumb" style="display: block;"
+                         onerror="this.src='https://via.placeholder.com/800x450/ECB176/FFFFFF?text=Video'; this.onerror=null;">
+                    <div class="home-video-play">
+                        <svg class="w-6 h-6 text-gray-800 ml-1" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
                         </svg>
                     </div>
                 </div>
-            </div>
-                    <div class="news-body">
-                        <span class="news-badge mb-2">Video</span>
-                        <p class="news-meta mb-2">{{ $video->created_at?->translatedFormat('d F Y') ?? '-' }}</p>
-                        <h3 class="news-title search-title text-base mb-2 line-clamp-2">
-                            {{ $video->title }}
-                </h3>
-                        @if(!empty($video->description))
-                            <p class="news-excerpt text-sm line-clamp-2">
-                                {{ \Illuminate\Support\Str::limit($video->description, 90) }}
-                            </p>
-                        @endif
-                        <div class="mt-3 news-footer">
-                            <span class="btn-readmore">
-                                Lihat Video
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/>
-                        </svg>
-                            </span>
+                <div class="news-body">
+                    <span class="news-badge mb-2">Video</span>
+                    <p class="news-meta mb-2">{{ $video->created_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                    <h3 class="news-title search-title text-base mb-2 line-clamp-2">
+                        {{ $video->title }}
+                    </h3>
+                    @if(!empty($video->description))
+                        <p class="news-excerpt text-sm line-clamp-2">
+                            {{ \Illuminate\Support\Str::limit($video->description, 90) }}
+                        </p>
+                    @endif
+                    <div class="mt-3 news-footer">
+                        <span class="btn-readmore">
+                            Lihat Video
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/>
+                            </svg>
+                        </span>
                     </div>
                 </div>
-                </a>
-        </article>
+            </article>
         @empty
             <p class="text-sm text-gray-500 text-center py-6 col-span-full" data-i18n="content.noNews">
                 Tidak ada video tersedia
@@ -501,6 +520,12 @@
         @endforelse
     </div>
 </section>
+
+<!-- Video Modal -->
+<div id="homeVideoModal" class="home-video-modal">
+    <span class="home-video-close">&times;</span>
+    <div class="home-video-modal-content" id="homeVideoModalContent"></div>
+</div>
 
 <!-- ================= INFOGRAFIS SECTION ================= -->
 <section class="container-fixed py-10 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
@@ -512,28 +537,31 @@
     </div>
     <div class="grid md:grid-cols-3 gap-6">
         @forelse($homeInfografis as $infografis)
-            <article class="news-card search-card">
-                <a href="{{ route('galeri.infografis') }}" style="text-decoration: none; color: inherit;">
-                    <img src="{{ $infografis->image_url }}" alt="{{ $infografis->title }}"
-                         class="news-thumb" style="display: block;"
-                         onerror="this.src='https://via.placeholder.com/800x1000/ECB176/FFFFFF?text=Infografis'; this.onerror=null;">
-                    <div class="news-body">
-                        <span class="news-badge mb-2">Infografis</span>
-                        <p class="news-meta mb-2">{{ $infografis->created_at?->translatedFormat('d F Y') ?? '-' }}</p>
-                        <h3 class="news-title search-title text-base mb-2 line-clamp-2">
-                            {{ $infografis->title }}
-                </h3>
-                        <div class="mt-3 news-footer">
-                            <span class="btn-readmore">
-                                Lihat Infografis
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/>
+            <article class="news-card search-card home-infografis-item"
+                     role="button"
+                     tabindex="0"
+                     data-src="{{ $infografis->image_url }}"
+                     data-title="{{ $infografis->title }}"
+                     data-description="{{ e($infografis->description ?? '') }}">
+                <img src="{{ $infografis->image_url }}" alt="{{ $infografis->title }}"
+                     class="news-thumb" style="display: block;"
+                     onerror="this.src='https://via.placeholder.com/800x1000/ECB176/FFFFFF?text=Infografis'; this.onerror=null;">
+                <div class="news-body">
+                    <span class="news-badge mb-2">Infografis</span>
+                    <p class="news-meta mb-2">{{ $infografis->created_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                    <h3 class="news-title search-title text-base mb-2 line-clamp-2">
+                        {{ $infografis->title }}
+                    </h3>
+                    <div class="mt-3 news-footer">
+                        <span class="btn-readmore">
+                            Lihat Infografis
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/>
                             </svg>
-                            </span>
+                        </span>
                     </div>
                 </div>
-                </a>
-        </article>
+            </article>
         @empty
             <p class="text-sm text-gray-500 text-center py-6 col-span-full" data-i18n="content.noNews">
                 Tidak ada infografis tersedia
@@ -541,6 +569,18 @@
         @endforelse
     </div>
 </section>
+
+<!-- Infografis Modal -->
+<div id="homeInfografisModal" class="home-image-modal">
+    <span class="home-image-close">&times;</span>
+    <div class="home-image-modal-content">
+        <img id="homeInfografisImage" src="" alt="Infografis">
+        <div class="home-image-caption">
+            <h3 id="homeInfografisTitle"></h3>
+            <p id="homeInfografisDesc"></p>
+        </div>
+    </div>
+</div>
 
 <!-- ================= FOTO SECTION ================= -->
 <section class="container-fixed py-10 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
@@ -552,29 +592,32 @@
     </div>
     <div class="grid md:grid-cols-3 gap-6">
         @forelse($homeFotos as $foto)
-            <article class="news-card search-card">
-                <a href="{{ route('galeri.foto') }}" style="text-decoration: none; color: inherit;">
-                    <img src="{{ $foto->image_url }}" class="news-thumb" style="display: block;"
-                         onerror="this.src='https://via.placeholder.com/800x600/ECB176/FFFFFF?text=Foto'; this.onerror=null;">
-                    <div class="news-body">
-                        <span class="news-badge mb-2">
-                            {{ $foto->category ?: 'Dokumentasi' }}
-                </span>
-                        <p class="news-meta mb-2">{{ $foto->created_at?->translatedFormat('d F Y') ?? '-' }}</p>
-                        <h3 class="news-title search-title text-base mb-2 line-clamp-2">
-                            {{ $foto->title }}
-                </h3>
-                        <div class="mt-3 news-footer">
-                            <span class="btn-readmore">
-                                Lihat Foto
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/>
-                                </svg>
-                </span>
-            </div>
-            </div>
-                </a>
-        </article>
+            <article class="news-card search-card home-foto-item"
+                     role="button"
+                     tabindex="0"
+                     data-src="{{ $foto->image_url }}"
+                     data-title="{{ $foto->title }}"
+                     data-description="{{ e($foto->description ?? '') }}">
+                <img src="{{ $foto->image_url }}" class="news-thumb" style="display: block;"
+                     onerror="this.src='https://via.placeholder.com/800x600/ECB176/FFFFFF?text=Foto'; this.onerror=null;">
+                <div class="news-body">
+                    <span class="news-badge mb-2">
+                        {{ $foto->category ?: 'Dokumentasi' }}
+                    </span>
+                    <p class="news-meta mb-2">{{ $foto->created_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                    <h3 class="news-title search-title text-base mb-2 line-clamp-2">
+                        {{ $foto->title }}
+                    </h3>
+                    <div class="mt-3 news-footer">
+                        <span class="btn-readmore">
+                            Lihat Foto
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 5l7 7-7 7"/>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            </article>
         @empty
             <p class="text-sm text-gray-500 text-center py-6 col-span-full">
                 Tidak ada foto tersedia
@@ -582,6 +625,18 @@
         @endforelse
     </div>
 </section>
+
+<!-- Foto Modal -->
+<div id="homeFotoModal" class="home-image-modal">
+    <span class="home-image-close">&times;</span>
+    <div class="home-image-modal-content">
+        <img id="homeFotoImage" src="" alt="Foto">
+        <div class="home-image-caption">
+            <h3 id="homeFotoTitle"></h3>
+            <p id="homeFotoDesc"></p>
+        </div>
+    </div>
+</div>
 
 <!-- ================= REGULASI SECTION ================= -->
 <section class="container-fixed py-10 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
@@ -725,6 +780,9 @@
         max-width: 640px;
         min-width: 0;
         box-sizing: border-box;
+    }
+    .hero-content .page-title {
+        color: #ffffff !important;
     }
     
     @media (max-width: 1023px) {
@@ -1253,6 +1311,151 @@
         background: rgba(255, 255, 255, 0.8);
     }
     
+    .home-video-thumb {
+        position: relative;
+    }
+    
+    .home-video-play {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+    }
+    
+    .home-video-play svg {
+        width: 24px;
+        height: 24px;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .home-video-play::before {
+        content: '';
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 999px;
+        position: absolute;
+        z-index: 1;
+    }
+    
+    .home-video-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+    }
+    
+    .home-video-modal.active {
+        display: flex;
+    }
+    
+    .home-video-modal-content {
+        width: 90vw;
+        height: 90vh;
+        max-width: 1200px;
+        max-height: 90vh;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .home-video-modal-content iframe,
+    .home-video-modal-content video {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        object-fit: contain;
+        background: #000;
+    }
+    
+    .home-video-close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 1001;
+    }
+    
+    .home-video-close:hover {
+        color: var(--color-primary);
+    }
+
+    .home-image-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+    }
+    
+    .home-image-modal.active {
+        display: flex;
+    }
+    
+    .home-image-modal-content {
+        width: 90vw;
+        max-width: 1100px;
+        max-height: 90vh;
+        text-align: center;
+    }
+    
+    .home-image-modal-content img {
+        width: 100%;
+        height: auto;
+        max-height: 75vh;
+        object-fit: contain;
+        border-radius: 12px;
+        background: #000;
+    }
+    
+    .home-image-caption {
+        margin-top: 12px;
+        color: #e5e7eb;
+    }
+    
+    .home-image-caption h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+    
+    .home-image-caption p {
+        font-size: 14px;
+        color: #cbd5f5;
+    }
+    
+    .home-image-close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 1001;
+    }
+    
+    .home-image-close:hover {
+        color: var(--color-primary);
+    }
+    
     
     
 </style>
@@ -1384,6 +1587,195 @@
         const carouselContainer = document.querySelector('.hero-slider-container');
         carouselContainer?.addEventListener('mouseenter', stopAuto);
         carouselContainer?.addEventListener('mouseleave', startAuto);
+
+        // Homepage video modal
+        const homeVideoItems = document.querySelectorAll('.home-video-item');
+        const homeVideoModal = document.getElementById('homeVideoModal');
+        const homeVideoModalContent = document.getElementById('homeVideoModalContent');
+        const homeVideoClose = document.querySelector('.home-video-close');
+
+        const openHomeVideoModal = (item) => {
+            if (!item || !homeVideoModalContent || !homeVideoModal) {
+                return;
+            }
+            const type = item.dataset.videoType;
+            const fileUrl = item.dataset.videoUrl;
+            const embedUrl = item.dataset.embedUrl;
+            homeVideoModalContent.innerHTML = '';
+
+            if (type === 'embed' && embedUrl) {
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl + (embedUrl.includes('?') ? '&' : '?') + 'autoplay=1';
+                iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                iframe.setAttribute('allowfullscreen', 'true');
+                homeVideoModalContent.appendChild(iframe);
+            } else if (type === 'file' && fileUrl) {
+                const video = document.createElement('video');
+                video.src = fileUrl;
+                video.controls = true;
+                video.autoplay = true;
+                homeVideoModalContent.appendChild(video);
+            } else if (embedUrl) {
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                iframe.setAttribute('allowfullscreen', 'true');
+                homeVideoModalContent.appendChild(iframe);
+            } else {
+                const message = document.createElement('div');
+                message.style.color = '#fff';
+                message.style.textAlign = 'center';
+                message.textContent = 'Video tidak tersedia.';
+                homeVideoModalContent.appendChild(message);
+            }
+
+            homeVideoModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeHomeVideoModal = () => {
+            if (!homeVideoModal) return;
+            homeVideoModal.classList.remove('active');
+            if (homeVideoModalContent) {
+                homeVideoModalContent.innerHTML = '';
+            }
+            document.body.style.overflow = '';
+        };
+
+        homeVideoItems.forEach((item) => {
+            item.addEventListener('click', () => openHomeVideoModal(item));
+            item.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openHomeVideoModal(item);
+                }
+            });
+        });
+
+        homeVideoClose?.addEventListener('click', closeHomeVideoModal);
+        homeVideoModal?.addEventListener('click', (e) => {
+            if (e.target === homeVideoModal) {
+                closeHomeVideoModal();
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (homeVideoModal?.classList.contains('active') && e.key === 'Escape') {
+                closeHomeVideoModal();
+            }
+        });
+
+        // Homepage infografis modal
+        const homeInfografisItems = document.querySelectorAll('.home-infografis-item');
+        const homeInfografisModal = document.getElementById('homeInfografisModal');
+        const homeInfografisImage = document.getElementById('homeInfografisImage');
+        const homeInfografisTitle = document.getElementById('homeInfografisTitle');
+        const homeInfografisDesc = document.getElementById('homeInfografisDesc');
+        const homeInfografisClose = document.querySelector('.home-image-close');
+
+        const openInfografisModal = (item) => {
+            if (!item || !homeInfografisModal || !homeInfografisImage) return;
+            const src = item.dataset.src || '';
+            const title = item.dataset.title || '';
+            const desc = item.dataset.description || '';
+
+            homeInfografisImage.src = src;
+            homeInfografisImage.alt = title || 'Infografis';
+            if (homeInfografisTitle) homeInfografisTitle.textContent = title;
+            if (homeInfografisDesc) {
+                homeInfografisDesc.textContent = desc;
+                homeInfografisDesc.style.display = desc ? '' : 'none';
+            }
+            homeInfografisModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeInfografisModal = () => {
+            if (!homeInfografisModal) return;
+            homeInfografisModal.classList.remove('active');
+            if (homeInfografisImage) homeInfografisImage.src = '';
+            if (homeInfografisTitle) homeInfografisTitle.textContent = '';
+            if (homeInfografisDesc) homeInfografisDesc.textContent = '';
+            document.body.style.overflow = '';
+        };
+
+        homeInfografisItems.forEach((item) => {
+            item.addEventListener('click', () => openInfografisModal(item));
+            item.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openInfografisModal(item);
+                }
+            });
+        });
+
+        homeInfografisClose?.addEventListener('click', closeInfografisModal);
+        homeInfografisModal?.addEventListener('click', (e) => {
+            if (e.target === homeInfografisModal) {
+                closeInfografisModal();
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (homeInfografisModal?.classList.contains('active') && e.key === 'Escape') {
+                closeInfografisModal();
+            }
+        });
+
+        // Homepage foto modal
+        const homeFotoItems = document.querySelectorAll('.home-foto-item');
+        const homeFotoModal = document.getElementById('homeFotoModal');
+        const homeFotoImage = document.getElementById('homeFotoImage');
+        const homeFotoTitle = document.getElementById('homeFotoTitle');
+        const homeFotoDesc = document.getElementById('homeFotoDesc');
+
+        const openFotoModal = (item) => {
+            if (!item || !homeFotoModal || !homeFotoImage) return;
+            const src = item.dataset.src || '';
+            const title = item.dataset.title || '';
+            const desc = item.dataset.description || '';
+
+            homeFotoImage.src = src;
+            homeFotoImage.alt = title || 'Foto';
+            if (homeFotoTitle) homeFotoTitle.textContent = title;
+            if (homeFotoDesc) {
+                homeFotoDesc.textContent = desc;
+                homeFotoDesc.style.display = desc ? '' : 'none';
+            }
+            homeFotoModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeFotoModal = () => {
+            if (!homeFotoModal) return;
+            homeFotoModal.classList.remove('active');
+            if (homeFotoImage) homeFotoImage.src = '';
+            if (homeFotoTitle) homeFotoTitle.textContent = '';
+            if (homeFotoDesc) homeFotoDesc.textContent = '';
+            document.body.style.overflow = '';
+        };
+
+        homeFotoItems.forEach((item) => {
+            item.addEventListener('click', () => openFotoModal(item));
+            item.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openFotoModal(item);
+                }
+            });
+        });
+
+        document.querySelectorAll('#homeFotoModal .home-image-close').forEach((btn) => {
+            btn.addEventListener('click', closeFotoModal);
+        });
+        homeFotoModal?.addEventListener('click', (e) => {
+            if (e.target === homeFotoModal) {
+                closeFotoModal();
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (homeFotoModal?.classList.contains('active') && e.key === 'Escape') {
+                closeFotoModal();
+            }
+        });
     });
 
 </script>

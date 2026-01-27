@@ -22,6 +22,7 @@ use App\Models\Gallery;
 use App\Models\Kbihu;
 use App\Models\Ppiu;
 use App\Models\LkPihDocument;
+use App\Models\BerhakLunas;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ServiceController;
@@ -237,6 +238,9 @@ Route::get('/layanan', [ServiceController::class, 'index'])->name('layanan');
 Route::get('/data-informasi', function () {
     $kbihuData = collect();
     $ppiuData = collect();
+    $berhakLunasResults = collect();
+    $berhakLunasQuery = request()->query('nomor_porsi');
+    $berhakLunasSearched = false;
     if (Schema::hasTable('kbihu')) {
         $kbihuData = Kbihu::where('is_active', true)
             ->orderBy('order')
@@ -249,8 +253,18 @@ Route::get('/data-informasi', function () {
             ->orderBy('created_at')
             ->get();
     }
+    if (Schema::hasTable('berhak_lunas')) {
+        $query = trim((string) $berhakLunasQuery);
+        if ($query !== '') {
+            $berhakLunasSearched = true;
+            $berhakLunasResults = BerhakLunas::where('is_active', true)
+                ->where('nomor_porsi', $query)
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+    }
 
-    return view('data-informasi', compact('kbihuData', 'ppiuData'));
+    return view('data-informasi', compact('kbihuData', 'ppiuData', 'berhakLunasResults', 'berhakLunasQuery', 'berhakLunasSearched'));
 });
 Route::get('/lk-pih', function () {
     $lkDocuments = collect();
@@ -330,6 +344,8 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
             Route::get('/create', [GaleriController::class, 'fotoCreate'])->name('create');
             Route::post('/create', [GaleriController::class, 'fotoStore'])->name('store');
             Route::get('/', [GaleriController::class, 'fotoIndex'])->name('index');
+            Route::get('/{id}/edit', [GaleriController::class, 'fotoEdit'])->name('edit');
+            Route::post('/{id}/edit', [GaleriController::class, 'fotoUpdate'])->name('update');
             Route::delete('/{id}', [GaleriController::class, 'fotoDestroy'])->name('destroy');
         });
         // Video
@@ -337,6 +353,8 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
             Route::get('/create', [GaleriController::class, 'videoCreate'])->name('create');
             Route::post('/create', [GaleriController::class, 'videoStore'])->name('store');
             Route::get('/', [GaleriController::class, 'videoIndex'])->name('index');
+            Route::get('/{id}/edit', [GaleriController::class, 'videoEdit'])->name('edit');
+            Route::post('/{id}/edit', [GaleriController::class, 'videoUpdate'])->name('update');
             Route::delete('/{id}', [GaleriController::class, 'videoDestroy'])->name('destroy');
         });
         // Infografis
@@ -344,6 +362,8 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
             Route::get('/create', [GaleriController::class, 'infografisCreate'])->name('create');
             Route::post('/create', [GaleriController::class, 'infografisStore'])->name('store');
             Route::get('/', [GaleriController::class, 'infografisIndex'])->name('index');
+            Route::get('/{id}/edit', [GaleriController::class, 'infografisEdit'])->name('edit');
+            Route::post('/{id}/edit', [GaleriController::class, 'infografisUpdate'])->name('update');
             Route::delete('/{id}', [GaleriController::class, 'infografisDestroy'])->name('destroy');
         });
     });
@@ -382,6 +402,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
             Route::get('/', [DataInformasiController::class, 'berhakLunasIndex'])->name('index');
             Route::get('/create', [DataInformasiController::class, 'berhakLunasCreate'])->name('create');
             Route::post('/create', [DataInformasiController::class, 'berhakLunasStore'])->name('store');
+            Route::post('/import', [DataInformasiController::class, 'berhakLunasImport'])->name('import');
             Route::get('/{id}/edit', [DataInformasiController::class, 'berhakLunasEdit'])->name('edit');
             Route::post('/{id}/edit', [DataInformasiController::class, 'berhakLunasUpdate'])->name('update');
             Route::delete('/{id}', [DataInformasiController::class, 'berhakLunasDestroy'])->name('destroy');

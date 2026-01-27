@@ -43,13 +43,6 @@
         @csrf
         
         <div style="margin-bottom: 24px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Nama <span style="color: #ef4444;">*</span></label>
-            <input type="text" name="nama" value="{{ old('nama', $data->nama) }}" required
-                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
-                   placeholder="Nama jamaah">
-        </div>
-
-        <div style="margin-bottom: 24px;">
             <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Nomor Porsi <span style="color: #ef4444;">*</span></label>
             <input type="text" name="nomor_porsi" value="{{ old('nomor_porsi', $data->nomor_porsi) }}" required
                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
@@ -57,27 +50,53 @@
         </div>
 
         <div style="margin-bottom: 24px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Provinsi <span style="color: #ef4444;">*</span></label>
-            <input type="text" name="provinsi" value="{{ old('provinsi', $data->provinsi) }}" required
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Nama <span style="color: #ef4444;">*</span></label>
+            <input type="text" name="nama" value="{{ old('nama', $data->nama) }}" required
                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
-                   placeholder="Jawa Barat">
+                   placeholder="Nama jamaah">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Nama Ayah</label>
+            <input type="text" name="nama_ayah" value="{{ old('nama_ayah', $data->nama_ayah) }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                   placeholder="Nama ayah">
         </div>
 
         <div style="margin-bottom: 24px;">
             <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Status <span style="color: #ef4444;">*</span></label>
             <select name="status" required
                     style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: white;">
-                <option value="Berhak Lunas" {{ old('status', $data->status) == 'Berhak Lunas' ? 'selected' : '' }}>Berhak Lunas</option>
-                <option value="Menunggu" {{ old('status', $data->status) == 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
-                <option value="Tidak Berhak" {{ old('status', $data->status) == 'Tidak Berhak' ? 'selected' : '' }}>Tidak Berhak</option>
+                <option value="Cadangan" {{ old('status', $data->status) == 'Cadangan' ? 'selected' : '' }}>Cadangan</option>
+                <option value="Bukan Cadangan" {{ old('status', $data->status) == 'Bukan Cadangan' ? 'selected' : '' }}>Bukan Cadangan</option>
             </select>
         </div>
 
         <div style="margin-bottom: 24px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Urutan</label>
-            <input type="number" name="order" value="{{ old('order', $data->order) }}" min="0"
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Keterangan</label>
+            <select name="keterangan"
+                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: white;">
+                <option value="">-- Pilih --</option>
+                <option value="Siap Berangkat" {{ old('keterangan', $data->keterangan) == 'Siap Berangkat' ? 'selected' : '' }}>Siap Berangkat</option>
+                <option value="Meninggal" {{ old('keterangan', $data->keterangan) == 'Meninggal' ? 'selected' : '' }}>Meninggal</option>
+                <option value="Tunda Berangkat" {{ old('keterangan', $data->keterangan) == 'Tunda Berangkat' ? 'selected' : '' }}>Tunda Berangkat</option>
+                <option value="Tersambung" {{ old('keterangan', $data->keterangan) == 'Tersambung' ? 'selected' : '' }}>Tersambung</option>
+                <option value="Gak Nyambung" {{ old('keterangan', $data->keterangan) == 'Gak Nyambung' ? 'selected' : '' }}>Gak Nyambung</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">KBIHU</label>
+            <input type="text" name="kbihu" value="{{ old('kbihu', $data->kbihu) }}"
                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
-                   placeholder="0">
+                   placeholder="KBIHU">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Nomor Paspor</label>
+            <input type="text" name="nomor_paspor" value="{{ old('nomor_paspor', $data->nomor_paspor) }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                   placeholder="Nomor paspor">
         </div>
 
         <div style="display: flex; gap: 12px; margin-top: 32px;">

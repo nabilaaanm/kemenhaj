@@ -105,6 +105,10 @@
                                 {{ $foto->created_at->format('d/m/Y') }}
                             </td>
                             <td style="padding: 12px; text-align: center;">
+                                <a href="{{ route('admin.galeri.foto.edit', $foto->id) }}"
+                                   style="padding: 6px 12px; background-color: #3b82f6; color: white; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; display: inline-block; margin-right: 6px;">
+                                    Edit
+                                </a>
                                 <form action="{{ route('admin.galeri.foto.destroy', $foto->id) }}" method="POST" 
                                       onsubmit="return confirm('Apakah Anda yakin ingin menghapus foto ini?');" style="display: inline;">
                                     @csrf

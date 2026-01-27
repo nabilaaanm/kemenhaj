@@ -14,8 +14,7 @@ class DataInformasiController extends Controller
     // ==================== BERHAK LUNAS ====================
     public function berhakLunasIndex()
     {
-        $data = BerhakLunas::orderBy('order', 'asc')
-            ->orderBy('created_at', 'desc')
+        $data = BerhakLunas::orderBy('created_at', 'desc')
             ->get();
         
         return view('admin.data-informasi.berhak-lunas.index', compact('data'));
@@ -31,23 +30,26 @@ class DataInformasiController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'nomor_porsi' => 'required|string|max:255',
-            'provinsi' => 'required|string|max:255',
-            'status' => 'required|in:Berhak Lunas,Menunggu,Tidak Berhak',
-            'order' => 'nullable|integer|min:0',
+            'nama_ayah' => 'nullable|string|max:255',
+            'status' => 'required|in:Cadangan,Bukan Cadangan',
+            'keterangan' => 'nullable|in:Siap Berangkat,Meninggal,Tunda Berangkat, Tersambung, Gak Nyambung',
+            'kbihu' => 'nullable|string|max:255',
+            'nomor_paspor' => 'nullable|string|max:255',
         ], [
             'nama.required' => 'Nama wajib diisi',
             'nomor_porsi.required' => 'Nomor porsi wajib diisi',
-            'provinsi.required' => 'Provinsi wajib diisi',
             'status.required' => 'Status wajib diisi',
         ]);
 
         try {
             BerhakLunas::create([
                 'nama' => $request->nama,
+                'nama_ayah' => $request->nama_ayah,
                 'nomor_porsi' => $request->nomor_porsi,
-                'provinsi' => $request->provinsi,
                 'status' => $request->status,
-                'order' => $request->order ?? 0,
+                'keterangan' => $request->keterangan,
+                'kbihu' => $request->kbihu,
+                'nomor_paspor' => $request->nomor_paspor,
                 'is_active' => true,
             ]);
 
@@ -70,23 +72,26 @@ class DataInformasiController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'nomor_porsi' => 'required|string|max:255',
-            'provinsi' => 'required|string|max:255',
-            'status' => 'required|in:Berhak Lunas,Menunggu,Tidak Berhak',
-            'order' => 'nullable|integer|min:0',
+            'nama_ayah' => 'nullable|string|max:255',
+            'status' => 'required|in:Cadangan,Bukan Cadangan',
+            'keterangan' => 'nullable|in:Siap Berangkat,Meninggal,Tunda Berangkat, Tersambung, Gak Nyambung',
+            'kbihu' => 'nullable|string|max:255',
+            'nomor_paspor' => 'nullable|string|max:255',
         ], [
             'nama.required' => 'Nama wajib diisi',
             'nomor_porsi.required' => 'Nomor porsi wajib diisi',
-            'provinsi.required' => 'Provinsi wajib diisi',
             'status.required' => 'Status wajib diisi',
         ]);
 
         try {
             $data->update([
                 'nama' => $request->nama,
+                'nama_ayah' => $request->nama_ayah,
                 'nomor_porsi' => $request->nomor_porsi,
-                'provinsi' => $request->provinsi,
                 'status' => $request->status,
-                'order' => $request->order ?? 0,
+                'keterangan' => $request->keterangan,
+                'kbihu' => $request->kbihu,
+                'nomor_paspor' => $request->nomor_paspor,
             ]);
 
             return redirect()->route('admin.data-informasi.berhak-lunas.index')->with('success', 'Data berhak lunas berhasil diperbarui');
@@ -104,6 +109,144 @@ class DataInformasiController extends Controller
             return redirect()->route('admin.data-informasi.berhak-lunas.index')->with('success', 'Data berhak lunas berhasil dihapus');
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
+    }
+
+    public function berhakLunasImport(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv',
+        ], [
+            'file.required' => 'File Excel wajib diunggah',
+            'file.mimes' => 'Format file harus .xlsx, .xls, atau .csv',
+        ]);
+
+        try {
+            $filePath = $request->file('file')->getRealPath();
+            $spreadsheet = IOFactory::load($filePath);
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = array_values($sheet->toArray(null, true, true, true));
+
+            if (count($rows) < 2) {
+                return back()->with('error', 'File tidak memiliki data untuk diimpor.');
+            }
+            $headerRowIndex = null;
+            $bestScore = 0;
+            $scanLimit = min(5, count($rows));
+            $knownHeaders = [
+                'nomor porsi', 'no porsi', 'no. porsi', 'nomor',
+                'nama', 'nama jamaah', 'nama jemaah',
+                'keterangan', 'ket',
+                'kbihu',
+                'nomor paspor', 'no paspor', 'no. paspor', 'paspor',
+                'nama ayah', 'ayah', 'nm ayah', 'nm_ayah',
+                'status',
+            ];
+            for ($i = 0; $i < $scanLimit; $i++) {
+                $candidate = $rows[$i] ?? [];
+                $headerMapCandidate = [];
+                foreach ($candidate as $col => $value) {
+                    $key = $this->normalizeHeader($value);
+                    if ($key !== '') {
+                        $headerMapCandidate[$key] = $col;
+                    }
+                }
+                $score = 0;
+                foreach ($knownHeaders as $header) {
+                    if (isset($headerMapCandidate[$this->normalizeHeader($header)])) {
+                        $score++;
+                    }
+                }
+                if ($score > $bestScore) {
+                    $bestScore = $score;
+                    $headerRowIndex = $i;
+                }
+            }
+
+            if ($headerRowIndex === null || $bestScore === 0) {
+                return back()->with('error', 'Header tidak ditemukan. Pastikan file memiliki kolom: Nomor Porsi dan Nama.');
+            }
+
+            $headerRow = $rows[$headerRowIndex];
+            $rows = array_slice($rows, $headerRowIndex + 1);
+            $headerMap = [];
+            foreach ($headerRow as $col => $value) {
+                $key = $this->normalizeHeader($value);
+                if ($key !== '') {
+                    $headerMap[$key] = $col;
+                }
+            }
+
+            $colNomor = $this->resolveColumn($headerMap, ['nomor porsi', 'no porsi', 'no. porsi', 'nomor']);
+            $colNama = $this->resolveColumn($headerMap, ['nama', 'nama jamaah', 'nama jemaah']);
+            $colKeterangan = $this->resolveColumn($headerMap, ['keterangan', 'ket']);
+            $colKbihu = $this->resolveColumn($headerMap, ['kbihu']);
+            $colPaspor = $this->resolveColumn($headerMap, ['nomor paspor', 'no paspor', 'no. paspor', 'paspor']);
+            $colNamaAyah = $this->resolveColumn($headerMap, ['nama ayah', 'ayah', 'nm ayah', 'nm_ayah']);
+            $colStatus = $this->resolveColumn($headerMap, ['status']);
+
+            if ($colNomor === null || $colNama === null) {
+                return back()->with('error', 'Kolom wajib tidak ditemukan. Pastikan ada kolom: Nomor Porsi dan Nama.');
+            }
+
+            $inserted = 0;
+            $skipped = 0;
+
+            foreach ($rows as $row) {
+                $nomorPorsi = trim((string) ($row[$colNomor] ?? ''));
+                $nama = trim((string) ($row[$colNama] ?? ''));
+                $namaAyah = $colNamaAyah ? trim((string) ($row[$colNamaAyah] ?? '')) : '';
+                $statusRaw = $colStatus ? strtoupper(trim((string) ($row[$colStatus] ?? ''))) : '';
+                $keteranganRaw = $colKeterangan ? strtoupper(trim((string) ($row[$colKeterangan] ?? ''))) : '';
+                $kbihu = $colKbihu ? trim((string) ($row[$colKbihu] ?? '')) : '';
+                $paspor = $colPaspor ? trim((string) ($row[$colPaspor] ?? '')) : '';
+
+                if ($nama === '' || $nomorPorsi === '') {
+                    $skipped++;
+                    continue;
+                }
+
+                $status = match (true) {
+                    $statusRaw === 'CADANGAN' => 'Cadangan',
+                    $statusRaw === 'BUKAN CADANGAN' => 'Bukan Cadangan',
+                    $statusRaw === 'MENUNGGU' => 'Cadangan',
+                    $statusRaw === 'BERHAK LUNAS' => 'Bukan Cadangan',
+                    $statusRaw === 'TIDAK BERHAK' => 'Bukan Cadangan',
+                    default => 'Cadangan',
+                };
+                $keterangan = match (true) {
+                    $keteranganRaw === '' => null,
+                    str_contains($keteranganRaw, 'SIAP') => 'Siap Berangkat',
+                    str_contains($keteranganRaw, 'MENINGGAL') => 'Meninggal',
+                    str_contains($keteranganRaw, 'TUNDA') => 'Tunda Berangkat',
+                    str_contains($keteranganRaw, 'TERSAMBUNG') => 'Tersambung',
+                    str_contains($keteranganRaw, 'GAK NYAMBUNG') => 'Gak Nyambung',
+                    str_contains($keteranganRaw, 'GAK') => 'Gak Nyambung',
+                    str_contains($keteranganRaw, 'NYAMBUNG') => 'Tersambung',
+                    default => null,
+                };
+                BerhakLunas::create([
+                    'nama' => $nama,
+                    'nama_ayah' => $namaAyah !== '' ? $namaAyah : null,
+                    'nomor_porsi' => $nomorPorsi,
+                    'status' => $status,
+                    'keterangan' => $keterangan,
+                    'kbihu' => $kbihu !== '' ? $kbihu : null,
+                    'nomor_paspor' => $paspor !== '' ? $paspor : null,
+                    'is_active' => true,
+                ]);
+
+                $inserted++;
+            }
+
+            if ($inserted === 0) {
+                return back()->with('error', 'Tidak ada data valid untuk diimpor. Pastikan kolom Nomor Porsi dan Nama terisi.');
+            }
+
+            return redirect()->route('admin.data-informasi.berhak-lunas.index')
+                ->with('success', "Import selesai: {$inserted} data ditambahkan, {$skipped} baris dilewati.");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal import: ' . $e->getMessage());
         }
     }
 
@@ -316,13 +459,20 @@ class DataInformasiController extends Controller
     private function resolveColumn(array $headerMap, array $aliases): ?string
     {
         foreach ($aliases as $alias) {
-            $key = strtolower(trim($alias));
+            $key = $this->normalizeHeader($alias);
             if (isset($headerMap[$key])) {
                 return $headerMap[$key];
             }
         }
 
         return null;
+    }
+
+    private function normalizeHeader($value): string
+    {
+        $key = strtolower(trim((string) $value));
+        $key = preg_replace('/\s+/', ' ', $key) ?? '';
+        return trim($key);
     }
 
     private function buildMapsUrl($mapsUrl, $latitude, $longitude): ?string

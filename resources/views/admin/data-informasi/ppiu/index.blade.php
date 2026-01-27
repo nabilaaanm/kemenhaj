@@ -5,11 +5,11 @@
 
 @section('content')
 <div class="card">
-    <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 24px;">
+    <div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-bottom: 24px;">
         <button type="button" id="ppiuImportButton"
                 style="padding: 10px 20px; background-color: #f3f4f6; color: #374151; border-radius: 8px; border: 1px solid #e5e7eb; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; cursor: pointer;">
-            <svg style="width: 18px; height: 18px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m0 0l3.5-3.5M12 16l-3.5-3.5M4 20h16"/>
+            <svg style="width: 20px; height: 20px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 12v7m0 0l3-3m-3 3l-3-3M8 7h8a2 2 0 012 2v3H6V9a2 2 0 012-2z"/>
             </svg>
             Import Excel
         </button>
@@ -130,32 +130,20 @@
     @endif
 </div>
 
-<div id="ppiuImportModal" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 60;">
-    <div style="background: white; width: 100%; max-width: 520px; border-radius: 14px; padding: 20px; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #111827;">Import Data PPIU</h3>
-            <button type="button" id="ppiuImportClose" style="border: none; background: transparent; font-size: 20px; cursor: pointer; color: #6b7280;">&times;</button>
-        </div>
-        <p style="margin: 0 0 16px; color: #6b7280; font-size: 14px;">
-            Unggah file Excel (.xlsx/.xls/.csv) untuk menambahkan data secara massal.
+<div id="ppiuImportModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 9999; align-items: center; justify-content: center; padding: 24px;">
+    <div style="background: #fff; width: 100%; max-width: 520px; border-radius: 16px; padding: 24px; position: relative; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);">
+        <button type="button" id="ppiuImportClose" style="position: absolute; top: 14px; right: 14px; background: transparent; border: none; font-size: 18px; cursor: pointer;">✕</button>
+        <h3 style="font-size: 18px; font-weight: 700; color: #1f2937; margin-bottom: 8px;">Import Data PPIU</h3>
+        <p style="font-size: 13px; color: #6b7280; margin-bottom: 16px;">
+            Unggah file .xls, .xlsx, atau .csv. Kolom yang didukung: Nama, Direktur, Alamat Cabang, No Telp, Terakreditasi, Latitude, Longitude, Maps Url.
         </p>
         <form action="{{ route('admin.data-informasi.ppiu.import') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">File Excel</label>
-            <input type="file" name="file" accept=".xlsx,.xls,.csv"
-                   style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff;">
-            <div style="margin-top: 8px; font-size: 12px; color: #9ca3af;">
-                Kolom yang dibaca: Nama, Direktur, Alamat Cabang, No Telp, Terakreditasi, Latitude, Longitude, Maps Url.
-            </div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
-                <button type="button" id="ppiuImportCancel"
-                        style="padding: 10px 16px; border: 1px solid #e5e7eb; background: #f9fafb; border-radius: 8px; cursor: pointer;">
-                    Batal
-                </button>
-                <button type="submit"
-                        style="padding: 10px 18px; background: #ECB176; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
-                    Upload & Import
-                </button>
+            <input type="file" name="file" accept=".xlsx,.xls,.csv" required
+                   style="width: 100%; padding: 12px; border: 1px dashed #cbd5f5; border-radius: 10px; background: #f8fafc; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                <button type="button" id="ppiuImportCancel" style="padding: 8px 14px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; cursor: pointer;">Batal</button>
+                <button type="submit" style="padding: 8px 14px; border: 1px solid #e5e7eb; border-radius: 8px; background: #f3f4f6; color: #374151; font-weight: 600; cursor: pointer;">Import</button>
             </div>
         </form>
     </div>

@@ -157,6 +157,31 @@
         padding-right: 24px;
         box-sizing: border-box;
     }
+    header.site-header {
+        border-color: var(--color-primary) !important;
+        background: #ffffff !important;
+        position: relative;
+    }
+    header.site-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 8px;
+        background-color: var(--color-primary);
+        background-image:
+            radial-gradient(circle at 8% 50%, rgba(255, 255, 255, 0.45) 0 2px, transparent 3px),
+            radial-gradient(circle at 16% 20%, rgba(255, 255, 255, 0.35) 0 1.5px, transparent 3px),
+            radial-gradient(circle at 24% 70%, rgba(255, 255, 255, 0.28) 0 2px, transparent 3px),
+            radial-gradient(circle at 36% 35%, rgba(255, 255, 255, 0.4) 0 1.5px, transparent 3px),
+            radial-gradient(circle at 48% 60%, rgba(255, 255, 255, 0.3) 0 2px, transparent 3px),
+            radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.35) 0 1.5px, transparent 3px),
+            radial-gradient(circle at 72% 55%, rgba(255, 255, 255, 0.3) 0 2px, transparent 3px),
+            radial-gradient(circle at 84% 25%, rgba(255, 255, 255, 0.4) 0 1.5px, transparent 3px),
+            radial-gradient(circle at 92% 65%, rgba(255, 255, 255, 0.3) 0 2px, transparent 3px);
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+    }
     .footer-container {
         max-width: 1280px;
         margin: 0 auto;
@@ -168,6 +193,170 @@
     .dropdown-content {
         margin-top: 0 !important;
         z-index: 9999 !important;
+    }
+    .accessibility-widget {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-end;
+        font-family: inherit;
+    }
+    .accessibility-toggle {
+        width: 56px;
+        height: 56px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        background: linear-gradient(140deg, var(--color-primary), var(--color-primary-light));
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 16px 36px rgba(15, 23, 42, 0.25);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .accessibility-toggle::after {
+        content: '';
+        position: absolute;
+        inset: 2px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        pointer-events: none;
+    }
+    .accessibility-toggle:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.3);
+    }
+    .accessibility-panel {
+        display: none;
+        width: 280px;
+        background: var(--card-bg);
+        color: var(--page-text);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 14px;
+        box-shadow: 0 24px 50px rgba(15, 23, 42, 0.25);
+    }
+    .accessibility-panel.active {
+        display: block;
+    }
+    .accessibility-panel h4 {
+        margin: 0 0 8px;
+        font-size: 14px;
+        font-weight: 700;
+        color: inherit;
+    }
+    .accessibility-actions {
+        display: grid;
+        gap: 10px;
+    }
+    .accessibility-btn {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--card-border);
+        background: #f8fafc;
+        color: #111827;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: flex-start;
+        transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    .accessibility-btn:hover {
+        transform: translateY(-1px);
+    }
+    .accessibility-btn.active {
+        background: var(--color-primary-bg);
+        color: var(--color-primary);
+        border-color: var(--color-primary);
+    }
+    .accessibility-underline a {
+        text-decoration: underline !important;
+    }
+    .accessibility-large-cursor * {
+        cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M3 2l6.5 18 2-5 5 5 2.5-2.5-5-5 5-2L3 2z'/%3E%3C/svg%3E") 2 2, auto !important;
+    }
+    .accessibility-line-height {
+        line-height: 1.75 !important;
+    }
+    .accessibility-letter-spacing {
+        letter-spacing: 0.04em !important;
+    }
+    .accessibility-pause-anim *,
+    .accessibility-pause-anim *::before,
+    .accessibility-pause-anim *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+    .accessibility-large-text .header-row {
+        flex-wrap: wrap;
+    }
+    .accessibility-large-text .header-nav {
+        flex-wrap: wrap;
+    }
+    .mobile-menu-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        color: #111827;
+    }
+    .mobile-menu-panel {
+        display: none;
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        max-height: calc(100vh - 64px);
+        overflow-y: auto;
+        background: #ffffff;
+        border-top: 1px solid #e5e7eb;
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+        z-index: 9998;
+        padding: 16px 20px 24px;
+    }
+    .mobile-menu-panel.active {
+        display: block;
+    }
+    .mobile-menu-section {
+        margin-top: 16px;
+    }
+    .mobile-menu-title {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #6b7280;
+        margin-bottom: 8px;
+    }
+    .mobile-menu-link {
+        display: block;
+        padding: 10px 12px;
+        border-radius: 10px;
+        color: #111827;
+        font-weight: 600;
+        text-decoration: none;
+    }
+    .mobile-menu-link:hover {
+        background: var(--color-primary-bg);
+        color: var(--color-primary);
+    }
+    .mobile-search {
+        margin-top: 12px;
     }
     @media (max-width: 640px) {
         .header-container {
@@ -185,9 +374,9 @@
 </script>
 
 <!-- ================= HEADER ================= -->
-<header class="bg-white border-b sticky top-0 z-50 w-full" style="border-color: var(--color-primary); background: linear-gradient(180deg, var(--color-primary-bg), #ffffff 65%);">
+<header class="bg-white border-b sticky top-0 z-50 w-full site-header">
     <div class="header-container">
-        <div class="flex items-center justify-between" style="height: 64px;">
+        <div class="flex items-center justify-between header-row" style="min-height: 64px; height: auto; gap: 12px; padding: 8px 0;">
 
             <!-- Logo -->
             <div class="flex items-center gap-3 flex-shrink-0" style="margin-right: 32px;">
@@ -200,8 +389,16 @@
                 </div>
             </div>
 
+            <div class="flex items-center gap-3 lg:hidden">
+                <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle" aria-expanded="false" aria-controls="mobileMenuPanel">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
             <!-- Navigation -->
-            <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-gray-700 flex-shrink-0" style="margin-right: auto;">
+            <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-gray-700 flex-shrink-0 header-nav" style="margin-right: auto;">
                 <a href="/" class="hover-custom whitespace-nowrap" data-i18n="nav.home">Beranda</a>
                 @foreach($menuHeaderPages as $menuPage)
                     <a href="{{ route('page.show', $menuPage->slug) }}" class="hover-custom whitespace-nowrap">{{ $menuPage->title }}</a>
@@ -341,17 +538,17 @@
             </nav>
 
             <!-- Right -->
-            <div class="flex items-center gap-4 flex-shrink-0" style="margin-left: 24px;">
+            <div class="flex items-center gap-4 flex-shrink-0" style="margin-left: 24px; flex-wrap: nowrap;">
                 {{-- User menu disembunyikan untuk keamanan --}}
                 @if(session('user'))
                     {{-- Menu admin disembunyikan dari header untuk keamanan --}}
                     {{-- Admin dapat mengakses dashboard melalui URL langsung: /admin/dashboard --}}
                 @endif
 
-                <div class="relative hidden md:block" style="min-width: 150px;">
+                <div class="relative hidden md:block" style="min-width: 180px; flex-shrink: 0;">
                     <input type="text" id="searchInput" data-i18n-placeholder="search.placeholder" placeholder="Cari berita"
                         class="border rounded-md pl-9 pr-3 py-1.5 text-sm focus-custom w-full"
-                        style="min-width: 150px;">
+                        style="min-width: 180px; white-space: nowrap;">
                     <svg class="w-4 h-4 absolute left-3 top-2.5 text-gray-400 pointer-events-none"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -363,4 +560,310 @@
         </div>
     </div>
 </header>
+
+<div class="mobile-menu-panel" id="mobileMenuPanel" aria-hidden="true">
+    <div class="mobile-search">
+        <input type="text" placeholder="Cari berita"
+            class="border rounded-lg px-4 py-2 text-sm focus-custom w-full"
+            style="background: #f8fafc; border-color: #e5e7eb;">
+    </div>
+    <div class="mobile-menu-section">
+        <a href="/" class="mobile-menu-link">Beranda</a>
+        @foreach($menuHeaderPages as $menuPage)
+            <a href="{{ route('page.show', $menuPage->slug) }}" class="mobile-menu-link">{{ $menuPage->title }}</a>
+        @endforeach
+    </div>
+    <div class="mobile-menu-section">
+        <div class="mobile-menu-title">Profil</div>
+        <a href="/visi-misi" class="mobile-menu-link">Visi & Misi</a>
+        <a href="/struktur-organisasi" class="mobile-menu-link">Struktur Organisasi</a>
+        <a href="/sejarah" class="mobile-menu-link">Sejarah</a>
+        <a href="/kontak" class="mobile-menu-link">Kontak</a>
+        @foreach($menuProfilPages as $menuPage)
+            <a href="{{ route('page.show', $menuPage->slug) }}" class="mobile-menu-link">{{ $menuPage->title }}</a>
+        @endforeach
+    </div>
+    <div class="mobile-menu-section">
+        <div class="mobile-menu-title">Berita</div>
+        <a href="/berita" class="mobile-menu-link">Berita</a>
+        <a href="/pengumuman" class="mobile-menu-link">Pengumuman</a>
+        <a href="/siaran-pers" class="mobile-menu-link">Siaran Pers</a>
+        <a href="/klarifikasi-hoax" class="mobile-menu-link">Klarifikasi Hoax</a>
+        @foreach($menuBeritaPages as $menuPage)
+            <a href="{{ route('page.show', $menuPage->slug) }}" class="mobile-menu-link">{{ $menuPage->title }}</a>
+        @endforeach
+    </div>
+    <div class="mobile-menu-section">
+        <div class="mobile-menu-title">Layanan</div>
+        <a href="/layanan" class="mobile-menu-link">Layanan</a>
+        @foreach($menuLayananPages as $menuPage)
+            <a href="{{ route('page.show', $menuPage->slug) }}" class="mobile-menu-link">{{ $menuPage->title }}</a>
+        @endforeach
+    </div>
+    <div class="mobile-menu-section">
+        <div class="mobile-menu-title">Data & Informasi</div>
+        <a href="/data-informasi" class="mobile-menu-link">Data dan Informasi</a>
+        @foreach($menuDataInformasiPages as $menuPage)
+            <a href="{{ route('page.show', $menuPage->slug) }}" class="mobile-menu-link">{{ $menuPage->title }}</a>
+        @endforeach
+    </div>
+    <div class="mobile-menu-section">
+        <div class="mobile-menu-title">LK & PIH</div>
+        <a href="/lk-pih" class="mobile-menu-link">LK & PIH</a>
+        @foreach($menuLkPihPages as $menuPage)
+            <a href="{{ route('page.show', $menuPage->slug) }}" class="mobile-menu-link">{{ $menuPage->title }}</a>
+        @endforeach
+    </div>
+    <div class="mobile-menu-section">
+        <div class="mobile-menu-title">Galeri</div>
+        <a href="/foto" class="mobile-menu-link">Foto</a>
+        <a href="/video" class="mobile-menu-link">Video</a>
+        <a href="/infografis" class="mobile-menu-link">Infografis</a>
+        @foreach($menuGaleriPages as $menuPage)
+            <a href="{{ route('page.show', $menuPage->slug) }}" class="mobile-menu-link">{{ $menuPage->title }}</a>
+        @endforeach
+    </div>
+    <div class="mobile-menu-section">
+        <div class="mobile-menu-title">Regulasi</div>
+        <a href="/regulasi" class="mobile-menu-link">Regulasi</a>
+        @foreach($menuRegulasiPages as $menuPage)
+            <a href="{{ route('page.show', $menuPage->slug) }}" class="mobile-menu-link">{{ $menuPage->title }}</a>
+        @endforeach
+    </div>
+</div>
+
+<div class="accessibility-widget" aria-live="polite">
+    <button type="button" class="accessibility-toggle" id="accessibilityToggle" aria-expanded="false" aria-controls="accessibilityPanel" title="Menu Aksesibilitas">
+        <svg style="width: 28px; height: 28px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4a2.5 2.5 0 100 5 2.5 2.5 0 000-5zm0 6.5v9m-5 0h10m-5-9l-3 4m3-4l3 4"/>
+        </svg>
+    </button>
+    <div class="accessibility-panel" id="accessibilityPanel" role="dialog" aria-label="Menu Aksesibilitas">
+        <h4>Menu Aksesibilitas</h4>
+        <div class="accessibility-actions">
+            <button type="button" class="accessibility-btn" id="accIncrease">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12h12M12 6v12"/>
+                </svg>
+                Perbesar Teks
+            </button>
+            <button type="button" class="accessibility-btn" id="accDecrease">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12h12"/>
+                </svg>
+                Perkecil Teks
+            </button>
+            <button type="button" class="accessibility-btn" id="accContrast">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4a8 8 0 100 16V4z"/>
+                </svg>
+                Kontras Tinggi
+            </button>
+            <button type="button" class="accessibility-btn" id="accGrayscale">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4a8 8 0 018 8m-8-8a8 8 0 000 16m0-16v16"/>
+                </svg>
+                Grayscale
+            </button>
+            <button type="button" class="accessibility-btn" id="accUnderline">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4v6a4 4 0 108 0V4M5 20h14"/>
+                </svg>
+                Garis Bawah Tautan
+            </button>
+            <button type="button" class="accessibility-btn" id="accLineHeight">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 6h14M5 12h14M5 18h10"/>
+                </svg>
+                Tinggi Baris
+            </button>
+            <button type="button" class="accessibility-btn" id="accLetterSpacing">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h4m8 0h4M8 6l4 12m4-12l-4 12"/>
+                </svg>
+                Spasi Huruf
+            </button>
+            <button type="button" class="accessibility-btn" id="accCursor">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4l7 16 2-6 6 4-7-16-8 2z"/>
+                </svg>
+                Kursor Besar
+            </button>
+            <button type="button" class="accessibility-btn" id="accPauseAnim">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4h4v16H7zm6 0h4v16h-4z"/>
+                </svg>
+                Hentikan Animasi
+            </button>
+            <button type="button" class="accessibility-btn" id="accReset">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v6h6M20 20v-6h-6M6 18A7 7 0 0118 6"/>
+                </svg>
+                Reset
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const toggle = document.getElementById('accessibilityToggle');
+        const panel = document.getElementById('accessibilityPanel');
+        if (!toggle || !panel) return;
+
+        const settingsKey = 'accessibilitySettings';
+        const defaultSettings = {
+            fontScale: 100,
+            contrast: false,
+            grayscale: false,
+            underline: false,
+            lineHeight: false,
+            letterSpacing: false,
+            cursor: false,
+            pauseAnim: false
+        };
+        const loadSettings = () => {
+            try {
+                const raw = localStorage.getItem(settingsKey);
+                return raw ? { ...defaultSettings, ...JSON.parse(raw) } : { ...defaultSettings };
+            } catch (e) {
+                return { ...defaultSettings };
+            }
+        };
+        const saveSettings = (settings) => {
+            localStorage.setItem(settingsKey, JSON.stringify(settings));
+        };
+        const settings = loadSettings();
+
+        const applySettings = () => {
+            document.documentElement.style.fontSize = settings.fontScale + '%';
+            document.documentElement.classList.toggle('accessibility-large-text', settings.fontScale > 100);
+            document.documentElement.classList.toggle('accessibility-underline', settings.underline);
+            document.documentElement.classList.toggle('accessibility-line-height', settings.lineHeight);
+            document.documentElement.classList.toggle('accessibility-letter-spacing', settings.letterSpacing);
+            document.documentElement.classList.toggle('accessibility-large-cursor', settings.cursor);
+            document.documentElement.classList.toggle('accessibility-pause-anim', settings.pauseAnim);
+
+            const filters = [];
+            if (settings.contrast) filters.push('contrast(1.15)');
+            if (settings.grayscale) filters.push('grayscale(1)');
+            document.body.style.filter = filters.length ? filters.join(' ') : 'none';
+
+            document.getElementById('accContrast')?.classList.toggle('active', settings.contrast);
+            document.getElementById('accGrayscale')?.classList.toggle('active', settings.grayscale);
+            document.getElementById('accUnderline')?.classList.toggle('active', settings.underline);
+            document.getElementById('accLineHeight')?.classList.toggle('active', settings.lineHeight);
+            document.getElementById('accLetterSpacing')?.classList.toggle('active', settings.letterSpacing);
+            document.getElementById('accCursor')?.classList.toggle('active', settings.cursor);
+            document.getElementById('accPauseAnim')?.classList.toggle('active', settings.pauseAnim);
+        };
+
+        applySettings();
+
+        const setPanel = (open) => {
+            panel.classList.toggle('active', open);
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        };
+
+        toggle.addEventListener('click', () => {
+            setPanel(!panel.classList.contains('active'));
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!panel.contains(event.target) && !toggle.contains(event.target)) {
+                setPanel(false);
+            }
+        });
+
+        document.getElementById('accIncrease')?.addEventListener('click', () => {
+            settings.fontScale = Math.min(settings.fontScale + 10, 130);
+            saveSettings(settings);
+            applySettings();
+        });
+
+        document.getElementById('accDecrease')?.addEventListener('click', () => {
+            settings.fontScale = Math.max(settings.fontScale - 10, 90);
+            saveSettings(settings);
+            applySettings();
+        });
+
+        document.getElementById('accContrast')?.addEventListener('click', () => {
+            settings.contrast = !settings.contrast;
+            saveSettings(settings);
+            applySettings();
+        });
+
+        document.getElementById('accGrayscale')?.addEventListener('click', () => {
+            settings.grayscale = !settings.grayscale;
+            saveSettings(settings);
+            applySettings();
+        });
+
+        document.getElementById('accUnderline')?.addEventListener('click', () => {
+            settings.underline = !settings.underline;
+            saveSettings(settings);
+            applySettings();
+        });
+
+        document.getElementById('accLineHeight')?.addEventListener('click', () => {
+            settings.lineHeight = !settings.lineHeight;
+            saveSettings(settings);
+            applySettings();
+        });
+
+        document.getElementById('accLetterSpacing')?.addEventListener('click', () => {
+            settings.letterSpacing = !settings.letterSpacing;
+            saveSettings(settings);
+            applySettings();
+        });
+
+        document.getElementById('accCursor')?.addEventListener('click', () => {
+            settings.cursor = !settings.cursor;
+            saveSettings(settings);
+            applySettings();
+        });
+
+        document.getElementById('accPauseAnim')?.addEventListener('click', () => {
+            settings.pauseAnim = !settings.pauseAnim;
+            saveSettings(settings);
+            applySettings();
+        });
+
+        document.getElementById('accReset')?.addEventListener('click', () => {
+            settings.fontScale = defaultSettings.fontScale;
+            settings.contrast = defaultSettings.contrast;
+            settings.grayscale = defaultSettings.grayscale;
+            settings.underline = defaultSettings.underline;
+            settings.lineHeight = defaultSettings.lineHeight;
+            settings.letterSpacing = defaultSettings.letterSpacing;
+            settings.cursor = defaultSettings.cursor;
+            settings.pauseAnim = defaultSettings.pauseAnim;
+            saveSettings(settings);
+            applySettings();
+        });
+    })();
+</script>
+<script>
+    (function () {
+        const toggle = document.getElementById('mobileMenuToggle');
+        const panel = document.getElementById('mobileMenuPanel');
+        if (!toggle || !panel) return;
+
+        const setOpen = (open) => {
+            panel.classList.toggle('active', open);
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+        };
+
+        toggle.addEventListener('click', () => {
+            setOpen(!panel.classList.contains('active'));
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!panel.contains(event.target) && !toggle.contains(event.target)) {
+                setOpen(false);
+            }
+        });
+    })();
+</script>
 

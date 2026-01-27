@@ -45,13 +45,7 @@
         @csrf
         @method('PUT')
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
-            <div>
-                <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Badge</label>
-                <input type="text" name="badge" value="{{ old('badge', $slide->badge) }}"
-                       style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
-                       placeholder="Contoh: Berita Terkini">
-            </div>
+        <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px;">
             <div>
                 <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Urutan</label>
                 <input type="number" name="order" value="{{ old('order', $slide->order) }}" min="0"
