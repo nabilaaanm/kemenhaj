@@ -358,6 +358,97 @@
     .mobile-search {
         margin-top: 12px;
     }
+    .whatsapp-chat {
+        position: fixed;
+        right: 22px;
+        bottom: 92px;
+        z-index: 10000;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: var(--color-primary);
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 13px;
+        text-decoration: none;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.2);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .whatsapp-chat:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 36px rgba(15, 23, 42, 0.28);
+    }
+    .whatsapp-chat .wa-icon {
+        width: 22px;
+        height: 22px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--color-primary-dark);
+        border-radius: 999px;
+    }
+    .whatsapp-bot {
+        position: fixed;
+        right: 22px;
+        bottom: 160px;
+        z-index: 10000;
+        width: 320px;
+        max-width: calc(100vw - 32px);
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+        border: 1px solid #e5e7eb;
+        display: none;
+        overflow: hidden;
+    }
+    .whatsapp-bot.active {
+        display: block;
+    }
+    .whatsapp-bot-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+        background: var(--color-primary);
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 13px;
+    }
+    .whatsapp-bot-body {
+        padding: 12px 14px;
+        font-size: 13px;
+        color: #111827;
+        background: #f8fafc;
+    }
+    .whatsapp-bot-input {
+        display: flex;
+        gap: 8px;
+        padding: 10px;
+        background: #ffffff;
+        border-top: 1px solid #e5e7eb;
+    }
+    .whatsapp-bot-input input {
+        flex: 1;
+        border: 1px solid #e5e7eb;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 13px;
+        outline: none;
+    }
+    .whatsapp-bot-send {
+        width: 38px;
+        height: 38px;
+        border-radius: 999px;
+        border: none;
+        background: var(--color-primary);
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
     @media (max-width: 640px) {
         .header-container {
             padding-left: 16px;
@@ -632,6 +723,39 @@
     </div>
 </div>
 
+@php
+    $whatsappNumber = '6289507069859';
+    $whatsappMessage = 'Halo, saya ingin bertanya.';
+    $waUrl = 'https://wa.me/' . $whatsappNumber . '?text=' . urlencode($whatsappMessage);
+@endphp
+
+<div class="whatsapp-bot" id="whatsappBot">
+    <div class="whatsapp-bot-header">
+        Chat WhatsApp
+        <button type="button" id="whatsappBotClose" style="background: transparent; border: none; color: #ffffff; font-size: 16px; cursor: pointer;">×</button>
+    </div>
+    <div class="whatsapp-bot-body">
+        Halo! Tulis pesan Anda, nanti langsung terkirim ke WhatsApp kami.
+    </div>
+    <div class="whatsapp-bot-input">
+        <input type="text" id="whatsappBotInput" placeholder="Tulis pesan...">
+        <button type="button" class="whatsapp-bot-send" id="whatsappBotSend" aria-label="Kirim pesan">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<a href="{{ $waUrl }}" class="whatsapp-chat" id="whatsappChatToggle" target="_blank" rel="noopener">
+    <span class="wa-icon">
+        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.52 3.48A11.82 11.82 0 0012 0 12 12 0 001.54 17.6L0 24l6.58-1.52A12 12 0 0012 24h.02a12 12 0 008.5-20.52zM12 22a10 10 0 01-5.1-1.4l-.36-.2-3.9.9.9-3.8-.24-.38A10 10 0 1112 22zm5.62-7.52c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.95 1.16-.17.2-.34.22-.64.07-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.8-1.68-2.1-.17-.3-.02-.46.13-.61.13-.13.3-.34.45-.5.15-.17.2-.3.3-.5.1-.2.05-.38-.02-.53-.07-.15-.67-1.6-.92-2.2-.24-.58-.5-.5-.67-.5h-.57c-.2 0-.53.08-.8.38-.27.3-1.05 1.03-1.05 2.5 0 1.48 1.08 2.92 1.23 3.12.15.2 2.12 3.23 5.15 4.53.72.31 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.09 1.75-.72 2-1.42.25-.7.25-1.3.18-1.42-.07-.12-.26-.2-.56-.35z"/>
+        </svg>
+    </span>
+    Chat WhatsApp
+</a>
+
 <div class="accessibility-widget" aria-live="polite">
     <button type="button" class="accessibility-toggle" id="accessibilityToggle" aria-expanded="false" aria-controls="accessibilityPanel" title="Menu Aksesibilitas">
         <svg style="width: 28px; height: 28px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -862,6 +986,46 @@
         document.addEventListener('click', (event) => {
             if (!panel.contains(event.target) && !toggle.contains(event.target)) {
                 setOpen(false);
+            }
+        });
+    })();
+</script>
+<script>
+    (function () {
+        const bot = document.getElementById('whatsappBot');
+        const openBtn = document.getElementById('whatsappChatToggle');
+        const closeBtn = document.getElementById('whatsappBotClose');
+        const input = document.getElementById('whatsappBotInput');
+        const sendBtn = document.getElementById('whatsappBotSend');
+        if (!bot || !openBtn) return;
+
+        const openBot = (event) => {
+            event.preventDefault();
+            bot.classList.add('active');
+            input?.focus();
+        };
+        const closeBot = () => {
+            bot.classList.remove('active');
+        };
+        const sendMessage = () => {
+            const text = (input?.value || '').trim();
+            if (!text) return;
+            const url = 'https://wa.me/6289507069859?text=' + encodeURIComponent(text);
+            window.open(url, '_blank');
+        };
+
+        openBtn.addEventListener('click', openBot);
+        closeBtn?.addEventListener('click', closeBot);
+        sendBtn?.addEventListener('click', sendMessage);
+        input?.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+        document.addEventListener('click', (event) => {
+            if (!bot.contains(event.target) && !openBtn.contains(event.target)) {
+                closeBot();
             }
         });
     })();
