@@ -20,7 +20,9 @@ return new class extends Migration
             ->whereIn('status', ['Berhak Lunas', 'Tidak Berhak'])
             ->update(['status' => 'Bukan Cadangan']);
 
-        DB::statement("ALTER TABLE `berhak_lunas` MODIFY `status` ENUM('Cadangan','Bukan Cadangan') NOT NULL DEFAULT 'Cadangan'");
+        if (Schema::getConnection()->getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE `berhak_lunas` MODIFY `status` ENUM('Cadangan','Bukan Cadangan') NOT NULL DEFAULT 'Cadangan'");
+        }
     }
 
     public function down(): void
@@ -37,6 +39,8 @@ return new class extends Migration
             ->where('status', 'Bukan Cadangan')
             ->update(['status' => 'Berhak Lunas']);
 
-        DB::statement("ALTER TABLE `berhak_lunas` MODIFY `status` ENUM('Berhak Lunas','Menunggu','Tidak Berhak') NOT NULL DEFAULT 'Berhak Lunas'");
+        if (Schema::getConnection()->getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE `berhak_lunas` MODIFY `status` ENUM('Berhak Lunas','Menunggu','Tidak Berhak') NOT NULL DEFAULT 'Berhak Lunas'");
+        }
     }
 };
