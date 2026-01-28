@@ -6,7 +6,8 @@
     <link rel="icon" type="image/png" href="{{ asset('image/lambang.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('image/lambang.png') }}">
     <title>Kementerian Haji dan Umrah Kota Cirebon</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('build/assets/app-Byobma2p.css') }}">
+    <script src="{{ asset('build/assets/app-CAiCLEjY.js') }}" defer></script>
     <style>
         * {
             box-sizing: border-box;
