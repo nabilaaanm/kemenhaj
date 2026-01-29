@@ -70,7 +70,7 @@
                             <td style="padding: 12px;">
                                 @if($foto->file_path)
                                     @php
-                                        $fileExists = \Illuminate\Support\Facades\Storage::disk('public')->exists($foto->file_path);
+                                        $fileExists = file_exists(public_path($foto->file_path));
                                         $imageUrl = $fileExists ? asset($foto->file_path) : 'https://via.placeholder.com/80x80/ECB176/FFFFFF?text=File+Missing';
                                     @endphp
                                     <img src="{{ $imageUrl }}" alt="{{ $foto->title }}" 
