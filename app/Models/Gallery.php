@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Gallery extends Model
 {
@@ -30,8 +29,8 @@ class Gallery extends Model
     {
         if ($this->file_path) {
             // Check if file exists in public disk
-            if (Storage::disk('public')->exists($this->file_path)) {
-                return asset('storage/' . $this->file_path);
+            if (file_exists(public_path($this->file_path))) {
+                return asset($this->file_path);
             }
             // If file doesn't exist but path is set, return placeholder
             return 'https://via.placeholder.com/400x300/ECB176/FFFFFF?text=File+Not+Found';
@@ -43,8 +42,8 @@ class Gallery extends Model
     public function getVideoUrlAttribute()
     {
         if ($this->file_path) {
-            if (Storage::disk('public')->exists($this->file_path)) {
-                return asset('storage/' . $this->file_path);
+            if (file_exists(public_path($this->file_path))) {
+                return asset($this->file_path);
             }
             return $this->url;
         }
@@ -55,8 +54,8 @@ class Gallery extends Model
     public function getThumbnailUrlAttribute()
     {
         if ($this->thumbnail) {
-            if (Storage::disk('public')->exists($this->thumbnail)) {
-                return asset('storage/' . $this->thumbnail);
+            if (file_exists(public_path($this->thumbnail))) {
+                return asset($this->thumbnail);
             }
         }
         if ($this->file_path && $this->type === 'foto') {
@@ -67,8 +66,8 @@ class Gallery extends Model
 
     public function getVideoThumbnailUrlAttribute()
     {
-        if ($this->thumbnail && Storage::disk('public')->exists($this->thumbnail)) {
-            return asset('storage/' . $this->thumbnail);
+        if ($this->thumbnail && file_exists(public_path($this->thumbnail))) {
+            return asset($this->thumbnail);
         }
 
         if (!$this->url) {

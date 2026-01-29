@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Regulation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class RegulasiController extends Controller
@@ -80,13 +79,13 @@ class RegulasiController extends Controller
                 $file = $request->file('file');
                 
                 // Ensure directory exists
-                $directory = 'public/regulations';
-                if (!Storage::exists($directory)) {
-                    Storage::makeDirectory($directory);
+                $directory = public_path('regulations');
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0755, true);
                 }
                 
                 $fileName = 'regulations/' . Str::random(20) . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('', $fileName, 'public');
+                $file->move($directory, basename($fileName));
                 $data['file_path'] = $fileName;
             }
 
@@ -158,20 +157,20 @@ class RegulasiController extends Controller
             // Handle file upload
             if ($request->hasFile('file')) {
                 // Delete old file
-                if ($regulation->file_path && Storage::disk('public')->exists($regulation->file_path)) {
-                    Storage::disk('public')->delete($regulation->file_path);
+                if ($regulation->file_path && file_exists(public_path($regulation->file_path))) {
+                    unlink(public_path($regulation->file_path));
                 }
                 
                 $file = $request->file('file');
                 
                 // Ensure directory exists
-                $directory = 'public/regulations';
-                if (!Storage::exists($directory)) {
-                    Storage::makeDirectory($directory);
+                $directory = public_path('regulations');
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0755, true);
                 }
                 
                 $fileName = 'regulations/' . Str::random(20) . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('', $fileName, 'public');
+                $file->move($directory, basename($fileName));
                 $data['file_path'] = $fileName;
             }
 
@@ -189,8 +188,8 @@ class RegulasiController extends Controller
             $regulation = Regulation::findOrFail($id);
             
             // Delete file if exists
-            if ($regulation->file_path && Storage::disk('public')->exists($regulation->file_path)) {
-                Storage::disk('public')->delete($regulation->file_path);
+            if ($regulation->file_path && file_exists(public_path($regulation->file_path))) {
+                unlink(public_path($regulation->file_path));
             }
             
             $regulation->delete();

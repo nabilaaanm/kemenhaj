@@ -31,6 +31,6 @@ class Slideshow extends Model
             return '';
         }
 
-        return asset('storage/slideshows/' . rawurlencode($this->image_path));
+        return asset('slideshows/' . rawurlencode($this->image_path));
     }
 }

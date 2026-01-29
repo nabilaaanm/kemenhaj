@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class LayananController extends Controller
 {
@@ -52,13 +51,13 @@ class LayananController extends Controller
                 $icon = $request->file('icon');
                 
                 // Ensure directory exists
-                $directory = storage_path('app/public/services');
+                $directory = public_path('services');
                 if (!file_exists($directory)) {
                     mkdir($directory, 0755, true);
                 }
                 
                 $iconName = 'services/' . \Illuminate\Support\Str::random(20) . '.' . $icon->getClientOriginalExtension();
-                $icon->storeAs('', $iconName, 'public');
+                $icon->move($directory, basename($iconName));
                 $data['icon'] = $iconName;
             }
 
@@ -104,20 +103,20 @@ class LayananController extends Controller
             // Handle icon upload
             if ($request->hasFile('icon')) {
                 // Delete old icon
-                if ($service->icon && Storage::disk('public')->exists($service->icon)) {
-                    Storage::disk('public')->delete($service->icon);
+                if ($service->icon && file_exists(public_path($service->icon))) {
+                    unlink(public_path($service->icon));
                 }
                 
                 $icon = $request->file('icon');
                 
                 // Ensure directory exists
-                $directory = storage_path('app/public/services');
+                $directory = public_path('services');
                 if (!file_exists($directory)) {
                     mkdir($directory, 0755, true);
                 }
                 
                 $iconName = 'services/' . \Illuminate\Support\Str::random(20) . '.' . $icon->getClientOriginalExtension();
-                $icon->storeAs('', $iconName, 'public');
+                $icon->move($directory, basename($iconName));
                 $data['icon'] = $iconName;
             }
 
@@ -135,8 +134,8 @@ class LayananController extends Controller
             $service = Service::findOrFail($id);
             
             // Delete icon if exists
-            if ($service->icon && Storage::disk('public')->exists($service->icon)) {
-                Storage::disk('public')->delete($service->icon);
+            if ($service->icon && file_exists(public_path($service->icon))) {
+                unlink(public_path($service->icon));
             }
             
             $service->delete();

@@ -138,7 +138,7 @@ class PostingController extends Controller
             $file = $request->file('cover_image');
             $extension = $file->getClientOriginalExtension() ?: $file->extension();
             $filename = time() . '_' . Str::random(12) . ($extension ? '.' . $extension : '');
-            $targetDir = public_path('storage/postings');
+            $targetDir = public_path('postings');
             if (!is_dir($targetDir)) {
                 mkdir($targetDir, 0755, true);
             }
@@ -196,7 +196,7 @@ class PostingController extends Controller
             $file = $request->file('cover_image');
             $extension = $file->getClientOriginalExtension() ?: $file->extension();
             $filename = time() . '_' . Str::random(12) . ($extension ? '.' . $extension : '');
-            $targetDir = public_path('storage/postings');
+            $targetDir = public_path('postings');
             if (!is_dir($targetDir)) {
                 mkdir($targetDir, 0755, true);
             }

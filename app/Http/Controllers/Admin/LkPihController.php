@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\LkPihDocument;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class LkPihController extends Controller
@@ -79,14 +78,14 @@ class LkPihController extends Controller
             ];
 
             if ($request->hasFile('file')) {
-                $directory = 'public/lk-pih';
-                if (!Storage::exists($directory)) {
-                    Storage::makeDirectory($directory);
+                $directory = public_path('lk-pih');
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0755, true);
                 }
 
                 $file = $request->file('file');
                 $fileName = 'lk-pih/' . Str::random(20) . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('', $fileName, 'public');
+                $file->move($directory, basename($fileName));
                 $data['file_path'] = $fileName;
             }
 
@@ -103,8 +102,8 @@ class LkPihController extends Controller
         try {
             $doc = LkPihDocument::findOrFail($id);
 
-            if ($doc->file_path && Storage::disk('public')->exists($doc->file_path)) {
-                Storage::disk('public')->delete($doc->file_path);
+            if ($doc->file_path && file_exists(public_path($doc->file_path))) {
+                unlink(public_path($doc->file_path));
             }
 
             $doc->delete();

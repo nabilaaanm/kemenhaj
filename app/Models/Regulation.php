@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Regulation extends Model
 {
@@ -38,10 +37,8 @@ class Regulation extends Model
     // Accessor for file URL
     public function getFileUrlAttribute()
     {
-        if ($this->file_path) {
-            if (Storage::disk('public')->exists($this->file_path)) {
-                return asset('storage/' . $this->file_path);
-            }
+        if ($this->file_path && file_exists(public_path($this->file_path))) {
+            return asset($this->file_path);
         }
         return null;
     }

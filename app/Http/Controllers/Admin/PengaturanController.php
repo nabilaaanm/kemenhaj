@@ -185,7 +185,7 @@ class PengaturanController extends Controller
 
         if ($request->boolean('hapus_struktur_gambar') && !$request->hasFile('struktur_gambar')) {
             if ($profil && $profil->struktur_gambar) {
-                $oldPath = public_path('storage/struktur/' . $profil->struktur_gambar);
+                $oldPath = public_path('struktur/' . $profil->struktur_gambar);
                 if (file_exists($oldPath)) {
                     unlink($oldPath);
                 }
@@ -196,7 +196,7 @@ class PengaturanController extends Controller
         if ($request->hasFile('struktur_gambar')) {
             $file = $request->file('struktur_gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $targetDir = public_path('storage/struktur');
+            $targetDir = public_path('struktur');
             if (!is_dir($targetDir)) {
                 mkdir($targetDir, 0755, true);
             }
@@ -204,7 +204,7 @@ class PengaturanController extends Controller
             $data['struktur_gambar'] = $filename;
 
             if ($profil && $profil->struktur_gambar) {
-                $oldPath = public_path('storage/struktur/' . $profil->struktur_gambar);
+                $oldPath = public_path('struktur/' . $profil->struktur_gambar);
                 if (file_exists($oldPath)) {
                     unlink($oldPath);
                 }
@@ -327,7 +327,7 @@ class PengaturanController extends Controller
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('storage/tim'), $filename);
+            $file->move(public_path('tim'), $filename);
             $data['foto'] = $filename;
         }
 
@@ -352,12 +352,12 @@ class PengaturanController extends Controller
 
         if ($request->hasFile('foto')) {
             // Hapus foto lama jika ada
-            if ($tim->foto && file_exists(public_path('storage/tim/' . $tim->foto))) {
-                unlink(public_path('storage/tim/' . $tim->foto));
+            if ($tim->foto && file_exists(public_path('tim/' . $tim->foto))) {
+                unlink(public_path('tim/' . $tim->foto));
             }
             $file = $request->file('foto');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('storage/tim'), $filename);
+            $file->move(public_path('tim'), $filename);
             $data['foto'] = $filename;
         }
 
@@ -372,8 +372,8 @@ class PengaturanController extends Controller
         $tim = TimKemenhaj::findOrFail($id);
         
         // Hapus foto jika ada
-        if ($tim->foto && file_exists(public_path('storage/tim/' . $tim->foto))) {
-            unlink(public_path('storage/tim/' . $tim->foto));
+        if ($tim->foto && file_exists(public_path('tim/' . $tim->foto))) {
+            unlink(public_path('tim/' . $tim->foto));
         }
         
         $tim->delete();

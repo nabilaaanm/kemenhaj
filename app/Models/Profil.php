@@ -37,7 +37,7 @@ class Profil extends Model
     public function getStrukturGambarUrlAttribute()
     {
         if ($this->struktur_gambar) {
-            return asset('storage/struktur/' . $this->struktur_gambar);
+            return asset('struktur/' . $this->struktur_gambar);
         }
         return asset('image/struktur-organisasi.png');
     }

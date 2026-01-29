@@ -40,6 +40,6 @@ class Posting extends Model
             return '';
         }
 
-        return asset('storage/postings/' . rawurlencode($this->cover_image));
+        return asset('postings/' . rawurlencode($this->cover_image));
     }
 }

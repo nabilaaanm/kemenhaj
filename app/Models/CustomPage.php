@@ -35,7 +35,7 @@ class CustomPage extends Model
     public function getCoverUrlAttribute(): ?string
     {
         if ($this->cover_image) {
-            return asset('storage/pages/' . $this->cover_image);
+            return asset('pages/' . $this->cover_image);
         }
         return null;
     }

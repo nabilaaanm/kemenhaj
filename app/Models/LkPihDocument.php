@@ -30,6 +30,6 @@ class LkPihDocument extends Model
             return null;
         }
 
-        return asset('storage/' . $this->file_path);
+        return asset($this->file_path);
     }
 }

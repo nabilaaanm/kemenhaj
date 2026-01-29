@@ -77,7 +77,7 @@ class HalamanController extends Controller
         if ($request->hasFile('cover_image')) {
             $file = $request->file('cover_image');
             $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
-            $targetDir = public_path('storage/pages');
+            $targetDir = public_path('pages');
             if (!is_dir($targetDir)) {
                 mkdir($targetDir, 0755, true);
             }
@@ -138,14 +138,14 @@ class HalamanController extends Controller
 
         if ($request->hasFile('cover_image')) {
             if ($page->cover_image) {
-                $oldPath = public_path('storage/pages/' . $page->cover_image);
+                $oldPath = public_path('pages/' . $page->cover_image);
                 if (file_exists($oldPath)) {
                     unlink($oldPath);
                 }
             }
             $file = $request->file('cover_image');
             $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
-            $targetDir = public_path('storage/pages');
+            $targetDir = public_path('pages');
             if (!is_dir($targetDir)) {
                 mkdir($targetDir, 0755, true);
             }
@@ -163,7 +163,7 @@ class HalamanController extends Controller
     {
         $page = CustomPage::findOrFail($id);
         if ($page->cover_image) {
-            $oldPath = public_path('storage/pages/' . $page->cover_image);
+            $oldPath = public_path('pages/' . $page->cover_image);
             if (file_exists($oldPath)) {
                 unlink($oldPath);
             }
