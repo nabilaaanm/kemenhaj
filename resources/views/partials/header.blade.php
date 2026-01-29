@@ -580,14 +580,14 @@
                             </svg>
                         </button>
                         <div class="dropdown-content" id="dropdown-lk-pih">
-                            <a href="/lk-pih" class="dropdown-item" data-i18n="nav.lk">LK & PIH</a>
+                            <a href="{{ route('lk-pih') }}" class="dropdown-item" data-i18n="nav.lk">LK & PIH</a>
                             @foreach($menuLkPihPages as $menuPage)
                                 <a href="{{ route('page.show', $menuPage->slug) }}" class="dropdown-item">{{ $menuPage->title }}</a>
                             @endforeach
                         </div>
                     </div>
                 @else
-                    <a href="/lk-pih" class="hover-custom whitespace-nowrap" data-i18n="nav.lk">LK & PIH</a>
+                    <a href="{{ route('lk-pih') }}" class="hover-custom whitespace-nowrap" data-i18n="nav.lk">LK & PIH</a>
                 @endif
 
                 <!-- Galeri Dropdown -->
@@ -599,9 +599,9 @@
                         </svg>
                     </button>
                     <div class="dropdown-content" id="dropdown-galeri">
-                        <a href="/foto" class="dropdown-item" data-i18n="nav.photos">Foto</a>
-                        <a href="/video" class="dropdown-item" data-i18n="nav.videos">Video</a>
-                        <a href="/infografis" class="dropdown-item" data-i18n="nav.infographics">Infografis</a>
+                        <a href="{{ route('galeri.foto') }}" class="dropdown-item" data-i18n="nav.photos">Foto</a>
+                        <a href="{{ route('galeri.video') }}" class="dropdown-item" data-i18n="nav.videos">Video</a>
+                        <a href="{{ route('galeri.infografis') }}" class="dropdown-item" data-i18n="nav.infographics">Infografis</a>
                         @foreach($menuGaleriPages as $menuPage)
                             <a href="{{ route('page.show', $menuPage->slug) }}" class="dropdown-item">{{ $menuPage->title }}</a>
                         @endforeach
@@ -700,16 +700,16 @@
     </div>
     <div class="mobile-menu-section">
         <div class="mobile-menu-title">LK & PIH</div>
-        <a href="/lk-pih" class="mobile-menu-link">LK & PIH</a>
+        <a href="{{ route('lk-pih') }}" class="mobile-menu-link">LK & PIH</a>
         @foreach($menuLkPihPages as $menuPage)
             <a href="{{ route('page.show', $menuPage->slug) }}" class="mobile-menu-link">{{ $menuPage->title }}</a>
         @endforeach
     </div>
     <div class="mobile-menu-section">
         <div class="mobile-menu-title">Galeri</div>
-        <a href="/foto" class="mobile-menu-link">Foto</a>
-        <a href="/video" class="mobile-menu-link">Video</a>
-        <a href="/infografis" class="mobile-menu-link">Infografis</a>
+        <a href="{{ route('galeri.foto') }}" class="mobile-menu-link">Foto</a>
+        <a href="{{ route('galeri.video') }}" class="mobile-menu-link">Video</a>
+        <a href="{{ route('galeri.infografis') }}" class="mobile-menu-link">Infografis</a>
         @foreach($menuGaleriPages as $menuPage)
             <a href="{{ route('page.show', $menuPage->slug) }}" class="mobile-menu-link">{{ $menuPage->title }}</a>
         @endforeach

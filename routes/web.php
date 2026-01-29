@@ -266,7 +266,7 @@ Route::get('/data-informasi', function () {
 
     return view('data-informasi', compact('kbihuData', 'ppiuData', 'berhakLunasResults', 'berhakLunasQuery', 'berhakLunasSearched'));
 });
-Route::get('/lk-pih', function () {
+Route::get('/dokumen/lk-pih', function () {
     $lkDocuments = collect();
     $pihDocuments = collect();
     if (Schema::hasTable('lk_pih_documents')) {
@@ -285,7 +285,7 @@ Route::get('/lk-pih', function () {
     }
 
     return view('lk-pih', compact('lkDocuments', 'pihDocuments'));
-});
+})->name('lk-pih');
 Route::get('/berita', [PostingPublicController::class, 'berita'])->name('berita');
 Route::get('/berita-terkini', [PostingPublicController::class, 'terbaru'])->name('berita.terkini');
 Route::get('/pengumuman', [PostingPublicController::class, 'pengumuman'])->name('pengumuman');
@@ -295,9 +295,9 @@ Route::get('/posting/{slug}', [PostingPublicController::class, 'show'])->name('p
 Route::get('/kontak', [ProfilController::class, 'kontak'])->name('kontak');
 Route::get('/struktur-organisasi', [ProfilController::class, 'strukturOrganisasi'])->name('struktur-organisasi');
 Route::get('/sejarah', [ProfilController::class, 'sejarah'])->name('sejarah');
-Route::get('/foto', [GalleryController::class, 'foto'])->name('galeri.foto');
-Route::get('/video', [GalleryController::class, 'video'])->name('galeri.video');
-Route::get('/infografis', [GalleryController::class, 'infografis'])->name('galeri.infografis');
+Route::get('/galeri/foto', [GalleryController::class, 'foto'])->name('galeri.foto');
+Route::get('/galeri/video', [GalleryController::class, 'video'])->name('galeri.video');
+Route::get('/galeri/infografis', [GalleryController::class, 'infografis'])->name('galeri.infografis');
 
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

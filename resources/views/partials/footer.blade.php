@@ -58,7 +58,7 @@
                     <li><a href="/berita" class="footer-muted text-sm hover:opacity-100 transition" data-i18n="nav.news">Berita</a></li>
                     <li><a href="/layanan" class="footer-muted text-sm hover:opacity-100 transition" data-i18n="nav.services">Layanan</a></li>
                     <li><a href="/data-informasi" class="footer-muted text-sm hover:opacity-100 transition" data-i18n="nav.data">Data dan Informasi</a></li>
-                    <li><a href="/lk-pih" class="footer-muted text-sm hover:opacity-100 transition" data-i18n="nav.lk">LK & PIH</a></li>
+                    <li><a href="{{ route('lk-pih') }}" class="footer-muted text-sm hover:opacity-100 transition" data-i18n="nav.lk">LK & PIH</a></li>
                     <li><a href="/regulasi" class="footer-muted text-sm hover:opacity-100 transition" data-i18n="nav.regulation">Regulasi</a></li>
                 </ul>
             </div>
