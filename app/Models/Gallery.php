@@ -24,13 +24,28 @@ class Gallery extends Model
         'order' => 'integer',
     ];
 
+    private function normalizePublicPath(?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        $path = ltrim($path, '/');
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, 8);
+        }
+
+        return $path;
+    }
+
     // Get image URL (either from file_path or url)
     public function getImageUrlAttribute()
     {
         if ($this->file_path) {
             // Check if file exists in public disk
-            if (file_exists(public_path($this->file_path))) {
-                return asset($this->file_path);
+            $path = $this->normalizePublicPath($this->file_path);
+            if ($path && file_exists(public_path($path))) {
+                return asset($path);
             }
             // If file doesn't exist but path is set, return placeholder
             return 'https://via.placeholder.com/400x300/ECB176/FFFFFF?text=File+Not+Found';
@@ -42,8 +57,9 @@ class Gallery extends Model
     public function getVideoUrlAttribute()
     {
         if ($this->file_path) {
-            if (file_exists(public_path($this->file_path))) {
-                return asset($this->file_path);
+            $path = $this->normalizePublicPath($this->file_path);
+            if ($path && file_exists(public_path($path))) {
+                return asset($path);
             }
             return $this->url;
         }
@@ -54,8 +70,9 @@ class Gallery extends Model
     public function getThumbnailUrlAttribute()
     {
         if ($this->thumbnail) {
-            if (file_exists(public_path($this->thumbnail))) {
-                return asset($this->thumbnail);
+            $path = $this->normalizePublicPath($this->thumbnail);
+            if ($path && file_exists(public_path($path))) {
+                return asset($path);
             }
         }
         if ($this->file_path && $this->type === 'foto') {
@@ -66,8 +83,11 @@ class Gallery extends Model
 
     public function getVideoThumbnailUrlAttribute()
     {
-        if ($this->thumbnail && file_exists(public_path($this->thumbnail))) {
-            return asset($this->thumbnail);
+        if ($this->thumbnail) {
+            $path = $this->normalizePublicPath($this->thumbnail);
+            if ($path && file_exists(public_path($path))) {
+                return asset($path);
+            }
         }
 
         if (!$this->url) {

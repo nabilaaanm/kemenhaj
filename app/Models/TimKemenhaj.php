@@ -29,7 +29,14 @@ class TimKemenhaj extends Model
     public function getFotoUrlAttribute()
     {
         if ($this->foto) {
-            return asset('tim/' . $this->foto);
+            $path = ltrim($this->foto, '/');
+            if (str_starts_with($path, 'storage/')) {
+                $path = substr($path, 8);
+            }
+            if (!str_starts_with($path, 'tim/')) {
+                $path = 'tim/' . $path;
+            }
+            return asset($path);
         }
         return asset('image/lambang.png');
     }

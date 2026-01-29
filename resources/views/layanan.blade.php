@@ -105,7 +105,7 @@
                     <!-- Logo/Icon -->
                 <div class="mb-4 flex-shrink-0">
                         @if($service->icon)
-                            <img src="{{ asset($service->icon) }}" 
+                            <img src="{{ $service->icon_url }}" 
                                  alt="{{ $service->name }}" 
                                  class="w-24 h-24 object-contain"
                                  style="max-width: 96px; max-height: 96px; width: auto; height: auto;"

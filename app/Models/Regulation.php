@@ -37,8 +37,17 @@ class Regulation extends Model
     // Accessor for file URL
     public function getFileUrlAttribute()
     {
-        if ($this->file_path && file_exists(public_path($this->file_path))) {
-            return asset($this->file_path);
+        if ($this->file_path) {
+            $path = ltrim($this->file_path, '/');
+            if (str_starts_with($path, 'storage/')) {
+                $path = substr($path, 8);
+            }
+            if (!str_starts_with($path, 'regulations/')) {
+                $path = 'regulations/' . $path;
+            }
+            if (file_exists(public_path($path))) {
+                return asset($path);
+            }
         }
         return null;
     }

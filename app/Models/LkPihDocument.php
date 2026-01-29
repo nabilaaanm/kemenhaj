@@ -30,6 +30,14 @@ class LkPihDocument extends Model
             return null;
         }
 
-        return asset($this->file_path);
+        $path = ltrim($this->file_path, '/');
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, 8);
+        }
+        if (!str_starts_with($path, 'lk-pih/')) {
+            $path = 'lk-pih/' . $path;
+        }
+
+        return asset($path);
     }
 }

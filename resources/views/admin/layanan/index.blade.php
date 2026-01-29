@@ -71,7 +71,7 @@
                             <td style="padding: 12px;">
                                 @if($service->icon)
                                     @php
-                                        $iconUrl = asset($service->icon);
+                                        $iconUrl = $service->icon_url;
                                     @endphp
                                     <img src="{{ $iconUrl }}" alt="{{ $service->name }}" 
                                          style="width: 64px; height: 64px; object-fit: cover; border-radius: 8px;"

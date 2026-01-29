@@ -31,6 +31,17 @@ class Slideshow extends Model
             return '';
         }
 
-        return asset('slideshows/' . rawurlencode($this->image_path));
+        $path = ltrim($this->image_path, '/');
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, 8);
+        }
+        if (!str_starts_with($path, 'slideshows/')) {
+            $path = 'slideshows/' . $path;
+        }
+        $dir = trim(dirname($path), '.');
+        $file = rawurlencode(basename($path));
+        $path = $dir === '' ? $file : $dir . '/' . $file;
+
+        return asset($path);
     }
 }

@@ -35,7 +35,14 @@ class CustomPage extends Model
     public function getCoverUrlAttribute(): ?string
     {
         if ($this->cover_image) {
-            return asset('pages/' . $this->cover_image);
+            $path = ltrim($this->cover_image, '/');
+            if (str_starts_with($path, 'storage/')) {
+                $path = substr($path, 8);
+            }
+            if (!str_starts_with($path, 'pages/')) {
+                $path = 'pages/' . $path;
+            }
+            return asset($path);
         }
         return null;
     }

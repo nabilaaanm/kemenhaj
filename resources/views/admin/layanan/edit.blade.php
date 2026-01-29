@@ -85,7 +85,7 @@
             @if($service->icon)
                 <div style="margin-bottom: 12px;">
                     <p style="color: #6b7280; font-size: 12px; margin-bottom: 8px;">Icon saat ini:</p>
-                    <img src="{{ asset($service->icon) }}" alt="{{ $service->name }}"
+                    <img src="{{ $service->icon_url }}" alt="{{ $service->name }}"
                          style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #d1d5db;"
                          onerror="this.onerror=null; this.src='{{ asset('image/lambang.png') }}';">
                 </div>

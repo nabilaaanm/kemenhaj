@@ -723,7 +723,13 @@
                         @endphp
                         <div class="user-avatar-topbar {{ $roleClass }}">
                             @if(session('user.avatar'))
-                                <img src="{{ asset(session('user.avatar')) }}" alt="{{ session('user.name') }}">
+                                @php
+                                    $avatarPath = ltrim((string) session('user.avatar'), '/');
+                                    if (str_starts_with($avatarPath, 'storage/')) {
+                                        $avatarPath = substr($avatarPath, 8);
+                                    }
+                                @endphp
+                                <img src="{{ asset($avatarPath) }}" alt="{{ session('user.name') }}">
                             @else
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>

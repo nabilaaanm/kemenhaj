@@ -19,4 +19,21 @@ class Service extends Model
         'is_active' => 'boolean',
         'order' => 'integer',
     ];
+
+    public function getIconUrlAttribute(): ?string
+    {
+        if (!$this->icon) {
+            return null;
+        }
+
+        $path = ltrim($this->icon, '/');
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, 8);
+        }
+        if (!str_starts_with($path, 'services/')) {
+            $path = 'services/' . $path;
+        }
+
+        return asset($path);
+    }
 }
