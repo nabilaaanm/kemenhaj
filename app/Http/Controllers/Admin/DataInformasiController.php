@@ -8,6 +8,8 @@ use App\Models\Kbihu;
 use App\Models\Ppiu;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class DataInformasiController extends Controller
 {
@@ -29,15 +31,15 @@ class DataInformasiController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nomor_porsi' => 'required|string|max:255',
+            'nomor_porsi' => 'required|string|max:255|unique:berhak_lunas,nomor_porsi',
             'nama_ayah' => 'nullable|string|max:255',
             'status' => 'required|in:Cadangan,Bukan Cadangan',
-            'keterangan' => 'nullable|in:Siap Berangkat,Meninggal,Tunda Berangkat, Tersambung, Gak Nyambung',
-            'kbihu' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string|max:255',
             'nomor_paspor' => 'nullable|string|max:255',
         ], [
             'nama.required' => 'Nama wajib diisi',
             'nomor_porsi.required' => 'Nomor porsi wajib diisi',
+            'nomor_porsi.unique' => 'Nomor porsi sudah terdaftar',
             'status.required' => 'Status wajib diisi',
         ]);
 
@@ -48,7 +50,6 @@ class DataInformasiController extends Controller
                 'nomor_porsi' => $request->nomor_porsi,
                 'status' => $request->status,
                 'keterangan' => $request->keterangan,
-                'kbihu' => $request->kbihu,
                 'nomor_paspor' => $request->nomor_paspor,
                 'is_active' => true,
             ]);
@@ -71,15 +72,15 @@ class DataInformasiController extends Controller
 
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nomor_porsi' => 'required|string|max:255',
+            'nomor_porsi' => 'required|string|max:255|unique:berhak_lunas,nomor_porsi,' . $data->id,
             'nama_ayah' => 'nullable|string|max:255',
             'status' => 'required|in:Cadangan,Bukan Cadangan',
-            'keterangan' => 'nullable|in:Siap Berangkat,Meninggal,Tunda Berangkat, Tersambung, Gak Nyambung',
-            'kbihu' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string|max:255',
             'nomor_paspor' => 'nullable|string|max:255',
         ], [
             'nama.required' => 'Nama wajib diisi',
             'nomor_porsi.required' => 'Nomor porsi wajib diisi',
+            'nomor_porsi.unique' => 'Nomor porsi sudah terdaftar',
             'status.required' => 'Status wajib diisi',
         ]);
 
@@ -90,7 +91,6 @@ class DataInformasiController extends Controller
                 'nomor_porsi' => $request->nomor_porsi,
                 'status' => $request->status,
                 'keterangan' => $request->keterangan,
-                'kbihu' => $request->kbihu,
                 'nomor_paspor' => $request->nomor_paspor,
             ]);
 
@@ -137,7 +137,6 @@ class DataInformasiController extends Controller
                 'nomor porsi', 'no porsi', 'no. porsi', 'nomor',
                 'nama', 'nama jamaah', 'nama jemaah',
                 'keterangan', 'ket',
-                'kbihu',
                 'nomor paspor', 'no paspor', 'no. paspor', 'paspor',
                 'nama ayah', 'ayah', 'nm ayah', 'nm_ayah',
                 'status',
@@ -180,7 +179,6 @@ class DataInformasiController extends Controller
             $colNomor = $this->resolveColumn($headerMap, ['nomor porsi', 'no porsi', 'no. porsi', 'nomor']);
             $colNama = $this->resolveColumn($headerMap, ['nama', 'nama jamaah', 'nama jemaah']);
             $colKeterangan = $this->resolveColumn($headerMap, ['keterangan', 'ket']);
-            $colKbihu = $this->resolveColumn($headerMap, ['kbihu']);
             $colPaspor = $this->resolveColumn($headerMap, ['nomor paspor', 'no paspor', 'no. paspor', 'paspor']);
             $colNamaAyah = $this->resolveColumn($headerMap, ['nama ayah', 'ayah', 'nm ayah', 'nm_ayah']);
             $colStatus = $this->resolveColumn($headerMap, ['status']);
@@ -197,11 +195,14 @@ class DataInformasiController extends Controller
                 $nama = trim((string) ($row[$colNama] ?? ''));
                 $namaAyah = $colNamaAyah ? trim((string) ($row[$colNamaAyah] ?? '')) : '';
                 $statusRaw = $colStatus ? strtoupper(trim((string) ($row[$colStatus] ?? ''))) : '';
-                $keteranganRaw = $colKeterangan ? strtoupper(trim((string) ($row[$colKeterangan] ?? ''))) : '';
-                $kbihu = $colKbihu ? trim((string) ($row[$colKbihu] ?? '')) : '';
+                $keteranganRaw = $colKeterangan ? trim((string) ($row[$colKeterangan] ?? '')) : '';
                 $paspor = $colPaspor ? trim((string) ($row[$colPaspor] ?? '')) : '';
 
                 if ($nama === '' || $nomorPorsi === '') {
+                    $skipped++;
+                    continue;
+                }
+                if (BerhakLunas::where('nomor_porsi', $nomorPorsi)->exists()) {
                     $skipped++;
                     continue;
                 }
@@ -214,24 +215,13 @@ class DataInformasiController extends Controller
                     $statusRaw === 'TIDAK BERHAK' => 'Bukan Cadangan',
                     default => 'Cadangan',
                 };
-                $keterangan = match (true) {
-                    $keteranganRaw === '' => null,
-                    str_contains($keteranganRaw, 'SIAP') => 'Siap Berangkat',
-                    str_contains($keteranganRaw, 'MENINGGAL') => 'Meninggal',
-                    str_contains($keteranganRaw, 'TUNDA') => 'Tunda Berangkat',
-                    str_contains($keteranganRaw, 'TERSAMBUNG') => 'Tersambung',
-                    str_contains($keteranganRaw, 'GAK NYAMBUNG') => 'Gak Nyambung',
-                    str_contains($keteranganRaw, 'GAK') => 'Gak Nyambung',
-                    str_contains($keteranganRaw, 'NYAMBUNG') => 'Tersambung',
-                    default => null,
-                };
+                $keterangan = $keteranganRaw !== '' ? $keteranganRaw : null;
                 BerhakLunas::create([
                     'nama' => $nama,
                     'nama_ayah' => $namaAyah !== '' ? $namaAyah : null,
                     'nomor_porsi' => $nomorPorsi,
                     'status' => $status,
                     'keterangan' => $keterangan,
-                    'kbihu' => $kbihu !== '' ? $kbihu : null,
                     'nomor_paspor' => $paspor !== '' ? $paspor : null,
                     'is_active' => true,
                 ]);
@@ -248,6 +238,29 @@ class DataInformasiController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal import: ' . $e->getMessage());
         }
+    }
+
+    public function berhakLunasTemplate()
+    {
+        $headers = [
+            'Nomor Porsi',
+            'Nama',
+            'Nama Ayah',
+            'Status',
+            'Keterangan',
+            'Nomor Paspor',
+        ];
+
+        return response()->streamDownload(function () use ($headers) {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->fromArray($headers, null, 'A1');
+
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, 'template-berhak-lunas.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     // ==================== KBIHU ====================
@@ -454,6 +467,31 @@ class DataInformasiController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal import: ' . $e->getMessage());
         }
+    }
+
+    public function kbihuTemplate()
+    {
+        $headers = [
+            'Nama KBIHU',
+            'Alamat',
+            'Tahun Berdiri',
+            'Nama Pimpinan',
+            'No Telp',
+            'Latitude',
+            'Longitude',
+            'Link Maps',
+        ];
+
+        return response()->streamDownload(function () use ($headers) {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->fromArray($headers, null, 'A1');
+
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, 'template-kbihu.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     private function resolveColumn(array $headerMap, array $aliases): ?string
@@ -700,5 +738,30 @@ class DataInformasiController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal import: ' . $e->getMessage());
         }
+    }
+
+    public function ppiuTemplate()
+    {
+        $headers = [
+            'Nama',
+            'Direktur',
+            'Alamat Cabang',
+            'No Telp',
+            'Terakreditasi',
+            'Latitude',
+            'Longitude',
+            'Maps Url',
+        ];
+
+        return response()->streamDownload(function () use ($headers) {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->fromArray($headers, null, 'A1');
+
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, 'template-ppiu.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 }

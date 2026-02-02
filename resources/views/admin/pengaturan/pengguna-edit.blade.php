@@ -95,10 +95,16 @@
                 <option value="">-- Pilih Role --</option>
                 <option value="kontributor" {{ old('role', $pengguna->role) === 'kontributor' ? 'selected' : '' }}>Kontributor</option>
                 <option value="editor" {{ old('role', $pengguna->role) === 'editor' ? 'selected' : '' }}>Editor</option>
+                @if($pengguna->role === 'admin')
+                    <option value="admin" {{ old('role', $pengguna->role) === 'admin' ? 'selected' : '' }}>Admin</option>
+                @endif
             </select>
             <div style="margin-top: 8px; padding: 12px; background-color: #f3f4f6; border-radius: 8px; font-size: 13px; color: #6b7280;">
                 <strong>Kontributor:</strong> Dapat membuat dan mengelola postingan sendiri<br>
                 <strong>Editor:</strong> Dapat membuat, mengedit, dan menghapus semua postingan serta mengelola halaman dan galeri
+                @if($pengguna->role === 'admin')
+                    <br><strong>Admin:</strong> Akses penuh termasuk manajemen pengguna
+                @endif
             </div>
         </div>
 

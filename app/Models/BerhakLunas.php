@@ -14,7 +14,6 @@ class BerhakLunas extends Model
         'nomor_porsi',
         'status',
         'keterangan',
-        'kbihu',
         'nomor_paspor',
         'is_active',
     ];

@@ -12,13 +12,11 @@ class Regulation extends Model
         'category',
         'regulation_date',
         'file_path',
-        'order',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
-        'order' => 'integer',
         'regulation_date' => 'date',
     ];
 

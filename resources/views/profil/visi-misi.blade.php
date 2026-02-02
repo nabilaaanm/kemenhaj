@@ -68,118 +68,75 @@
 @include('partials.header')
 
 <!-- ================= MAIN CONTENT ================= -->
+@php
+    $rawMisi = $profil?->misi_konten ?? '';
+    $decodedMisi = json_decode($rawMisi, true);
+    $misiCards = is_array($decodedMisi) ? $decodedMisi : [];
+    $visiText = trim((string) ($profil?->visi_konten ?? ''));
+    $hasVisiMisi = $visiText !== '' || collect($misiCards)->contains(function ($card) {
+        return trim((string) ($card['title'] ?? '')) !== '' || trim((string) ($card['description'] ?? '')) !== '';
+    });
+@endphp
+
 <main class="container-fixed py-12 w-full" style="width: 100%; max-width: 100%; box-sizing: border-box;">
     
-    <!-- VISI Section -->
-    <div class="mb-16" style="width: 100%; max-width: 100%; box-sizing: border-box;">
-        <div class="rounded-2xl p-12 md:p-16 text-center mx-auto" style="max-width: 900px; width: 100%; box-sizing: border-box; background-color: var(--color-primary);">
-            <!-- Star Icon -->
-            <div class="flex justify-center mb-6">
-                <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-                </svg>
+    @if($hasVisiMisi)
+        <!-- VISI Section -->
+        <div class="mb-16" style="width: 100%; max-width: 100%; box-sizing: border-box;">
+            <div class="rounded-2xl p-12 md:p-16 text-center mx-auto" style="max-width: 900px; width: 100%; box-sizing: border-box; background-color: var(--color-primary);">
+                <!-- Star Icon -->
+                <div class="flex justify-center mb-6">
+                    <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                    </svg>
+                </div>
+                
+                <!-- VISI Title -->
+                <h1 class="text-5xl md:text-6xl font-bold text-white mb-6 page-title" style="letter-spacing: 2px;" data-i18n="visi.title">
+                    VISI
+                </h1>
+                
+                <!-- VISI Description -->
+                <p class="text-lg md:text-xl text-white leading-relaxed max-w-3xl mx-auto" data-i18n="visi.description">
+                    {{ $visiText }}
+                </p>
             </div>
-            
-            <!-- VISI Title -->
-            <h1 class="text-5xl md:text-6xl font-bold text-white mb-6 page-title" style="letter-spacing: 2px;" data-i18n="visi.title">
-                VISI
-            </h1>
-            
-            <!-- VISI Description -->
-            <p class="text-lg md:text-xl text-white leading-relaxed max-w-3xl mx-auto" data-i18n="visi.description">
-                Mewujudkan penyelenggaraan ibadah haji yang profesional, transparan, akuntabel, dan memberikan kepuasan bagi jemaah haji Indonesia.
-            </p>
         </div>
-    </div>
 
-    <!-- MISI Section -->
-    <div class="mb-8" style="width: 100%; max-width: 100%; box-sizing: border-box;">
-        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12" style="color: #374151;" data-i18n="misi.title">
-            MISI
-        </h2>
-        
-        <!-- Misi Cards Grid -->
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" style="width: 100%; max-width: 100%; box-sizing: border-box;">
+        <!-- MISI Section -->
+        <div class="mb-8" style="width: 100%; max-width: 100%; box-sizing: border-box;">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12" style="color: #374151;" data-i18n="misi.title">
+                MISI
+            </h2>
             
-            <!-- Card 01 -->
-            <article class="misi-card bg-white rounded-xl shadow-sm p-6 relative" style="width: 100%; max-width: 100%; box-sizing: border-box;">
-                <div class="absolute top-4 left-4">
-                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: var(--color-primary);">01</span>
-                </div>
-                <div class="mt-8">
-                    <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="misi.card01.title">Pelayanan Prima</h3>
-                    <p class="text-gray-600 leading-relaxed" data-i18n="misi.card01.description">
-                        Memberikan pelayanan terbaik kepada jemaah haji sejak pendaftaran hingga kepulangan ke tanah air dengan menerapkan standar pelayanan internasional.
-                    </p>
-                </div>
-            </article>
-
-            <!-- Card 02 -->
-            <article class="misi-card bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 relative" style="width: 100%; max-width: 100%; box-sizing: border-box;">
-                <div class="absolute top-4 left-4">
-                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: var(--color-primary);">02</span>
-                </div>
-                <div class="mt-8">
-                    <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="misi.card02.title">Transparansi & Akuntabilitas</h3>
-                    <p class="text-gray-600 leading-relaxed" data-i18n="misi.card02.description">
-                        Mengelola dana dan pelaksanaan ibadah haji secara transparan dan akuntabel dengan sistem pelaporan yang terbuka untuk publik.
-                    </p>
-                </div>
-            </article>
-
-            <!-- Card 03 -->
-            <article class="misi-card bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 relative" style="width: 100%; max-width: 100%; box-sizing: border-box;">
-                <div class="absolute top-4 left-4">
-                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: var(--color-primary);">03</span>
-                </div>
-                <div class="mt-8">
-                    <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="misi.card03.title">Inovasi Berkelanjutan</h3>
-                    <p class="text-gray-600 leading-relaxed" data-i18n="misi.card03.description">
-                        Terus berinovasi dalam sistem penyelenggaraan haji dengan memanfaatkan teknologi informasi untuk efisiensi dan kemudahan jemaah.
-                    </p>
-                </div>
-            </article>
-
-            <!-- Card 04 -->
-            <article class="misi-card bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 relative" style="width: 100%; max-width: 100%; box-sizing: border-box;">
-                <div class="absolute top-4 left-4">
-                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: var(--color-primary);">04</span>
-                </div>
-                <div class="mt-8">
-                    <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="misi.card04.title">Kerjasama Strategis</h3>
-                    <p class="text-gray-600 leading-relaxed" data-i18n="misi.card04.description">
-                        Membangun kerjasama yang solid dengan pemerintah Arab Saudi dan stakeholder lainnya untuk meningkatkan kualitas penyelenggaraan haji.
-                    </p>
-                </div>
-            </article>
-
-            <!-- Card 05 -->
-            <article class="misi-card bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 relative" style="width: 100%; max-width: 100%; box-sizing: border-box;">
-                <div class="absolute top-4 left-4">
-                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: var(--color-primary);">05</span>
-                </div>
-                <div class="mt-8">
-                    <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="misi.card05.title">Pembinaan Spiritual</h3>
-                    <p class="text-gray-600 leading-relaxed" data-i18n="misi.card05.description">
-                        Memberikan pembinaan spiritual dan pembekalan kepada calon jemaah haji agar pelaksanaan ibadah sesuai dengan tuntunan syariat.
-                    </p>
-                </div>
-            </article>
-
-            <!-- Card 06 -->
-            <article class="misi-card bg-white rounded-xl shadow-sm p-6 relative" style="width: 100%; max-width: 100%; box-sizing: border-box;">
-                <div class="absolute top-4 left-4">
-                    <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: var(--color-primary);">06</span>
-                </div>
-                <div class="mt-8">
-                    <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="misi.card06.title">Kesehatan & Keselamatan</h3>
-                    <p class="text-gray-600 leading-relaxed" data-i18n="misi.card06.description">
-                        Menjamin kesehatan dan keselamatan jemaah haji dengan standar layanan kesehatan yang memadai di tanah air maupun di Arab Saudi.
-                    </p>
-                </div>
-            </article>
+            <!-- Misi Cards Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" style="width: 100%; max-width: 100%; box-sizing: border-box;">
+                @foreach($misiCards as $index => $card)
+                    @php
+                        $title = trim((string) ($card['title'] ?? ''));
+                        $description = trim((string) ($card['description'] ?? ''));
+                    @endphp
+                    @continue($title === '' && $description === '')
+                    <article class="misi-card bg-white rounded-xl shadow-sm p-6 relative" style="width: 100%; max-width: 100%; box-sizing: border-box;">
+                        <div class="absolute top-4 left-4">
+                            <span class="text-white text-sm font-bold px-3 py-1 rounded-md" style="background-color: var(--color-primary);">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>
+                        </div>
+                        <div class="mt-8">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">{{ $title }}</h3>
+                            <p class="text-gray-600 leading-relaxed">
+                                {{ $description }}
+                            </p>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
         </div>
-    </div>
+    @else
+        <div class="rounded-2xl border-2 border-dashed border-gray-200 bg-white p-10 text-center text-gray-500">
+            <div class="text-lg font-semibold mb-2">Coming Soon</div>
+            <div class="text-sm">Konten visi dan misi belum tersedia.</div>
+        </div>
+    @endif
 
 </main>
 

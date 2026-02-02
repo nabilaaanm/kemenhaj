@@ -137,6 +137,13 @@
         <p style="font-size: 13px; color: #6b7280; margin-bottom: 16px;">
             Unggah file .xls, .xlsx, atau .csv. Kolom yang didukung: Nama KBIHU, Alamat, Tahun Berdiri, Nama Pimpinan, No Telp, Latitude, Longitude, Link Maps.
         </p>
+        <a href="{{ route('admin.data-informasi.kbihu.template') }}"
+           style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #7c2d12; text-decoration: none; margin-bottom: 16px; padding: 8px 12px; border-radius: 999px; background: #fff7ed; border: 1px solid #fed7aa; box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08); transition: transform 0.2s ease, box-shadow 0.2s ease;">
+            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 12v7m0 0l3-3m-3 3l-3-3M8 7h8a2 2 0 012 2v3H6V9a2 2 0 012-2z"/>
+            </svg>
+            Download Template Excel
+        </a>
         <form action="{{ route('admin.data-informasi.kbihu.import') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="file" name="file" accept=".xlsx,.xls,.csv" required

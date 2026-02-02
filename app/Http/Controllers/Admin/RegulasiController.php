@@ -11,8 +11,7 @@ class RegulasiController extends Controller
 {
     public function index()
     {
-        $regulations = Regulation::orderBy('order', 'asc')
-            ->orderBy('regulation_date', 'desc')
+        $regulations = Regulation::orderBy('regulation_date', 'desc')
             ->orderBy('created_at', 'desc')
             ->get();
         
@@ -53,7 +52,6 @@ class RegulasiController extends Controller
             'category' => 'required|in:uu,perpres,lainnya',
             'regulation_date' => 'required|date',
             'file' => 'nullable|mimes:pdf|max:10240', // Max 10MB
-            'order' => 'nullable|integer|min:0',
         ], [
             'title.required' => 'Judul regulasi wajib diisi',
             'category.required' => 'Kategori wajib dipilih',
@@ -70,7 +68,6 @@ class RegulasiController extends Controller
                 'description' => $request->description,
                 'category' => $request->category,
                 'regulation_date' => $request->regulation_date,
-                'order' => $request->order ?? 0,
                 'is_active' => true,
             ];
 
@@ -134,7 +131,6 @@ class RegulasiController extends Controller
             'category' => 'required|in:uu,perpres,lainnya',
             'regulation_date' => 'required|date',
             'file' => 'nullable|mimes:pdf|max:10240', // Max 10MB
-            'order' => 'nullable|integer|min:0',
         ], [
             'title.required' => 'Judul regulasi wajib diisi',
             'category.required' => 'Kategori wajib dipilih',
@@ -151,7 +147,6 @@ class RegulasiController extends Controller
                 'description' => $request->description,
                 'category' => $request->category,
                 'regulation_date' => $request->regulation_date,
-                'order' => $request->order ?? 0,
             ];
 
             // Handle file upload

@@ -25,4 +25,10 @@ class ProfilController extends Controller
         $profil = Profil::first();
         return view('profil.sejarah', compact('profil'));
     }
+
+    public function visiMisi()
+    {
+        $profil = Profil::first();
+        return view('profil.visi-misi', compact('profil'));
+    }
 }

@@ -104,6 +104,12 @@ class PengaturanController extends Controller
         return view('admin.profil.sejarah', compact('profil'));
     }
 
+    public function profilVisiMisi()
+    {
+        $profil = Profil::first();
+        return view('admin.profil.visi-misi', compact('profil'));
+    }
+
     public function updateProfil(Request $request)
     {
         $this->ensureProfilColumns();
@@ -115,6 +121,10 @@ class PengaturanController extends Controller
             'sejarah_judul' => 'nullable|string|max:255',
             'sejarah_subjudul' => 'nullable|string|max:255',
             'sejarah_konten' => 'nullable|string',
+            'visi_konten' => 'nullable|string',
+            'misi_cards' => 'nullable|array',
+            'misi_cards.*.title' => 'nullable|string|max:255',
+            'misi_cards.*.description' => 'nullable|string',
             'sejarah_cards' => 'nullable|array',
             'sejarah_cards.*.label' => 'nullable|string|max:255',
             'sejarah_cards.*.period' => 'nullable|string|max:255',
@@ -134,6 +144,7 @@ class PengaturanController extends Controller
             'instagram' => 'nullable|url|max:255',
             'twitter' => 'nullable|url|max:255',
             'youtube' => 'nullable|url|max:255',
+            'whatsapp' => 'nullable|string|max:50',
         ]);
 
         $profil = Profil::first();
@@ -143,6 +154,7 @@ class PengaturanController extends Controller
             'sejarah_judul',
             'sejarah_subjudul',
             'sejarah_konten',
+            'visi_konten',
             'alamat',
             'alamat_keterangan',
             'telepon',
@@ -157,7 +169,27 @@ class PengaturanController extends Controller
             'instagram',
             'twitter',
             'youtube',
+            'whatsapp',
         ]);
+
+        $misiCards = collect($request->input('misi_cards', []))
+            ->map(function ($card) {
+                return [
+                    'title' => trim((string) ($card['title'] ?? '')),
+                    'description' => trim((string) ($card['description'] ?? '')),
+                ];
+            })
+            ->filter(function ($card) {
+                return $card['title'] !== '' || $card['description'] !== '';
+            })
+            ->values()
+            ->all();
+
+        if (!empty($misiCards)) {
+            $data['misi_konten'] = json_encode($misiCards, JSON_UNESCAPED_UNICODE);
+        } else {
+            $data['misi_konten'] = null;
+        }
 
         $cards = collect($request->input('sejarah_cards', []))
             ->map(function ($card) {
@@ -235,12 +267,15 @@ class PengaturanController extends Controller
             'sejarah_judul',
             'sejarah_subjudul',
             'sejarah_konten',
+            'visi_konten',
+            'misi_konten',
             'alamat_keterangan',
             'telepon_alt',
             'maps_url',
             'maps_embed',
             'maps_embed_kbihu',
             'maps_embed_ppiu',
+            'whatsapp',
         ];
 
         $missing = array_filter($required, function ($column) {
@@ -267,6 +302,12 @@ class PengaturanController extends Controller
             if (in_array('sejarah_konten', $missing, true)) {
                 $table->text('sejarah_konten')->nullable()->after('sejarah_subjudul');
             }
+            if (in_array('visi_konten', $missing, true)) {
+                $table->text('visi_konten')->nullable()->after('sejarah_konten');
+            }
+            if (in_array('misi_konten', $missing, true)) {
+                $table->text('misi_konten')->nullable()->after('visi_konten');
+            }
             if (in_array('alamat_keterangan', $missing, true)) {
                 $table->string('alamat_keterangan')->nullable()->after('alamat');
             }
@@ -284,6 +325,9 @@ class PengaturanController extends Controller
             }
             if (in_array('maps_embed_ppiu', $missing, true)) {
                 $table->text('maps_embed_ppiu')->nullable()->after('maps_embed_kbihu');
+            }
+            if (in_array('whatsapp', $missing, true)) {
+                $table->string('whatsapp')->nullable()->after('youtube');
             }
         });
     }

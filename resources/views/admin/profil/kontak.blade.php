@@ -141,6 +141,19 @@
                         @enderror
                     </div>
                     <div>
+                        <label style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 6px; display: block;">WhatsApp</label>
+                        <input
+                            type="text"
+                            name="whatsapp"
+                            value="{{ old('whatsapp', $profil->whatsapp ?? '') }}"
+                            style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 14px;"
+                            placeholder="Contoh: 0895 0706 9859"
+                        >
+                        @error('whatsapp')
+                            <span style="color: #dc2626; font-size: 12px; margin-top: 4px; display: block;">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
                         <label style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 6px; display: block;">Email</label>
                         <input 
                             type="email" 

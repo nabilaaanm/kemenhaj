@@ -109,11 +109,16 @@ class PenggunaController extends Controller
 
         $pengguna = User::findOrFail($id);
 
+        $allowedRoles = ['kontributor', 'editor'];
+        if ($pengguna->role === 'admin') {
+            $allowedRoles[] = 'admin';
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id . '|max:255',
             'password' => 'nullable|min:6|confirmed',
-            'role' => 'required|in:kontributor,editor',
+            'role' => 'required|in:' . implode(',', $allowedRoles),
         ], [
             'name.required' => 'Nama wajib diisi',
             'email.required' => 'Email wajib diisi',
@@ -122,7 +127,7 @@ class PenggunaController extends Controller
             'password.min' => 'Password minimal 6 karakter',
             'password.confirmed' => 'Konfirmasi password tidak cocok',
             'role.required' => 'Role wajib dipilih',
-            'role.in' => 'Role harus kontributor atau editor',
+            'role.in' => 'Role tidak valid',
         ]);
 
         try {

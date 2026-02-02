@@ -61,7 +61,6 @@
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">Nama</th>
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">Deskripsi</th>
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">URL</th>
-                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">Urutan</th>
                         <th style="padding: 12px; text-align: center; font-weight: 600; color: #374151;">Aksi</th>
                     </tr>
                 </thead>
@@ -93,9 +92,6 @@
                                    style="color: #ECB176; text-decoration: none; font-size: 12px; word-break: break-all;">
                                     {{ Str::limit($service->url, 40) }}
                                 </a>
-                            </td>
-                            <td style="padding: 12px; color: #6b7280; font-size: 14px;">
-                                {{ $service->order }}
                             </td>
                             <td style="padding: 12px; text-align: center;">
                                 <div style="display: flex; gap: 8px; justify-content: center;">

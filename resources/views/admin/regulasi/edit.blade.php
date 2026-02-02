@@ -109,14 +109,6 @@
                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: white;">
         </div>
 
-        <div style="margin-bottom: 24px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Urutan</label>
-            <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Urutan tampilan (angka lebih kecil akan muncul lebih dulu)</p>
-            <input type="number" name="order" value="{{ old('order', $regulation->order) }}" min="0"
-                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
-                   placeholder="0">
-        </div>
-
         <div style="display: flex; gap: 12px; margin-top: 32px;">
             <button type="submit" 
                     style="flex: 1; padding: 12px 24px; background-color: #ECB176; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background-color 0.2s;">

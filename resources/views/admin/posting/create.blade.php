@@ -5,6 +5,14 @@
 
 @section('content')
 <div class="card">
+    <div style="margin-bottom: 24px;">
+        <a href="{{ route('admin.posting.index') }}" style="display: inline-flex; align-items: center; color: #6b7280; text-decoration: none; margin-bottom: 16px;">
+            <svg style="width: 20px; height: 20px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Kembali ke Daftar Posting
+        </a>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     @if (session('success'))
@@ -163,7 +171,7 @@
                        style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px;"
                        placeholder="Contoh: Humas Kemenhaj">
             </div>
-            @if(in_array(session('user.role', 'kontributor'), ['admin', 'editor']))
+            @if(session('user.role', 'kontributor') === 'editor')
                 <div style="display: flex; align-items: center; gap: 8px; margin-top: 28px;">
                     <input type="checkbox" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
                     <label style="font-weight: 600; color: #374151;">Tampilkan di publik</label>

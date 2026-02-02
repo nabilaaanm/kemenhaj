@@ -140,7 +140,6 @@
                                     <th class="text-left py-3 px-4 font-semibold">Nama Ayah</th>
                                     <th class="text-left py-3 px-4 font-semibold" data-i18n="data.berhakLunas.table.status">Status</th>
                                     <th class="text-left py-3 px-4 font-semibold">Keterangan</th>
-                                    <th class="text-left py-3 px-4 font-semibold">KBIHU</th>
                                     <th class="text-left py-3 px-4 font-semibold">No Paspor</th>
                                 </tr>
                             </thead>
@@ -158,12 +157,11 @@
                                             </span>
                                         </td>
                                         <td class="py-3 px-4 text-gray-600">{{ $item->keterangan ?? '-' }}</td>
-                                        <td class="py-3 px-4 text-gray-600">{{ $item->kbihu ?? '-' }}</td>
                                         <td class="py-3 px-4 text-gray-600">{{ $item->nomor_paspor ?? '-' }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td class="py-4 px-4 text-center text-gray-500" colspan="8">
+                                        <td class="py-4 px-4 text-center text-gray-500" colspan="7">
                                             Data tidak ditemukan.
                                         </td>
                                     </tr>

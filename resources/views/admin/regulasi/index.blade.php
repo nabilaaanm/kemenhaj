@@ -61,7 +61,6 @@
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151; white-space: nowrap;">Kategori</th>
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151; white-space: nowrap;">Tanggal</th>
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151; white-space: nowrap;">File</th>
-                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151; white-space: nowrap;">Urutan</th>
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151; white-space: nowrap;">Status</th>
                         <th style="padding: 12px; text-align: center; font-weight: 600; color: #374151; white-space: nowrap;">Aksi</th>
                     </tr>
@@ -94,9 +93,6 @@
                                 @else
                                     <span style="color: #9ca3af; font-size: 12px;">Tidak ada file</span>
                                 @endif
-                            </td>
-                            <td style="padding: 12px; color: #6b7280; font-size: 14px; white-space: nowrap; text-align: center;">
-                                {{ $regulation->order }}
                             </td>
                             <td style="padding: 12px; white-space: nowrap;">
                                 <span style="padding: 4px 12px; background-color: {{ $regulation->is_active ? '#d1fae5' : '#fee2e2' }}; color: {{ $regulation->is_active ? '#065f46' : '#991b1b' }}; border-radius: 12px; font-size: 12px; font-weight: 600; display: inline-block;">

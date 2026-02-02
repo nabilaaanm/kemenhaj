@@ -130,9 +130,13 @@ class PostingController extends Controller
 
         $data['slug'] = $slug;
         $userRole = \Illuminate\Support\Facades\Session::get('user.role', 'kontributor');
-        $data['is_active'] = $userRole === 'kontributor'
-            ? false
-            : $request->boolean('is_active', true);
+        if ($userRole === 'editor') {
+            $data['is_active'] = $request->boolean('is_active', true);
+        } elseif ($userRole === 'admin') {
+            $data['is_active'] = true;
+        } else {
+            $data['is_active'] = false;
+        }
 
         if ($request->hasFile('cover_image')) {
             $file = $request->file('cover_image');
@@ -190,7 +194,12 @@ class PostingController extends Controller
             'is_active' => 'nullable|boolean',
         ]);
 
-        $data['is_active'] = $request->boolean('is_active', true);
+        $userRole = \Illuminate\Support\Facades\Session::get('user.role', 'kontributor');
+        if ($userRole === 'editor') {
+            $data['is_active'] = $request->boolean('is_active', true);
+        } else {
+            $data['is_active'] = $post->is_active;
+        }
 
         if ($request->hasFile('cover_image')) {
             $file = $request->file('cover_image');

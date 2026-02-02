@@ -96,7 +96,6 @@ Route::get('/', function () {
 
         if (Schema::hasTable('regulations')) {
             $homeRegulations = Regulation::where('is_active', true)
-                ->orderBy('order')
                 ->orderByDesc('regulation_date')
                 ->take(3)
                 ->get();
@@ -214,7 +213,6 @@ Route::get('/', function () {
 
     if (Schema::hasTable('regulations')) {
         $homeRegulations = Regulation::where('is_active', true)
-            ->orderBy('order')
             ->orderByDesc('regulation_date')
             ->take(3)
             ->get();
@@ -229,9 +227,7 @@ Route::get('/kemenhaj-admin-secure', [AuthController::class, 'showLogin'])->name
 Route::post('/kemenhaj-admin-secure', [AuthController::class, 'login'])->name('login.post');
 
 
-Route::get('/visi-misi', function () {
-    return view('profil.visi-misi');
-});
+Route::get('/visi-misi', [ProfilController::class, 'visiMisi'])->name('visi-misi');
 Route::get('/halaman/{slug}', [PageController::class, 'show'])->name('page.show');
 Route::get('/regulasi', [PublicRegulasiController::class, 'index'])->name('regulasi');
 Route::get('/layanan', [ServiceController::class, 'index'])->name('layanan');
@@ -403,6 +399,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
             Route::get('/create', [DataInformasiController::class, 'berhakLunasCreate'])->name('create');
             Route::post('/create', [DataInformasiController::class, 'berhakLunasStore'])->name('store');
             Route::post('/import', [DataInformasiController::class, 'berhakLunasImport'])->name('import');
+            Route::get('/template', [DataInformasiController::class, 'berhakLunasTemplate'])->name('template');
             Route::get('/{id}/edit', [DataInformasiController::class, 'berhakLunasEdit'])->name('edit');
             Route::post('/{id}/edit', [DataInformasiController::class, 'berhakLunasUpdate'])->name('update');
             Route::delete('/{id}', [DataInformasiController::class, 'berhakLunasDestroy'])->name('destroy');
@@ -413,6 +410,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
             Route::get('/create', [DataInformasiController::class, 'kbihuCreate'])->name('create');
             Route::post('/create', [DataInformasiController::class, 'kbihuStore'])->name('store');
             Route::post('/import', [DataInformasiController::class, 'kbihuImport'])->name('import');
+            Route::get('/template', [DataInformasiController::class, 'kbihuTemplate'])->name('template');
             Route::get('/{id}/edit', [DataInformasiController::class, 'kbihuEdit'])->name('edit');
             Route::post('/{id}/edit', [DataInformasiController::class, 'kbihuUpdate'])->name('update');
             Route::delete('/{id}', [DataInformasiController::class, 'kbihuDestroy'])->name('destroy');
@@ -423,6 +421,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
             Route::get('/create', [DataInformasiController::class, 'ppiuCreate'])->name('create');
             Route::post('/create', [DataInformasiController::class, 'ppiuStore'])->name('store');
             Route::post('/import', [DataInformasiController::class, 'ppiuImport'])->name('import');
+            Route::get('/template', [DataInformasiController::class, 'ppiuTemplate'])->name('template');
             Route::get('/{id}/edit', [DataInformasiController::class, 'ppiuEdit'])->name('edit');
             Route::post('/{id}/edit', [DataInformasiController::class, 'ppiuUpdate'])->name('update');
             Route::delete('/{id}', [DataInformasiController::class, 'ppiuDestroy'])->name('destroy');
@@ -440,6 +439,8 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::post('/kontak', [PengaturanController::class, 'updateProfil'])->name('kontak.update');
         Route::get('/sejarah', [PengaturanController::class, 'profilSejarah'])->name('sejarah');
         Route::post('/sejarah', [PengaturanController::class, 'updateProfil'])->name('sejarah.update');
+        Route::get('/visi-misi', [PengaturanController::class, 'profilVisiMisi'])->name('visi-misi');
+        Route::post('/visi-misi', [PengaturanController::class, 'updateProfil'])->name('visi-misi.update');
         Route::post('/tim', [PengaturanController::class, 'timStore'])->name('tim.store');
         Route::put('/tim/{id}', [PengaturanController::class, 'timUpdate'])->name('tim.update');
         Route::delete('/tim/{id}', [PengaturanController::class, 'timDestroy'])->name('tim.destroy');

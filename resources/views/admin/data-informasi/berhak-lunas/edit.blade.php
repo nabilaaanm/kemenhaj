@@ -74,22 +74,9 @@
 
         <div style="margin-bottom: 24px;">
             <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Keterangan</label>
-            <select name="keterangan"
-                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: white;">
-                <option value="">-- Pilih --</option>
-                <option value="Siap Berangkat" {{ old('keterangan', $data->keterangan) == 'Siap Berangkat' ? 'selected' : '' }}>Siap Berangkat</option>
-                <option value="Meninggal" {{ old('keterangan', $data->keterangan) == 'Meninggal' ? 'selected' : '' }}>Meninggal</option>
-                <option value="Tunda Berangkat" {{ old('keterangan', $data->keterangan) == 'Tunda Berangkat' ? 'selected' : '' }}>Tunda Berangkat</option>
-                <option value="Tersambung" {{ old('keterangan', $data->keterangan) == 'Tersambung' ? 'selected' : '' }}>Tersambung</option>
-                <option value="Gak Nyambung" {{ old('keterangan', $data->keterangan) == 'Gak Nyambung' ? 'selected' : '' }}>Gak Nyambung</option>
-            </select>
-        </div>
-
-        <div style="margin-bottom: 24px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">KBIHU</label>
-            <input type="text" name="kbihu" value="{{ old('kbihu', $data->kbihu) }}"
+            <input type="text" name="keterangan" value="{{ old('keterangan', $data->keterangan) }}"
                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
-                   placeholder="KBIHU">
+                   placeholder="Keterangan">
         </div>
 
         <div style="margin-bottom: 24px;">

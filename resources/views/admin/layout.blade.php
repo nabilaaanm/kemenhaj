@@ -649,6 +649,9 @@
                     <a href="{{ route('admin.profil.sejarah') }}" class="submenu-item {{ request()->routeIs('admin.profil.sejarah') ? 'active' : '' }}">
                         <span>Sejarah</span>
                     </a>
+                    <a href="{{ route('admin.profil.visi-misi') }}" class="submenu-item {{ request()->routeIs('admin.profil.visi-misi') ? 'active' : '' }}">
+                        <span>Visi & Misi</span>
+                    </a>
                     <a href="{{ route('admin.profil.kontak') }}" class="submenu-item {{ request()->routeIs('admin.profil.kontak') ? 'active' : '' }}">
                         <span>Kontak</span>
                     </a>

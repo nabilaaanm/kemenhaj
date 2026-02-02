@@ -18,6 +18,8 @@ class Profil extends Model
         'sejarah_judul',
         'sejarah_subjudul',
         'sejarah_konten',
+        'visi_konten',
+        'misi_konten',
         'alamat',
         'alamat_keterangan',
         'telepon',
@@ -32,6 +34,7 @@ class Profil extends Model
         'instagram',
         'twitter',
         'youtube',
+        'whatsapp',
     ];
 
     public function getStrukturGambarUrlAttribute()

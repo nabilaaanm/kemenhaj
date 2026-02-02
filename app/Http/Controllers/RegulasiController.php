@@ -11,7 +11,6 @@ class RegulasiController extends Controller
     {
         try {
             $regulations = Regulation::where('is_active', true)
-                ->orderBy('order', 'asc')
                 ->orderBy('regulation_date', 'desc')
                 ->orderBy('created_at', 'desc')
                 ->get();

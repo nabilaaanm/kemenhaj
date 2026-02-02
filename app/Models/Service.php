@@ -11,13 +11,11 @@ class Service extends Model
         'description',
         'url',
         'icon',
-        'order',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
-        'order' => 'integer',
     ];
 
     public function getIconUrlAttribute(): ?string

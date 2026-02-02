@@ -68,7 +68,6 @@
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">Nomor Porsi</th>
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">Nama</th>
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">Keterangan</th>
-                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">KBIHU</th>
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">No Paspor</th>
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">Nama Ayah</th>
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">Status</th>
@@ -84,7 +83,6 @@
                                 <div style="font-weight: 600;">{{ $item->nama }}</div>
                             </td>
                             <td style="padding: 12px; color: #6b7280;">{{ $item->keterangan ?? '-' }}</td>
-                            <td style="padding: 12px; color: #6b7280;">{{ $item->kbihu ?? '-' }}</td>
                             <td style="padding: 12px; color: #6b7280;">{{ $item->nomor_paspor ?? '-' }}</td>
                             <td style="padding: 12px; color: #6b7280;">{{ $item->nama_ayah ?? '-' }}</td>
                             <td style="padding: 12px;">
@@ -134,7 +132,16 @@
     <div style="background: #fff; width: 100%; max-width: 520px; border-radius: 16px; padding: 24px; position: relative; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);">
         <button type="button" onclick="closeBerhakLunasModal('import')" style="position: absolute; top: 14px; right: 14px; background: transparent; border: none; font-size: 18px; cursor: pointer;">✕</button>
         <h3 style="font-size: 18px; font-weight: 700; color: #1f2937; margin-bottom: 8px;">Import Data Berhak Lunas</h3>
-        <p style="font-size: 13px; color: #6b7280; margin-bottom: 16px;">Unggah file .xls, .xlsx, atau .csv. Kolom yang didukung: Nomor Porsi, Nama, Keterangan, KBIHU, No Paspor, Nama Ayah, Status. File hanya dipakai untuk import dan tidak disimpan.</p>
+        <p style="font-size: 13px; color: #6b7280; margin-bottom: 16px;">
+            Unggah file .xls, .xlsx, atau .csv. Kolom yang didukung: Nomor Porsi, Nama, Keterangan, No Paspor, Nama Ayah, Status. File hanya dipakai untuk import dan tidak disimpan.
+        </p>
+        <a href="{{ route('admin.data-informasi.berhak-lunas.template') }}"
+           style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #7c2d12; text-decoration: none; margin-bottom: 16px; padding: 8px 12px; border-radius: 999px; background: #fff7ed; border: 1px solid #fed7aa; box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08); transition: transform 0.2s ease, box-shadow 0.2s ease;">
+            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 12v7m0 0l3-3m-3 3l-3-3M8 7h8a2 2 0 012 2v3H6V9a2 2 0 012-2z"/>
+            </svg>
+            Download Template Excel
+        </a>
         <form method="POST" action="{{ route('admin.data-informasi.berhak-lunas.import') }}" enctype="multipart/form-data">
             @csrf
             <input type="file" name="file" accept=".xlsx,.xls,.csv" required
@@ -167,19 +174,7 @@
                 </div>
                 <div>
                     <label style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 6px; display: block;">Keterangan</label>
-                    <select name="keterangan"
-                            style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff;">
-                        <option value="">-- Pilih --</option>
-                        <option value="Siap Berangkat">Siap Berangkat</option>
-                        <option value="Meninggal">Meninggal</option>
-                        <option value="Tunda Berangkat">Tunda Berangkat</option>
-                        <option value="Tersambung">Tersambung</option>
-                        <option value="Gak Nyambung">Gak Nyambung</option>
-                    </select>
-                </div>
-                <div>
-                    <label style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 6px; display: block;">KBIHU</label>
-                    <input type="text" name="kbihu"
+                    <input type="text" name="keterangan"
                            style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
                 </div>
                 <div>

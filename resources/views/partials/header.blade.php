@@ -724,11 +724,20 @@
 </div>
 
 @php
-    $whatsappNumber = '6289507069859';
+    $rawWhatsapp = $profilGlobal->whatsapp ?? '';
+    $whatsappNumber = preg_replace('/\D+/', '', $rawWhatsapp);
+    if ($whatsappNumber !== '') {
+        if (str_starts_with($whatsappNumber, '0')) {
+            $whatsappNumber = '62' . substr($whatsappNumber, 1);
+        } elseif (!str_starts_with($whatsappNumber, '62') && str_starts_with($whatsappNumber, '8')) {
+            $whatsappNumber = '62' . $whatsappNumber;
+        }
+    }
     $whatsappMessage = 'Halo, saya ingin bertanya.';
-    $waUrl = 'https://wa.me/' . $whatsappNumber . '?text=' . urlencode($whatsappMessage);
+    $waUrl = $whatsappNumber !== '' ? 'https://wa.me/' . $whatsappNumber . '?text=' . urlencode($whatsappMessage) : '';
 @endphp
 
+@if($whatsappNumber !== '')
 <div class="whatsapp-bot" id="whatsappBot">
     <div class="whatsapp-bot-header">
         Chat WhatsApp
@@ -755,6 +764,7 @@
     </span>
     Chat WhatsApp
 </a>
+@endif
 
 <div class="accessibility-widget" aria-live="polite">
     <button type="button" class="accessibility-toggle" id="accessibilityToggle" aria-expanded="false" aria-controls="accessibilityPanel" title="Menu Aksesibilitas">
@@ -997,7 +1007,8 @@
         const closeBtn = document.getElementById('whatsappBotClose');
         const input = document.getElementById('whatsappBotInput');
         const sendBtn = document.getElementById('whatsappBotSend');
-        if (!bot || !openBtn) return;
+        const whatsappNumber = "{{ $whatsappNumber }}";
+        if (!bot || !openBtn || !whatsappNumber) return;
 
         const openBot = (event) => {
             event.preventDefault();
@@ -1010,7 +1021,7 @@
         const sendMessage = () => {
             const text = (input?.value || '').trim();
             if (!text) return;
-            const url = 'https://wa.me/6289507069859?text=' + encodeURIComponent(text);
+            const url = 'https://wa.me/' + whatsappNumber + '?text=' + encodeURIComponent(text);
             window.open(url, '_blank');
         };
 

@@ -10,8 +10,7 @@ class LayananController extends Controller
 {
     public function index()
     {
-        $services = Service::orderBy('order', 'asc')
-            ->orderBy('created_at', 'desc')
+        $services = Service::orderBy('created_at', 'desc')
             ->get();
         
         return view('admin.layanan.index', compact('services'));
@@ -29,7 +28,6 @@ class LayananController extends Controller
             'description' => 'nullable|string',
             'url' => 'required|url',
             'icon' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-            'order' => 'nullable|integer|min:0',
         ], [
             'name.required' => 'Nama layanan wajib diisi',
             'url.required' => 'URL layanan wajib diisi',
@@ -42,7 +40,6 @@ class LayananController extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'url' => $request->url,
-                'order' => $request->order ?? 0,
                 'is_active' => true,
             ];
 
@@ -84,7 +81,6 @@ class LayananController extends Controller
             'description' => 'nullable|string',
             'url' => 'required|url',
             'icon' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
-            'order' => 'nullable|integer|min:0',
         ], [
             'name.required' => 'Nama layanan wajib diisi',
             'url.required' => 'URL layanan wajib diisi',
@@ -97,7 +93,6 @@ class LayananController extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'url' => $request->url,
-                'order' => $request->order ?? 0,
             ];
 
             // Handle icon upload
