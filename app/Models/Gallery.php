@@ -42,13 +42,10 @@ class Gallery extends Model
     public function getImageUrlAttribute()
     {
         if ($this->file_path) {
-            // Check if file exists in public disk
             $path = $this->normalizePublicPath($this->file_path);
-            if ($path && file_exists(public_path($path))) {
+            if ($path) {
                 return asset($path);
             }
-            // If file doesn't exist but path is set, return placeholder
-            return 'https://via.placeholder.com/400x300/ECB176/FFFFFF?text=File+Not+Found';
         }
         return $this->url ?: 'https://via.placeholder.com/400x300/ECB176/FFFFFF?text=No+Image';
     }
@@ -58,10 +55,9 @@ class Gallery extends Model
     {
         if ($this->file_path) {
             $path = $this->normalizePublicPath($this->file_path);
-            if ($path && file_exists(public_path($path))) {
+            if ($path) {
                 return asset($path);
             }
-            return $this->url;
         }
         return $this->url;
     }
@@ -71,7 +67,7 @@ class Gallery extends Model
     {
         if ($this->thumbnail) {
             $path = $this->normalizePublicPath($this->thumbnail);
-            if ($path && file_exists(public_path($path))) {
+            if ($path) {
                 return asset($path);
             }
         }
@@ -85,7 +81,7 @@ class Gallery extends Model
     {
         if ($this->thumbnail) {
             $path = $this->normalizePublicPath($this->thumbnail);
-            if ($path && file_exists(public_path($path))) {
+            if ($path) {
                 return asset($path);
             }
         }

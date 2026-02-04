@@ -74,8 +74,7 @@
                                         if (str_starts_with($imagePath, 'storage/')) {
                                             $imagePath = substr($imagePath, 8);
                                         }
-                                        $fileExists = $imagePath !== '' && file_exists(public_path($imagePath));
-                                        $imageUrl = $fileExists ? asset($imagePath) : 'https://via.placeholder.com/80x80/ECB176/FFFFFF?text=File+Missing';
+                                        $imageUrl = $imagePath !== '' ? asset($imagePath) : 'https://via.placeholder.com/80x80/ECB176/FFFFFF?text=No+Image';
                                     @endphp
                                     <img src="{{ $imageUrl }}" alt="{{ $foto->title }}" 
                                          style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;"
