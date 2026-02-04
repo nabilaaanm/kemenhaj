@@ -31,11 +31,22 @@ class Gallery extends Model
         }
 
         $path = ltrim($path, '/');
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+        if (str_starts_with($path, 'public/')) {
+            $path = substr($path, 7);
+        }
         if (str_starts_with($path, 'storage/')) {
             $path = substr($path, 8);
         }
 
         return $path;
+    }
+
+    private function isAbsoluteUrl(string $path): bool
+    {
+        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 
     // Get image URL (either from file_path or url)
@@ -44,7 +55,7 @@ class Gallery extends Model
         if ($this->file_path) {
             $path = $this->normalizePublicPath($this->file_path);
             if ($path) {
-                return asset($path);
+                return $this->isAbsoluteUrl($path) ? $path : asset($path);
             }
         }
         return $this->url ?: 'https://via.placeholder.com/400x300/ECB176/FFFFFF?text=No+Image';
@@ -56,7 +67,7 @@ class Gallery extends Model
         if ($this->file_path) {
             $path = $this->normalizePublicPath($this->file_path);
             if ($path) {
-                return asset($path);
+                return $this->isAbsoluteUrl($path) ? $path : asset($path);
             }
         }
         return $this->url;
@@ -68,7 +79,7 @@ class Gallery extends Model
         if ($this->thumbnail) {
             $path = $this->normalizePublicPath($this->thumbnail);
             if ($path) {
-                return asset($path);
+                return $this->isAbsoluteUrl($path) ? $path : asset($path);
             }
         }
         if ($this->file_path && $this->type === 'foto') {
@@ -82,7 +93,7 @@ class Gallery extends Model
         if ($this->thumbnail) {
             $path = $this->normalizePublicPath($this->thumbnail);
             if ($path) {
-                return asset($path);
+                return $this->isAbsoluteUrl($path) ? $path : asset($path);
             }
         }
 
