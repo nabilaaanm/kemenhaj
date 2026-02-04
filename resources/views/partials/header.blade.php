@@ -733,7 +733,7 @@
             $whatsappNumber = '62' . $whatsappNumber;
         }
     }
-    $whatsappMessage = 'Halo, saya ingin bertanya.';
+    $whatsappMessage = 'Assalamualaikum 😊, Saya ingin bertanya.';
     $waUrl = $whatsappNumber !== '' ? 'https://wa.me/' . $whatsappNumber . '?text=' . urlencode($whatsappMessage) : '';
 @endphp
 
@@ -1008,18 +1008,25 @@
         const input = document.getElementById('whatsappBotInput');
         const sendBtn = document.getElementById('whatsappBotSend');
         const whatsappNumber = "{{ $whatsappNumber }}";
+        const defaultMessage = @json($whatsappMessage);
         if (!bot || !openBtn || !whatsappNumber) return;
 
         const openBot = (event) => {
             event.preventDefault();
             bot.classList.add('active');
+            if (input && !input.value.trim()) {
+                input.value = defaultMessage || '';
+            }
             input?.focus();
         };
         const closeBot = () => {
             bot.classList.remove('active');
         };
         const sendMessage = () => {
-            const text = (input?.value || '').trim();
+            let text = (input?.value || '').trim();
+            if (!text) {
+                text = defaultMessage || '';
+            }
             if (!text) return;
             const url = 'https://wa.me/' + whatsappNumber + '?text=' + encodeURIComponent(text);
             window.open(url, '_blank');

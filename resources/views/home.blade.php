@@ -6,8 +6,7 @@
     <link rel="icon" type="image/png" href="{{ asset('image/lambang.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('image/lambang.png') }}">
     <title>Kementerian Haji dan Umrah Kota Cirebon</title>
-    <link rel="stylesheet" href="{{ asset('build/assets/app-Byobma2p.css') }}">
-    <script src="{{ asset('build/assets/app-CAiCLEjY.js') }}" defer></script>
+    @include('partials.assets')
     <style>
         * {
             box-sizing: border-box;
@@ -803,7 +802,13 @@
                     </p>
                     <div class="mt-3">
                         @if($regulation->file_url)
-                            <a href="{{ $regulation->file_url }}" class="btn-readmore" target="_blank" rel="noopener">
+                            @php
+                                $downloadName = trim((string) $regulation->title);
+                                if ($downloadName !== '' && !\Illuminate\Support\Str::endsWith(strtolower($downloadName), '.pdf')) {
+                                    $downloadName .= '.pdf';
+                                }
+                            @endphp
+                            <a href="{{ $regulation->file_url }}" class="btn-readmore" download="{{ $downloadName }}">
                                 Unduh Dokumen
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m0 0l-4-4m4 4l4-4"/>

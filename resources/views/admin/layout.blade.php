@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
     <link rel="icon" type="image/png" href="{{ asset('image/lambang.png') }}">
     <title>@yield('title', 'Admin') - Kementerian Haji dan Umrah Kota Cirebon</title>
-    <link rel="stylesheet" href="{{ asset('build/assets/app-Byobma2p.css') }}">
-    <script src="{{ asset('build/assets/app-CAiCLEjY.js') }}" defer></script>
+    @include('partials.assets')
     <style>
         * {
             box-sizing: border-box;

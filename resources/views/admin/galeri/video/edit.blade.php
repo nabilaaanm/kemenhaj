@@ -88,13 +88,6 @@
             </select>
         </div>
 
-        <div style="margin-bottom: 24px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Durasi</label>
-            <input type="text" name="duration" value="{{ old('duration', $video->duration) }}"
-                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
-                   placeholder="Contoh: 5:30">
-        </div>
-
         <div style="margin-bottom: 16px;">
             <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Thumbnail Saat Ini</label>
             <img src="{{ $video->video_thumbnail_url }}" alt="{{ $video->title }}"

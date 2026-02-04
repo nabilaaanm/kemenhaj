@@ -30,14 +30,12 @@ class GaleriController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:255',
-            'file' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
-            'url' => 'nullable|url',
+            'file' => 'required|image|mimes:jpeg,jpg,png|max:5120',
         ], [
             'title.required' => 'Judul wajib diisi',
             'file.image' => 'File harus berupa gambar',
             'file.mimes' => 'File harus berformat JPEG, JPG, atau PNG',
             'file.max' => 'Ukuran file maksimal 5MB',
-            'url.url' => 'URL tidak valid',
         ]);
 
         $data = [
@@ -56,10 +54,8 @@ class GaleriController extends Controller
                 $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
                 Storage::disk('foto')->putFileAs('', $file, $filename);
                 $data['file_path'] = 'foto/' . $filename;
-            } elseif ($request->url) {
-                $data['url'] = $request->url;
             } else {
-                return back()->with('error', 'Harus mengupload file atau memasukkan URL')->withInput();
+                return back()->with('error', 'Harus mengupload file foto.')->withInput();
             }
 
             Gallery::create($data);
@@ -98,20 +94,16 @@ class GaleriController extends Controller
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:255',
             'file' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
-            'url' => 'nullable|url',
         ], [
             'title.required' => 'Judul wajib diisi',
             'file.image' => 'File harus berupa gambar',
             'file.mimes' => 'File harus berformat JPEG, JPG, atau PNG',
             'file.max' => 'Ukuran file maksimal 5MB',
-            'url.url' => 'URL tidak valid',
         ]);
 
         $hasFile = $request->hasFile('file');
-        $hasUrl = trim((string) $request->url) !== '';
-
-        if (!$hasFile && !$hasUrl && !$foto->file_path && !$foto->url) {
-            return back()->with('error', 'Harus mengupload file atau memasukkan URL')->withInput();
+        if (!$hasFile && !$foto->file_path) {
+            return back()->with('error', 'Harus mengupload file foto.')->withInput();
         }
 
         $data = [
@@ -132,13 +124,6 @@ class GaleriController extends Controller
                 Storage::disk('foto')->putFileAs('', $file, $filename);
                 $data['file_path'] = 'foto/' . $filename;
                 $data['url'] = null;
-            } elseif ($hasUrl) {
-                $oldPath = $this->stripDiskPrefix($foto->file_path, 'foto');
-                if ($oldPath) {
-                    Storage::disk('foto')->delete($oldPath);
-                }
-                $data['url'] = $request->url;
-                $data['file_path'] = null;
             }
 
             $foto->update($data);
@@ -204,7 +189,6 @@ class GaleriController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:255',
-            'duration' => 'nullable|string|max:20',
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ];
 
@@ -237,7 +221,6 @@ class GaleriController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'category' => $request->category,
-            'duration' => $request->duration,
             'is_active' => true,
         ];
 
@@ -372,7 +355,6 @@ class GaleriController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:255',
-            'duration' => 'nullable|string|max:20',
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             'file' => 'nullable|mimes:mp4|max:' . $maxAllowed,
             'url' => $hasUrl ? 'required|url' : 'nullable|url',
@@ -395,7 +377,6 @@ class GaleriController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'category' => $request->category,
-            'duration' => $request->duration,
         ];
 
         try {

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class SlideshowController extends Controller
 {
@@ -41,7 +42,12 @@ class SlideshowController extends Controller
             'button_text' => 'nullable|string|max:255',
             'button_url' => 'nullable|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:4096',
-            'order' => 'nullable|integer|min:0',
+            'order' => [
+                'required',
+                'integer',
+                'min:1',
+                Rule::unique('slideshows', 'order'),
+            ],
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -53,7 +59,7 @@ class SlideshowController extends Controller
             'button_url',
             'order',
         ]);
-        $data['order'] = $data['order'] ?? 0;
+        $data['order'] = $data['order'];
         $data['is_active'] = $request->boolean('is_active', true);
 
         $file = $request->file('image');
@@ -95,7 +101,12 @@ class SlideshowController extends Controller
             'button_text' => 'nullable|string|max:255',
             'button_url' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
-            'order' => 'nullable|integer|min:0',
+            'order' => [
+                'required',
+                'integer',
+                'min:1',
+                Rule::unique('slideshows', 'order')->ignore($slide->id),
+            ],
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -107,7 +118,7 @@ class SlideshowController extends Controller
             'button_url',
             'order',
         ]);
-        $data['order'] = $data['order'] ?? 0;
+        $data['order'] = $data['order'];
         $data['is_active'] = $request->boolean('is_active', true);
 
         if ($request->hasFile('image')) {

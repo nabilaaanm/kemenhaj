@@ -132,7 +132,7 @@ class PostingController extends Controller
         $data['slug'] = $slug;
         $userRole = \Illuminate\Support\Facades\Session::get('user.role', 'kontributor');
         if ($userRole === 'editor') {
-            $data['is_active'] = $request->boolean('is_active', true);
+            $data['is_active'] = $request->boolean('is_active');
         } elseif ($userRole === 'admin') {
             $data['is_active'] = true;
         } else {
@@ -193,7 +193,7 @@ class PostingController extends Controller
 
         $userRole = \Illuminate\Support\Facades\Session::get('user.role', 'kontributor');
         if ($userRole === 'editor') {
-            $data['is_active'] = $request->boolean('is_active', true);
+            $data['is_active'] = $request->boolean('is_active');
         } else {
             $data['is_active'] = $post->is_active;
         }

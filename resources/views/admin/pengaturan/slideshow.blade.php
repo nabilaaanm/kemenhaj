@@ -15,6 +15,10 @@
         </a>
     </div>
 
+    <div style="background: #f8fafc; border: 1px dashed #cbd5f5; color: #4b5563; padding: 10px 12px; border-radius: 8px; font-size: 12px; margin-bottom: 16px;">
+        Rekomendasi ukuran gambar slideshow: 1920 x 600 px (rasio lebar). Gambar akan di-crop otomatis agar pas.
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     @if (session('success'))

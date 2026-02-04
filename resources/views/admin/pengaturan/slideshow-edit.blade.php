@@ -90,7 +90,7 @@
             </div>
             <input type="file" name="image" accept="image/*"
                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;">
-            <p style="font-size: 12px; color: #6b7280; margin-top: 4px;">Format: JPG, PNG. Maks 4MB.</p>
+            <p style="font-size: 12px; color: #6b7280; margin-top: 4px;">Ukuran rekomendasi: 1920 x 600 px. Format: JPG/PNG. Maks 4MB.</p>
             @error('image')
                 <span style="color: #dc2626; font-size: 12px; margin-top: 4px; display: block;">{{ $message }}</span>
             @enderror

@@ -89,13 +89,6 @@
         </div>
 
         <div style="margin-bottom: 24px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Durasi</label>
-            <input type="text" name="duration" value="{{ old('duration') }}"
-                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
-                   placeholder="Contoh: 5:30">
-        </div>
-
-        <div style="margin-bottom: 24px;">
             <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Upload File Video</label>
             <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Format: MP4 (Maksimal {{ ini_get('upload_max_filesize') }})</p>
             <p style="color: #ef4444; font-size: 12px; margin-bottom: 8px; font-style: italic;">⚠️ Catatan: Batas upload saat ini adalah {{ ini_get('upload_max_filesize') }}. Untuk file yang lebih besar, gunakan URL video (YouTube, Vimeo, dll).</p>

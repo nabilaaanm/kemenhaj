@@ -6,8 +6,7 @@
     <link rel="icon" type="image/png" href="{{ asset('image/lambang.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('image/lambang.png') }}">
     <title>Regulasi - Kementerian Haji dan Umrah Kota Cirebon</title>
-    <link rel="stylesheet" href="{{ asset('build/assets/app-Byobma2p.css') }}">
-    <script src="{{ asset('build/assets/app-CAiCLEjY.js') }}" defer></script>
+    @include('partials.assets')
     <style>
         * {
             box-sizing: border-box;
@@ -133,9 +132,15 @@
                             <span>{{ $regulation->regulation_date->format('d F Y') }}</span>
                     </div>
                 </div>
-                <div class="flex-shrink-0">
+                    <div class="flex-shrink-0">
                         @if($regulation->file_url)
-                            <a href="{{ $regulation->file_url }}" download class="btn-custom text-black font-semibold px-6 py-2.5 rounded-lg text-sm inline-flex items-center gap-2 hover:bg-opacity-90 transition">
+                            @php
+                                $downloadName = trim((string) $regulation->title);
+                                if ($downloadName !== '' && !\Illuminate\Support\Str::endsWith(strtolower($downloadName), '.pdf')) {
+                                    $downloadName .= '.pdf';
+                                }
+                            @endphp
+                            <a href="{{ $regulation->file_url }}" download="{{ $downloadName }}" class="btn-custom text-black font-semibold px-6 py-2.5 rounded-lg text-sm inline-flex items-center gap-2 hover:bg-opacity-90 transition">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>

@@ -86,30 +86,13 @@
         </div>
 
         <div style="margin-bottom: 24px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Upload File Foto (Opsional)</label>
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Ganti File Foto (Opsional)</label>
             <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Format: JPEG, JPG, PNG (Maksimal 5MB)</p>
             <input type="file" name="file" accept="image/jpeg,image/jpg,image/png"
                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: white;"
                    onchange="previewImage(this)">
             <div id="imagePreview" style="margin-top: 16px; display: none;">
                 <img id="previewImg" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #d1d5db;">
-            </div>
-        </div>
-
-        <div style="margin-bottom: 24px; padding: 16px; background-color: #f9fafb; border-radius: 8px; text-align: center;">
-            <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">ATAU</p>
-        </div>
-
-        <div style="margin-bottom: 24px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Masukkan URL Gambar (Opsional)</label>
-            <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Masukkan link gambar dari internet</p>
-            <input type="url" name="url" value="{{ old('url', $foto->url) }}"
-                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
-                   placeholder="https://example.com/image.jpg">
-            <div id="urlPreview" style="margin-top: 16px; {{ old('url', $foto->url) ? '' : 'display: none;' }}">
-                <img id="urlPreviewImg" src="{{ old('url', $foto->url) }}" alt="Preview"
-                     style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #d1d5db;"
-                     onerror="this.style.display='none'; document.getElementById('urlPreview').style.display='none';">
             </div>
         </div>
 
@@ -143,17 +126,5 @@
         }
     }
 
-    document.querySelector('input[name="url"]').addEventListener('input', function() {
-        const url = this.value;
-        const urlPreview = document.getElementById('urlPreview');
-        const urlPreviewImg = document.getElementById('urlPreviewImg');
-        
-        if (url && url.startsWith('http')) {
-            urlPreviewImg.src = url;
-            urlPreview.style.display = 'block';
-        } else {
-            urlPreview.style.display = 'none';
-        }
-    });
 </script>
 @endsection

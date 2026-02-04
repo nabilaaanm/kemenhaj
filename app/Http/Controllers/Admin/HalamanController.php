@@ -7,6 +7,7 @@ use App\Models\CustomPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class HalamanController extends Controller
 {
@@ -54,7 +55,12 @@ class HalamanController extends Controller
             'source' => 'nullable|string|max:255',
             'photographer' => 'nullable|string|max:255',
             'other_info' => 'nullable|string',
-            'order' => 'nullable|integer|min:0',
+            'order' => [
+                'required',
+                'integer',
+                'min:1',
+                Rule::unique('custom_pages', 'order'),
+            ],
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -72,7 +78,7 @@ class HalamanController extends Controller
             'other_info',
         ]);
         $data['slug'] = $slug;
-        $data['order'] = $request->order ?? 0;
+        $data['order'] = $request->order;
         $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('cover_image')) {
@@ -110,7 +116,12 @@ class HalamanController extends Controller
             'source' => 'nullable|string|max:255',
             'photographer' => 'nullable|string|max:255',
             'other_info' => 'nullable|string',
-            'order' => 'nullable|integer|min:0',
+            'order' => [
+                'required',
+                'integer',
+                'min:1',
+                Rule::unique('custom_pages', 'order')->ignore($page->id),
+            ],
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -130,7 +141,7 @@ class HalamanController extends Controller
             'other_info',
         ]);
         $data['slug'] = $slug;
-        $data['order'] = $request->order ?? 0;
+        $data['order'] = $request->order;
         $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('cover_image')) {
