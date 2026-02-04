@@ -183,6 +183,46 @@
             </div>
         </div>
 
+        <!-- Social Media Section -->
+        <div style="background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06); margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 40px; height: 40px; border-radius: 999px; display: flex; align-items: center; justify-content: center; background-color: #ECB176;">
+                    <svg style="width: 20px; height: 20px; color: #fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h6m-6 4h10M5 6a2 2 0 012-2h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6z"/>
+                    </svg>
+                </div>
+                <h3 style="font-size: 16px; font-weight: 700; color: #374151;">Media Sosial</h3>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+                <div>
+                    <label style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 6px; display: block;">Facebook</label>
+                    <input
+                        type="url"
+                        name="facebook"
+                        value="{{ old('facebook', $profil->facebook ?? '') }}"
+                        style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 14px;"
+                        placeholder="https://facebook.com/..."
+                    >
+                    @error('facebook')
+                        <span style="color: #dc2626; font-size: 12px; margin-top: 4px; display: block;">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 6px; display: block;">Instagram</label>
+                    <input
+                        type="url"
+                        name="instagram"
+                        value="{{ old('instagram', $profil->instagram ?? '') }}"
+                        style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 14px;"
+                        placeholder="https://instagram.com/..."
+                    >
+                    @error('instagram')
+                        <span style="color: #dc2626; font-size: 12px; margin-top: 4px; display: block;">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+        </div>
+
         <!-- Google Maps Section -->
         <div style="background: #ffffff; border-radius: 16px; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06); overflow: hidden; margin-bottom: 24px;">
             <div style="padding: 16px 20px; border-bottom: 1px solid #e5e7eb;">

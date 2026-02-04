@@ -7,6 +7,7 @@ use App\Models\Profil;
 use App\Models\SiteAppearance;
 use App\Models\TimKemenhaj;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 
@@ -82,6 +83,88 @@ class PengaturanController extends Controller
         return view('admin.pengaturan.panduan');
     }
 
+    public function backup()
+    {
+        return view('admin.pengaturan.backup');
+    }
+
+    public function downloadBackup()
+    {
+        $connection = DB::connection();
+        $dbName = $connection->getDatabaseName();
+        $tables = $connection->select('SHOW TABLES');
+        if (empty($tables)) {
+            return back()->with('error', 'Tidak ada tabel yang dapat dibackup.');
+        }
+
+        $firstTable = (array) $tables[0];
+        $tableKey = array_key_first($firstTable);
+        $filename = 'backup-' . $dbName . '-' . date('Ymd_His') . '.sql';
+
+        return response()->streamDownload(function () use ($connection, $tables, $tableKey, $dbName) {
+            $out = fopen('php://output', 'w');
+            fwrite($out, "-- Backup Database: {$dbName}\n");
+            fwrite($out, "-- Generated at: " . date('Y-m-d H:i:s') . "\n\n");
+            fwrite($out, "SET foreign_key_checks = 0;\n\n");
+
+            foreach ($tables as $tableRow) {
+                $tableArray = (array) $tableRow;
+                $table = $tableArray[$tableKey] ?? null;
+                if (!$table) {
+                    continue;
+                }
+
+                $create = $connection->select("SHOW CREATE TABLE `{$table}`");
+                if (!empty($create)) {
+                    $createRow = (array) $create[0];
+                    $createSql = $createRow['Create Table'] ?? $createRow['Create Table'] ?? null;
+                    if ($createSql) {
+                        fwrite($out, "\nDROP TABLE IF EXISTS `{$table}`;\n");
+                        fwrite($out, $createSql . ";\n\n");
+                    }
+                }
+
+                $offset = 0;
+                $limit = 200;
+                while (true) {
+                    $rows = $connection->select("SELECT * FROM `{$table}` LIMIT {$limit} OFFSET {$offset}");
+                    if (empty($rows)) {
+                        break;
+                    }
+
+                    $columns = array_keys((array) $rows[0]);
+                    $colList = '`' . implode('`,`', $columns) . '`';
+
+                    $valuesSql = [];
+                    foreach ($rows as $row) {
+                        $rowArray = (array) $row;
+                        $values = [];
+                        foreach ($columns as $col) {
+                            $value = $rowArray[$col] ?? null;
+                            if ($value === null) {
+                                $values[] = 'NULL';
+                            } else {
+                                $escaped = addslashes((string) $value);
+                                $values[] = "'" . $escaped . "'";
+                            }
+                        }
+                        $valuesSql[] = '(' . implode(',', $values) . ')';
+                    }
+
+                    fwrite($out, "INSERT INTO `{$table}` ({$colList}) VALUES\n");
+                    fwrite($out, implode(",\n", $valuesSql) . ";\n\n");
+
+                    $offset += $limit;
+                }
+            }
+
+            fwrite($out, "SET foreign_key_checks = 1;\n");
+            fclose($out);
+        }, $filename, [
+            'Content-Type' => 'application/sql',
+        ]);
+    }
+
     public function profilStruktur()
     {
         $profil = Profil::first();
@@ -142,8 +225,6 @@ class PengaturanController extends Controller
             'maps_embed_ppiu' => 'nullable|string|max:2000',
             'facebook' => 'nullable|url|max:255',
             'instagram' => 'nullable|url|max:255',
-            'twitter' => 'nullable|url|max:255',
-            'youtube' => 'nullable|url|max:255',
             'whatsapp' => 'nullable|string|max:50',
         ]);
 
@@ -167,8 +248,6 @@ class PengaturanController extends Controller
             'maps_embed_ppiu',
             'facebook',
             'instagram',
-            'twitter',
-            'youtube',
             'whatsapp',
         ]);
 
@@ -275,6 +354,8 @@ class PengaturanController extends Controller
             'maps_embed',
             'maps_embed_kbihu',
             'maps_embed_ppiu',
+            'facebook',
+            'instagram',
             'whatsapp',
         ];
 
@@ -326,8 +407,14 @@ class PengaturanController extends Controller
             if (in_array('maps_embed_ppiu', $missing, true)) {
                 $table->text('maps_embed_ppiu')->nullable()->after('maps_embed_kbihu');
             }
+            if (in_array('facebook', $missing, true)) {
+                $table->string('facebook')->nullable()->after('maps_embed_ppiu');
+            }
+            if (in_array('instagram', $missing, true)) {
+                $table->string('instagram')->nullable()->after('facebook');
+            }
             if (in_array('whatsapp', $missing, true)) {
-                $table->string('whatsapp')->nullable()->after('youtube');
+                $table->string('whatsapp')->nullable()->after('instagram');
             }
         });
     }

@@ -308,6 +308,12 @@
             gap: 12px;
             padding-right: 16px;
             border-right: 1px solid #e5e7eb;
+            text-decoration: none;
+            color: inherit;
+            transition: opacity 0.2s ease;
+        }
+        .user-info-topbar:hover {
+            opacity: 0.85;
         }
         .user-avatar-topbar {
             width: 40px;
@@ -619,6 +625,9 @@
                     <a href="{{ route('admin.data-informasi.berhak-lunas.index') }}" class="submenu-item {{ request()->routeIs('admin.data-informasi.berhak-lunas.*') ? 'active' : '' }}">
                         <span>Berhak Lunas</span>
                     </a>
+                    <a href="{{ route('admin.data-informasi.statistik.index') }}" class="submenu-item {{ request()->routeIs('admin.data-informasi.statistik.*') ? 'active' : '' }}">
+                        <span>Statistik Haji</span>
+                    </a>
                     <a href="{{ route('admin.data-informasi.kbihu.index') }}" class="submenu-item {{ request()->routeIs('admin.data-informasi.kbihu.*') ? 'active' : '' }}">
                         <span>KBIHU</span>
                     </a>
@@ -684,6 +693,9 @@
                     <a href="{{ route('admin.pengaturan.pengguna') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.pengguna') ? 'active' : '' }}">
                         <span>Pengguna</span>
                     </a>
+                    <a href="{{ route('admin.pengaturan.backup') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.backup') ? 'active' : '' }}">
+                        <span>Backup Database</span>
+                    </a>
                     @endif
                 </div>
 
@@ -719,7 +731,7 @@
                     </a>
                 </div>
                 <div class="user-menu" style="flex: 0 0 auto; margin-left: auto;">
-                    <div class="user-info-topbar">
+                    <a href="{{ route('admin.akun.profil') }}" class="user-info-topbar">
                         @php
                             $userRole = session('user.role', 'kontributor');
                             $roleClass = 'role-' . $userRole;
@@ -743,7 +755,7 @@
                             <div class="user-name-topbar {{ $roleClass }}">{{ strtoupper(session('user.name')) }}</div>
                             <div class="user-email-topbar">{{ session('user.email') }}</div>
                         </div>
-                    </div>
+                    </a>
                     <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
                         @csrf
                         <button type="submit" class="btn-logout">Logout</button>

@@ -135,20 +135,20 @@
             @endphp
             @for($rowIndex = 1; $rowIndex <= $maxRows; $rowIndex++)
                 @if(count($rows[$rowIndex]) > 0)
-                    <div class="grid grid-cols-4 gap-6 mb-8">
+                    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
                         @for($col = 1; $col <= 4; $col++)
                             @php $member = $rows[$rowIndex][$col] ?? null; @endphp
                             @if($member)
-                                <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 text-center">
-                                    <div class="mb-4">
+                                <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-3 sm:p-4 text-center">
+                                    <div class="mb-3 sm:mb-4">
                                         <img src="{{ $member->foto_url }}" 
                                              alt="{{ $member->nama }}" 
                                              class="w-full aspect-square object-cover rounded-lg mb-3"
                                              style="object-position: 50% 20%;"
                                              onerror="this.src='https://via.placeholder.com/300x300/ECB176/FFFFFF?text=Staff'; this.onerror=null;">
                                     </div>
-                                    <h3 class="font-semibold text-gray-800 mb-1">{{ $member->nama }}</h3>
-                                    <p class="text-sm text-gray-600">{{ $member->jabatan }}</p>
+                                    <h3 class="font-semibold text-gray-800 mb-1 text-sm sm:text-base">{{ $member->nama }}</h3>
+                                    <p class="text-xs sm:text-sm text-gray-600">{{ $member->jabatan }}</p>
                                 </div>
                             @else
                                 <div></div>

@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BerhakLunas;
+use App\Models\HajiJamaah;
 use App\Models\Kbihu;
 use App\Models\Ppiu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -16,10 +19,28 @@ class DataInformasiController extends Controller
     // ==================== BERHAK LUNAS ====================
     public function berhakLunasIndex()
     {
-        $data = BerhakLunas::orderBy('created_at', 'desc')
-            ->get();
+        $search = trim((string) request()->query('q'));
+        $query = BerhakLunas::query();
+        $statusFilter = trim((string) request()->query('status'));
+        if ($search !== '' || $statusFilter !== '') {
+            $query->where(function ($q) use ($search) {
+                if ($search !== '') {
+                    $q->where('nomor_porsi', 'like', '%' . $search . '%')
+                        ->orWhere('nama', 'like', '%' . $search . '%')
+                        ->orWhere('nomor_paspor', 'like', '%' . $search . '%')
+                        ->orWhere('nama_ayah', 'like', '%' . $search . '%')
+                        ->orWhere('keterangan', 'like', '%' . $search . '%');
+                }
+            });
+            if ($statusFilter !== '') {
+                $query->where('status', $statusFilter);
+            }
+        }
+        $data = $query->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
         
-        return view('admin.data-informasi.berhak-lunas.index', compact('data'));
+        return view('admin.data-informasi.berhak-lunas.index', compact('data', 'search', 'statusFilter'));
     }
 
     public function berhakLunasCreate()
@@ -31,15 +52,18 @@ class DataInformasiController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nomor_porsi' => 'required|string|max:255|unique:berhak_lunas,nomor_porsi',
+            'nomor_porsi' => 'required|digits:10|unique:berhak_lunas,nomor_porsi',
             'nama_ayah' => 'nullable|string|max:255',
             'status' => 'required|in:Cadangan,Bukan Cadangan',
             'keterangan' => 'nullable|string|max:255',
-            'nomor_paspor' => 'nullable|string|max:255',
+            'nomor_paspor' => 'nullable|alpha_num|size:8|unique:berhak_lunas,nomor_paspor',
         ], [
             'nama.required' => 'Nama wajib diisi',
             'nomor_porsi.required' => 'Nomor porsi wajib diisi',
+            'nomor_porsi.digits' => 'Nomor porsi harus 10 digit',
             'nomor_porsi.unique' => 'Nomor porsi sudah terdaftar',
+            'nomor_paspor.size' => 'Nomor paspor harus 8 karakter',
+            'nomor_paspor.unique' => 'Nomor paspor sudah terdaftar',
             'status.required' => 'Status wajib diisi',
         ]);
 
@@ -72,15 +96,18 @@ class DataInformasiController extends Controller
 
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nomor_porsi' => 'required|string|max:255|unique:berhak_lunas,nomor_porsi,' . $data->id,
+            'nomor_porsi' => 'required|digits:10|unique:berhak_lunas,nomor_porsi,' . $data->id,
             'nama_ayah' => 'nullable|string|max:255',
             'status' => 'required|in:Cadangan,Bukan Cadangan',
             'keterangan' => 'nullable|string|max:255',
-            'nomor_paspor' => 'nullable|string|max:255',
+            'nomor_paspor' => 'nullable|alpha_num|size:8|unique:berhak_lunas,nomor_paspor,' . $data->id,
         ], [
             'nama.required' => 'Nama wajib diisi',
             'nomor_porsi.required' => 'Nomor porsi wajib diisi',
+            'nomor_porsi.digits' => 'Nomor porsi harus 10 digit',
             'nomor_porsi.unique' => 'Nomor porsi sudah terdaftar',
+            'nomor_paspor.size' => 'Nomor paspor harus 8 karakter',
+            'nomor_paspor.unique' => 'Nomor paspor sudah terdaftar',
             'status.required' => 'Status wajib diisi',
         ]);
 
@@ -109,6 +136,16 @@ class DataInformasiController extends Controller
             return redirect()->route('admin.data-informasi.berhak-lunas.index')->with('success', 'Data berhak lunas berhasil dihapus');
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
+    }
+
+    public function berhakLunasDestroyAll()
+    {
+        try {
+            BerhakLunas::truncate();
+            return redirect()->route('admin.data-informasi.berhak-lunas.index')->with('success', 'Semua data berhak lunas berhasil dihapus');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menghapus semua data: ' . $e->getMessage());
         }
     }
 
@@ -761,6 +798,210 @@ class DataInformasiController extends Controller
             $writer = new Xlsx($spreadsheet);
             $writer->save('php://output');
         }, 'template-ppiu.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
+    // ==================== STATISTIK ====================
+    public function statistikIndex()
+    {
+        $total = HajiJamaah::count();
+        $lastUpdatedRaw = HajiJamaah::max('updated_at');
+        $lastUpdated = $lastUpdatedRaw ? \Illuminate\Support\Carbon::parse($lastUpdatedRaw) : null;
+        $tahunTersedia = HajiJamaah::whereNotNull('tahun_keberangkatan')
+            ->distinct()
+            ->orderBy('tahun_keberangkatan', 'desc')
+            ->pluck('tahun_keberangkatan')
+            ->map(fn ($v) => (int) $v)
+            ->values();
+
+        return view('admin.data-informasi.statistik.index', compact('total', 'lastUpdated', 'tahunTersedia'));
+    }
+
+    public function statistikImport(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv',
+            'force_year' => 'nullable|integer|min:1900|max:2100',
+        ], [
+            'file.required' => 'File Excel wajib diunggah',
+            'file.mimes' => 'Format file harus .xlsx, .xls, atau .csv',
+        ]);
+
+        try {
+            $forceYear = $request->filled('force_year') ? (int) $request->input('force_year') : null;
+
+            $filePath = $request->file('file')->getRealPath();
+            $spreadsheet = IOFactory::load($filePath);
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray(null, true, true, true);
+
+            if (count($rows) < 2) {
+                return back()->with('error', 'File tidak memiliki data untuk diimpor.');
+            }
+
+            $headerRow = array_shift($rows);
+            $headerMap = [];
+            foreach ($headerRow as $col => $value) {
+                $key = strtolower(preg_replace('/\s+/', ' ', trim((string) $value)));
+                if ($key !== '') {
+                    $headerMap[$key] = $col;
+                }
+            }
+
+            $aliases = [
+                'nomor_porsi' => ['nomor porsi', 'no porsi', 'nomor_porsi', 'no_porsi', 'no'],
+                'nama' => ['nama calon haji', 'nama', 'nama jamaah'],
+                'pendidikan' => ['pendidikan', 'pendidikan terakhir'],
+                'kbihu' => ['kbihu', 'kbi hu', 'kbiha', 'kelompok bimbingan'],
+                'alamat' => ['alamat'],
+                'kelurahan' => ['kelurahan', 'desa'],
+                'kecamatan' => ['kecamatan'],
+                'usia' => ['usia', 'umur'],
+                'jenis_kelamin' => ['jenis kelamin', 'jk', 'kelamin'],
+                'tahun_keberangkatan' => ['tahun keberangkatan', 'tahun berangkat', 'tahun'],
+            ];
+
+            $colIndex = [];
+            foreach ($aliases as $field => $keys) {
+                foreach ($keys as $key) {
+                    if (isset($headerMap[$key])) {
+                        $colIndex[$field] = $headerMap[$key];
+                        break;
+                    }
+                }
+            }
+
+            $inserted = 0;
+            $skipped = 0;
+            $preparedRows = [];
+            $yearsToReplace = [];
+
+            foreach ($rows as $row) {
+                $getValue = function ($field) use ($colIndex, $row) {
+                    $col = $colIndex[$field] ?? null;
+                    return $col ? $row[$col] ?? null : null;
+                };
+
+                $nomorPorsi = trim((string) ($getValue('nomor_porsi') ?? ''));
+                $nama = trim((string) ($getValue('nama') ?? ''));
+
+                if ($nomorPorsi === '' && $nama === '') {
+                    $skipped++;
+                    continue;
+                }
+
+                $pendidikan = trim((string) ($getValue('pendidikan') ?? ''));
+                $kbihu = trim((string) ($getValue('kbihu') ?? ''));
+                $alamat = trim((string) ($getValue('alamat') ?? ''));
+                $kelurahan = trim((string) ($getValue('kelurahan') ?? ''));
+                $kecamatan = trim((string) ($getValue('kecamatan') ?? ''));
+                $usiaRaw = $getValue('usia');
+                $usia = is_numeric($usiaRaw) ? (int) $usiaRaw : null;
+
+                $jkRaw = strtolower(trim((string) ($getValue('jenis_kelamin') ?? '')));
+                $jenisKelamin = null;
+                if ($jkRaw !== '') {
+                    if (Str::startsWith($jkRaw, ['l', 'lk']) || str_contains($jkRaw, 'laki') || str_contains($jkRaw, 'pria')) {
+                        $jenisKelamin = 'Laki-laki';
+                    } elseif (Str::startsWith($jkRaw, ['p']) || str_contains($jkRaw, 'perempuan') || str_contains($jkRaw, 'wanita')) {
+                        $jenisKelamin = 'Perempuan';
+                    } else {
+                        $jenisKelamin = Str::title($jkRaw);
+                    }
+                }
+
+                $tahunRaw = $getValue('tahun_keberangkatan');
+                $tahun = is_numeric($tahunRaw) ? (int) $tahunRaw : null;
+                if ($forceYear !== null) {
+                    $tahun = $forceYear;
+                }
+
+                $data = [
+                    'nomor_porsi' => $nomorPorsi !== '' ? $nomorPorsi : null,
+                    'nama' => $nama !== '' ? $nama : null,
+                    'pendidikan' => $pendidikan !== '' ? Str::upper($pendidikan) : null,
+                    'kbihu' => $kbihu !== '' ? $kbihu : null,
+                    'alamat' => $alamat !== '' ? $alamat : null,
+                    'kelurahan' => $kelurahan !== '' ? Str::title($kelurahan) : null,
+                    'kecamatan' => $kecamatan !== '' ? Str::title($kecamatan) : null,
+                    'usia' => $usia,
+                    'jenis_kelamin' => $jenisKelamin,
+                    'tahun_keberangkatan' => $tahun,
+                ];
+                $preparedRows[] = [
+                    'nomor_porsi' => $nomorPorsi,
+                    'data' => $data,
+                ];
+                if ($tahun !== null) {
+                    $yearsToReplace[$tahun] = true;
+                }
+            }
+
+            if (count($preparedRows) === 0) {
+                return back()->with('error', 'Tidak ada data valid untuk diimpor. Pastikan kolom terisi dengan benar.');
+            }
+
+            if (!empty($yearsToReplace)) {
+                HajiJamaah::whereIn('tahun_keberangkatan', array_keys($yearsToReplace))->delete();
+            }
+
+            foreach ($preparedRows as $rowData) {
+                $nomorPorsi = $rowData['nomor_porsi'];
+                $data = $rowData['data'];
+                if ($nomorPorsi !== '') {
+                    HajiJamaah::updateOrCreate(['nomor_porsi' => $nomorPorsi], $data);
+                } else {
+                    HajiJamaah::create($data);
+                }
+                $inserted++;
+            }
+
+            return redirect()->route('admin.data-informasi.statistik.index')
+                ->with('success', "Import selesai: {$inserted} data diproses, {$skipped} baris dilewati.");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal import: ' . $e->getMessage());
+        }
+    }
+
+    public function statistikDeleteYear(Request $request)
+    {
+        $request->validate([
+            'tahun' => 'required|integer|min:1900|max:2100',
+        ], [
+            'tahun.required' => 'Tahun wajib dipilih',
+            'tahun.integer' => 'Tahun tidak valid',
+        ]);
+
+        $year = (int) $request->input('tahun');
+        $deleted = HajiJamaah::where('tahun_keberangkatan', $year)->delete();
+
+        return back()->with('success', "Data tahun {$year} berhasil dihapus ({$deleted} baris).");
+    }
+
+    public function statistikTemplate()
+    {
+        $headers = [
+            'Nomor Porsi',
+            'Nama Calon Haji',
+            'Pendidikan',
+            'KBIHU',
+            'Alamat',
+            'Kelurahan',
+            'Kecamatan',
+            'Usia',
+            'Jenis Kelamin',
+            'Tahun Keberangkatan',
+        ];
+
+        return response()->streamDownload(function () use ($headers) {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->fromArray($headers, null, 'A1');
+
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, 'template-statistik-haji.xlsx', [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ]);
     }

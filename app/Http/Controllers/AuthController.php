@@ -23,6 +23,18 @@ class AuthController extends Controller
     }
 
     /**
+     * Menampilkan halaman lupa password
+     */
+    public function showForgotPassword()
+    {
+        if (Session::has('user')) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return view('auth.forgot-password');
+    }
+
+    /**
      * Proses login
      */
     public function login(Request $request)
@@ -43,6 +55,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->role ?? 'kontributor', // Default role jika null
+                'avatar' => $user->avatar,
             ]);
 
             // Redirect berdasarkan role
@@ -53,6 +66,36 @@ class AuthController extends Controller
         return back()->withErrors([
             'email' => 'Email atau password tidak valid.',
         ])->withInput($request->only('email'));
+    }
+
+    /**
+     * Proses lupa password (reset sederhana berbasis email)
+     */
+    public function processForgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ], [
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Email tidak valid',
+            'password.required' => 'Password baru wajib diisi',
+            'password.min' => 'Password minimal 6 karakter',
+            'password.confirmed' => 'Konfirmasi password tidak cocok',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'Email tidak terdaftar.',
+            ])->withInput($request->only('email'));
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()->route('login')
+            ->with('success', 'Password berhasil direset. Silakan login kembali.');
     }
 
     /**

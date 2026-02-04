@@ -44,7 +44,7 @@
         
         <div style="margin-bottom: 24px;">
             <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Nomor Porsi <span style="color: #ef4444;">*</span></label>
-            <input type="text" name="nomor_porsi" value="{{ old('nomor_porsi', $data->nomor_porsi) }}" required
+            <input type="text" name="nomor_porsi" value="{{ old('nomor_porsi', $data->nomor_porsi) }}" required minlength="10" maxlength="10" pattern="\d{10}"
                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
                    placeholder="123456789">
         </div>
@@ -81,7 +81,7 @@
 
         <div style="margin-bottom: 24px;">
             <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Nomor Paspor</label>
-            <input type="text" name="nomor_paspor" value="{{ old('nomor_paspor', $data->nomor_paspor) }}"
+            <input type="text" name="nomor_paspor" value="{{ old('nomor_paspor', $data->nomor_paspor) }}" minlength="8" maxlength="8" pattern="[A-Za-z0-9]{8}"
                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
                    placeholder="Nomor paspor">
         </div>

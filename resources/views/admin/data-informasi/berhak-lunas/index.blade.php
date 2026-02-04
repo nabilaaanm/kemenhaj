@@ -5,7 +5,37 @@
 
 @section('content')
 <div class="card">
-    <div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+        <form method="GET" action="{{ route('admin.data-informasi.berhak-lunas.index') }}" id="berhakLunasSearchForm" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div style="position: relative;">
+                <input type="text" name="q" id="berhakLunasSearchInput" value="{{ $search ?? '' }}" placeholder="Cari nomor porsi, nama, paspor, ayah..."
+                       style="min-width: 280px; padding: 10px 36px 10px 12px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 14px; background: #ffffff; box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);">
+                <svg style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #9ca3af;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+            <select name="status" id="berhakLunasStatusFilter"
+                    style="padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 14px; background: #ffffff; box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);">
+                <option value="">Semua Status</option>
+                <option value="Cadangan" {{ ($statusFilter ?? '') === 'Cadangan' ? 'selected' : '' }}>Cadangan</option>
+                <option value="Bukan Cadangan" {{ ($statusFilter ?? '') === 'Bukan Cadangan' ? 'selected' : '' }}>Bukan Cadangan</option>
+            </select>
+            @if(!empty($search) || !empty($statusFilter))
+                <a href="{{ route('admin.data-informasi.berhak-lunas.index') }}"
+                   style="padding: 10px 12px; border-radius: 10px; background: #f3f4f6; color: #374151; font-weight: 600; text-decoration: none;">
+                    Reset
+                </a>
+            @endif
+        </form>
+        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <form action="{{ route('admin.data-informasi.berhak-lunas.destroy-all') }}" method="POST" onsubmit="return confirm('Hapus semua data berhak lunas?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                        style="padding: 10px 16px; background-color: #fee2e2; color: #991b1b; border-radius: 8px; border: 1px solid #fca5a5; font-weight: 600; cursor: pointer;">
+                    Hapus Semua
+                </button>
+            </form>
         <button type="button" onclick="openBerhakLunasModal('import')" 
                 style="padding: 10px 20px; background-color: #f3f4f6; color: #374151; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; border: 1px solid #e5e7eb; cursor: pointer;">
             <svg style="width: 20px; height: 20px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -20,6 +50,7 @@
             </svg>
             Tambah Data
         </button>
+        </div>
     </div>
 
     <!-- SweetAlert2 -->
@@ -59,9 +90,29 @@
         </script>
     @endif
 
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                let errorMessages = '';
+                @foreach($errors->all() as $error)
+                    errorMessages += '<li style="margin-bottom: 8px;">{{ addslashes($error) }}</li>';
+                @endforeach
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal!',
+                    html: '<ul style="text-align: left; margin: 0; padding-left: 20px; list-style-type: disc;">' + errorMessages + '</ul>',
+                    showConfirmButton: true,
+                    confirmButtonColor: '#ECB176',
+                    width: '600px'
+                });
+            });
+        </script>
+    @endif
+
     @if ($data->count() > 0)
         <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse;">
+            <table style="width: 100%; border-collapse: collapse;" id="berhakLunasTable">
                 <thead>
                     <tr style="background-color: #f9fafb; border-bottom: 2px solid #e5e7eb;">
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">No</th>
@@ -77,7 +128,7 @@
                 <tbody>
                     @foreach ($data as $index => $item)
                         <tr style="border-bottom: 1px solid #e5e7eb;">
-                            <td style="padding: 12px; color: #374151;">{{ $index + 1 }}</td>
+                            <td style="padding: 12px; color: #374151;">{{ $data->firstItem() + $index }}</td>
                             <td style="padding: 12px; color: #6b7280;">{{ $item->nomor_porsi }}</td>
                             <td style="padding: 12px; color: #374151;">
                                 <div style="font-weight: 600;">{{ $item->nama }}</div>
@@ -111,6 +162,9 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+        <div style="margin-top: 16px;">
+            {{ $data->onEachSide(1)->links('pagination.berhak-lunas') }}
         </div>
     @else
         <div style="text-align: center; padding: 48px; color: #6b7280;">
@@ -164,7 +218,7 @@
             <div style="display: grid; gap: 12px;">
                 <div>
                     <label style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 6px; display: block;">Nomor Porsi</label>
-                    <input type="text" name="nomor_porsi" required
+                    <input type="text" name="nomor_porsi" required minlength="10" maxlength="10" pattern="\d{10}"
                            style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
                 </div>
                 <div>
@@ -179,7 +233,7 @@
                 </div>
                 <div>
                     <label style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 6px; display: block;">No Paspor</label>
-                    <input type="text" name="nomor_paspor"
+                    <input type="text" name="nomor_paspor" minlength="8" maxlength="8" pattern="[A-Za-z0-9]{8}"
                            style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
                 </div>
                 <div>
@@ -218,5 +272,37 @@
             document.getElementById('berhakLunasCreateModal').style.display = 'none';
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const input = document.getElementById('berhakLunasSearchInput');
+        const form = document.getElementById('berhakLunasSearchForm');
+        const table = document.getElementById('berhakLunasTable');
+        const rows = table ? Array.from(table.querySelectorAll('tbody tr')) : [];
+        let debounceTimer;
+
+        const filterRows = () => {
+            const query = (input?.value || '').toLowerCase().trim();
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        };
+
+        if (input && form) {
+            input.addEventListener('input', function () {
+                filterRows();
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    form.submit();
+                }, 500);
+            });
+        }
+        const statusFilter = document.getElementById('berhakLunasStatusFilter');
+        if (statusFilter && form) {
+            statusFilter.addEventListener('change', function () {
+                form.submit();
+            });
+        }
+    });
 </script>
 @endsection

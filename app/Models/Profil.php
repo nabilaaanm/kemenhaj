@@ -32,8 +32,6 @@ class Profil extends Model
         'maps_embed_ppiu',
         'facebook',
         'instagram',
-        'twitter',
-        'youtube',
         'whatsapp',
     ];
 

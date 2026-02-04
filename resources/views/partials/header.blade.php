@@ -210,7 +210,7 @@
         height: 56px;
         border-radius: 999px;
         border: 1px solid rgba(255, 255, 255, 0.7);
-        background: linear-gradient(140deg, var(--color-primary), var(--color-primary-light));
+        background: linear-gradient(145deg, #1f2937 0%, #334155 55%, #64748b 100%);
         color: #ffffff;
         display: flex;
         align-items: center;
@@ -368,7 +368,7 @@
         gap: 10px;
         padding: 10px 14px;
         border-radius: 999px;
-        background: var(--color-primary);
+        background: linear-gradient(140deg, #0f766e 0%, #059669 55%, #22c55e 100%);
         color: #ffffff;
         font-weight: 600;
         font-size: 13px;
@@ -386,7 +386,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: var(--color-primary-dark);
+        background: rgba(15, 23, 42, 0.2);
         border-radius: 999px;
     }
     .whatsapp-bot {
@@ -411,7 +411,7 @@
         align-items: center;
         justify-content: space-between;
         padding: 10px 14px;
-        background: var(--color-primary);
+        background: linear-gradient(140deg, #0f766e 0%, #059669 55%, #22c55e 100%);
         color: #ffffff;
         font-weight: 600;
         font-size: 13px;
@@ -442,7 +442,7 @@
         height: 38px;
         border-radius: 999px;
         border: none;
-        background: var(--color-primary);
+        background: linear-gradient(140deg, #0f766e 0%, #059669 55%, #22c55e 100%);
         color: #ffffff;
         display: inline-flex;
         align-items: center;

@@ -122,10 +122,12 @@
                     <button type="submit" class="px-5 py-3 rounded-xl text-sm font-semibold text-white btn-custom" style="min-width: 120px;">
                         Cari
                     </button>
-                    <a href="{{ url('/data-informasi') }}" class="px-5 py-3 rounded-xl text-sm font-semibold reset-btn"
-                       style="min-width: 120px; text-align: center; background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb;">
-                        Reset
-                    </a>
+                    @if(!empty($berhakLunasSearched) && $berhakLunasSearched)
+                        <a href="{{ url('/data-informasi') }}" class="px-5 py-3 rounded-xl text-sm font-semibold reset-btn"
+                           style="min-width: 120px; text-align: center; background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb;">
+                            Reset
+                        </a>
+                    @endif
                 </form>
 
                 @if(!empty($berhakLunasSearched) && $berhakLunasSearched)
@@ -177,86 +179,90 @@
         <!-- Statistik Tab -->
         <div id="tab-statistik" class="tab-panel">
             <div class="bg-white rounded-lg shadow-sm p-6">
-                <h2 class="text-2xl font-bold mb-6" style="color: #111827;" data-i18n="data.statistik.title">
-                    Statistik Haji dan Umrah
-                </h2>
-
-                <!-- Statistics Cards -->
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: var(--color-primary);">
-                        <h3 class="text-sm font-medium mb-2 opacity-90" data-i18n="data.statistik.card.totalPilgrims">Total Jamaah Haji</h3>
-                        <p class="text-3xl font-bold">221,000</p>
-                        <p class="text-sm mt-2 opacity-80" data-i18n="data.statistik.card.year">Tahun 1447H/2026M</p>
-                    </div>
-                    <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: var(--color-primary-dark);">
-                        <h3 class="text-sm font-medium mb-2 opacity-90" data-i18n="data.statistik.card.departed">Jamaah Berangkat</h3>
-                        <p class="text-3xl font-bold">198,500</p>
-                        <p class="text-sm mt-2 opacity-80" data-i18n="data.statistik.card.quota">89.8% dari kuota</p>
-                    </div>
-                    <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: var(--color-primary);">
-                        <h3 class="text-sm font-medium mb-2 opacity-90" data-i18n="data.statistik.card.waiting">Menunggu Keberangkatan</h3>
-                        <p class="text-3xl font-bold">22,500</p>
-                        <p class="text-sm mt-2 opacity-80" data-i18n="data.statistik.card.waitingQuota">10.2% dari kuota</p>
-                    </div>
-                    <div class="bg-gradient-to-br p-6 rounded-lg text-white" style="background-color: var(--color-primary-dark);">
-                        <h3 class="text-sm font-medium mb-2 opacity-90" data-i18n="data.statistik.card.ppiu">PPIU Terdaftar</h3>
-                        <p class="text-3xl font-bold">1,245</p>
-                        <p class="text-sm mt-2 opacity-80" data-i18n="data.statistik.card.active">Aktif</p>
-                    </div>
+                <div class="stat-header">
+                    <h2 class="text-2xl font-bold" style="color: #111827;" data-i18n="data.statistik.title">
+                        Statistik Haji dan Umrah Kota Cirebon
+                    </h2>
+                    <form method="GET" action="{{ url('/data-informasi') }}" class="stat-filter">
+                        <input type="hidden" name="tab" value="statistik">
+                        <select name="tahun" class="stat-filter__select focus-custom" onchange="this.form.submit()">
+                            @foreach(($statYearOptions ?? []) as $year)
+                                <option value="{{ $year }}" {{ (int) $year === (int) ($statTotals['year_selected'] ?? 0) ? 'selected' : '' }}>
+                                    {{ $year }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
                 </div>
 
-                <!-- Chart Section -->
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="bg-gray-50 rounded-lg p-6">
-                        <h3 class="font-semibold mb-4" data-i18n="data.statistik.quota.title">Distribusi Kuota per Provinsi</h3>
-                        <div class="space-y-3">
-                            <div>
-                                <div class="flex justify-between mb-1">
-                                    <span class="text-sm" data-i18n="data.statistik.quota.westJava">Jawa Barat</span>
-                                    <span class="text-sm font-medium">27,833</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="rounded-full h-2" style="background-color: var(--color-primary); width: 35%;"></div>
-                                </div>
+                @if(($statTotals['total'] ?? 0) === 0)
+                    <div class="text-center text-gray-500 py-12">
+                        Belum ada data statistik. Silakan impor data melalui halaman admin.
+                    </div>
+                @else
+                    <!-- Statistics Cards -->
+                    <div class="stat-card-grid mb-6">
+                        <div class="stat-card stat-card--primary">
+                            <div class="stat-card__icon" aria-hidden="true">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
                             </div>
-                            <div>
-                                <div class="flex justify-between mb-1">
-                                    <span class="text-sm" data-i18n="data.statistik.quota.centralJava">Jawa Tengah</span>
-                                    <span class="text-sm font-medium">18,500</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="rounded-full h-2" style="background-color: var(--color-primary); width: 23%;"></div>
-                                </div>
+                            <div class="stat-card__body">
+                                <h3 class="stat-card__title">Total Jamaah</h3>
+                                <p class="stat-card__value">{{ number_format($statTotals['total']) }}</p>
+                            @if($statTotals['latest_year'])
+                                    <p class="stat-card__meta">Data terbaru tahun {{ $statTotals['latest_year'] }}</p>
+                            @endif
                             </div>
-                            <div>
-                                <div class="flex justify-between mb-1">
-                                    <span class="text-sm" data-i18n="data.statistik.quota.eastJava">Jawa Timur</span>
-                                    <span class="text-sm font-medium">15,200</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="rounded-full h-2" style="background-color: var(--color-primary); width: 19%;"></div>
-                                </div>
+                        </div>
+                        <div class="stat-card stat-card--secondary">
+                            <div class="stat-card__icon" aria-hidden="true">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                                </svg>
+                            </div>
+                            <div class="stat-card__body">
+                                <h3 class="stat-card__title">Jamaah Berangkat</h3>
+                                <p class="stat-card__value">{{ number_format($statTotals['total_departed']) }}</p>
+                                <p class="stat-card__meta">Berdasarkan tahun keberangkatan</p>
+                            </div>
+                        </div>
+                        <div class="stat-panel stat-panel--wide">
+                            <h3 class="text-sm font-semibold mb-2">Total Jamaah per Tahun</h3>
+                            <canvas id="chartPerYear" width="600" height="170"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-4">
+                        <div class="stat-panel stat-panel--chart">
+                            <h3 class="text-sm font-semibold mb-2">Distribusi Jenis Kelamin</h3>
+                            <div class="stat-panel__chart">
+                                <canvas id="chartGender" width="360" height="200"></canvas>
+                            </div>
+                        </div>
+                        <div class="stat-panel stat-panel--chart">
+                            <h3 class="text-sm font-semibold mb-2">Distribusi Usia</h3>
+                            <div class="stat-panel__chart">
+                                <canvas id="chartAge" width="360" height="200"></canvas>
+                            </div>
+                        </div>
+                        <div class="stat-panel stat-panel--chart">
+                            <h3 class="text-sm font-semibold mb-2">Distribusi Pendidikan</h3>
+                            <div class="stat-panel__chart">
+                                <canvas id="chartEducation" width="360" height="200"></canvas>
+                            </div>
+                        </div>
+                        <div class="stat-panel stat-panel--chart stat-panel--tall">
+                            <h3 class="text-sm font-semibold mb-1">Distribusi Kecamatan</h3>
+                            <p class="text-xs text-gray-500 mb-2">Harjamukti, Kejaksan, Lemahwungkuk, Pekalipan, Kesambi, dan Lainnya</p>
+                            <div class="stat-panel__chart">
+                                <canvas id="chartKecamatan" width="360" height="230"></canvas>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-gray-50 rounded-lg p-6">
-                        <h3 class="font-semibold mb-4" data-i18n="data.statistik.trend.title">Trend Pendaftaran</h3>
-                        <div class="h-48 flex items-end justify-between gap-2">
-                            <div class="flex-1 bg-gray-300 rounded-t" style="height: 60%;"></div>
-                            <div class="flex-1 bg-gray-300 rounded-t" style="height: 75%;"></div>
-                            <div class="flex-1 rounded-t" style="background-color: var(--color-primary); height: 85%;"></div>
-                            <div class="flex-1 rounded-t" style="background-color: var(--color-primary); height: 90%;"></div>
-                            <div class="flex-1 rounded-t" style="background-color: var(--color-primary); height: 70%;"></div>
-                        </div>
-                        <div class="flex justify-between mt-2 text-xs text-gray-600">
-                            <span data-i18n="data.month.jan">Jan</span>
-                            <span data-i18n="data.month.feb">Feb</span>
-                            <span data-i18n="data.month.mar">Mar</span>
-                            <span data-i18n="data.month.apr">Apr</span>
-                            <span data-i18n="data.month.may">Mei</span>
-                        </div>
-                    </div>
-                </div>
+                @endif
             </div>
         </div>
 
@@ -540,6 +546,176 @@
         box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
         transform: translateY(-1px);
     }
+
+    .stat-card {
+        box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+    }
+    .stat-card-grid {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .stat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+    }
+    .stat-filter {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .stat-filter__select {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 10px 16px;
+        font-size: 15px;
+        font-weight: 600;
+        background: #ffffff;
+        min-width: 110px;
+        box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+    }
+    .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        border-radius: 16px;
+        padding: 14px 16px;
+        color: #ffffff;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+        will-change: transform;
+    }
+    .stat-card:hover,
+    .stat-card:focus-within {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 30px rgba(15, 23, 42, 0.16);
+        filter: saturate(1.04);
+    }
+    .stat-card:active {
+        transform: translateY(0);
+        box-shadow: 0 10px 20px rgba(15, 23, 42, 0.14);
+        filter: saturate(1.02);
+    }
+    @media (hover: none) {
+        .stat-card:hover {
+            transform: none;
+            box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+            filter: none;
+        }
+    }
+    .stat-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        opacity: 0.12;
+        background: radial-gradient(circle at 85% 15%, rgba(255,255,255,0.6), transparent 55%);
+        pointer-events: none;
+    }
+    .stat-card--primary {
+        background: linear-gradient(140deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    }
+    .stat-card--secondary {
+        background: linear-gradient(140deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    }
+    .stat-card__icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .stat-card__icon svg {
+        width: 26px;
+        height: 26px;
+        color: #ffffff;
+    }
+    .stat-card__title {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        opacity: 0.85;
+        margin-bottom: 6px;
+    }
+    .stat-card__value {
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 1.1;
+    }
+    .stat-card__meta {
+        font-size: 12px;
+        opacity: 0.8;
+        margin-top: 6px;
+    }
+    @media (max-width: 1024px) {
+        .stat-card-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .stat-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+    @media (max-width: 640px) {
+        .stat-card-grid {
+            grid-template-columns: 1fr;
+        }
+        .stat-card {
+            padding: 12px 14px;
+        }
+        .stat-card__value {
+            font-size: 22px;
+        }
+    }
+    .stat-panel {
+        background: #ffffff;
+        border: 1px solid #eef2f7;
+        border-radius: 16px;
+        padding: 12px;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    .stat-panel__chart {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .stat-panel--chart {
+        min-height: 260px;
+    }
+    .stat-panel--wide {
+        grid-column: span 2;
+    }
+    .stat-panel canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+    .stat-panel--tall canvas {
+        height: 100%;
+    }
+    @media (max-width: 768px) {
+        .stat-panel--wide {
+            grid-column: span 1;
+        }
+        .stat-panel canvas {
+            height: 100%;
+        }
+        .stat-panel--tall canvas {
+            height: 100%;
+        }
+    }
     
     
     
@@ -550,6 +726,19 @@
     document.addEventListener('DOMContentLoaded', function() {
         const tabs = document.querySelectorAll('.data-tab');
         const tabPanels = document.querySelectorAll('.tab-panel');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialTab = urlParams.get('tab');
+        if (initialTab) {
+            tabs.forEach(t => t.classList.remove('active'));
+            tabPanels.forEach(p => p.classList.remove('active'));
+            const targetTabBtn = document.querySelector(`.data-tab[data-tab="${initialTab}"]`);
+            const targetPanel = document.getElementById('tab-' + initialTab);
+            if (targetTabBtn && targetPanel) {
+                targetTabBtn.classList.add('active');
+                targetPanel.classList.add('active');
+            }
+        }
         
         tabs.forEach(tab => {
             tab.addEventListener('click', function() {
@@ -656,6 +845,133 @@
 
     });
 
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const statData = @json($statChartData ?? []);
+        if (!statData) {
+            return;
+        }
+        const safe = (key) => statData && statData[key] ? statData[key] : { labels: [], data: [] };
+
+        const baseColors = [
+            '#ECB176', '#1f2937', '#60a5fa', '#34d399',
+            '#f87171', '#fbbf24', '#a78bfa', '#2dd4bf'
+        ];
+
+        const baseOptions = {
+            responsive: false,
+            maintainAspectRatio: false,
+            animation: false,
+            devicePixelRatio: 1,
+            interaction: {
+                mode: 'nearest',
+                intersect: true,
+                axis: 'xy'
+            },
+            elements: {
+                bar: {
+                    hoverBackgroundColor: undefined
+                }
+            },
+            events: ['mousemove', 'click', 'touchstart', 'touchmove'],
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    enabled: true,
+                    mode: 'nearest',
+                    intersect: true,
+                    displayColors: false
+                }
+            },
+            scales: {
+                x: { ticks: { font: { size: 11 } } },
+                y: { ticks: { font: { size: 11 } }, beginAtZero: true }
+            }
+        };
+
+        const makeBar = (id, labels, data, horizontal = false) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            new Chart(el, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        data,
+                        backgroundColor: baseColors,
+                        borderRadius: 6,
+                        hoverOffset: 0,
+                        hoverBorderWidth: 0,
+                    }]
+                },
+                options: {
+                    ...baseOptions,
+                    indexAxis: horizontal ? 'y' : 'x',
+                }
+            });
+        };
+
+        const makeLine = (id, labels, data) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            new Chart(el, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        data,
+                        borderColor: '#ECB176',
+                        backgroundColor: 'rgba(236, 177, 118, 0.2)',
+                        tension: 0.35,
+                        fill: true,
+                        pointRadius: 3,
+                        pointHoverRadius: 4,
+                    }]
+                },
+                options: {
+                    ...baseOptions,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        };
+
+        const makeDoughnut = (id, labels, data) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            new Chart(el, {
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{
+                        data,
+                        backgroundColor: baseColors,
+                        borderWidth: 0,
+                        hoverOffset: 0,
+                        hoverBorderWidth: 0,
+                    }]
+                },
+                options: {
+                    ...baseOptions,
+                    cutout: '62%'
+                }
+            });
+        };
+
+        const perYear = safe('perYear');
+        const gender = safe('gender');
+        const age = safe('age');
+        const education = safe('education');
+        const kecamatan = safe('kecamatan');
+
+        makeBar('chartPerYear', perYear.labels, perYear.data);
+        makeDoughnut('chartGender', gender.labels, gender.data);
+        makeBar('chartAge', age.labels, age.data);
+        makeBar('chartEducation', education.labels, education.data);
+        makeBar('chartKecamatan', kecamatan.labels, kecamatan.data, true);
+    });
 </script>
 
 </body>

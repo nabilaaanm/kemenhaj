@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\DataInformasiController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\Admin\PenggunaController;
 use App\Http\Controllers\Admin\SlideshowController;
+use App\Http\Controllers\Admin\AkunController;
 use App\Http\Controllers\PageController;
 use App\Models\Slideshow;
 use App\Models\Posting;
@@ -23,6 +24,7 @@ use App\Models\Kbihu;
 use App\Models\Ppiu;
 use App\Models\LkPihDocument;
 use App\Models\BerhakLunas;
+use App\Models\HajiJamaah;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ServiceController;
@@ -225,6 +227,8 @@ Route::get('/', function () {
 // Login - Hidden route dengan path yang susah ditebak (tidak ditampilkan di menu)
 Route::get('/kemenhaj-admin-secure', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/kemenhaj-admin-secure', [AuthController::class, 'login'])->name('login.post');
+Route::get('/kemenhaj-admin-secure/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+Route::post('/kemenhaj-admin-secure/forgot-password', [AuthController::class, 'processForgotPassword'])->name('password.update');
 
 
 Route::get('/visi-misi', [ProfilController::class, 'visiMisi'])->name('visi-misi');
@@ -237,6 +241,23 @@ Route::get('/data-informasi', function () {
     $berhakLunasResults = collect();
     $berhakLunasQuery = request()->query('nomor_porsi');
     $berhakLunasSearched = false;
+    $statTotals = [
+        'total' => 0,
+        'total_departed' => 0,
+        'total_year_selected' => 0,
+        'total_year_previous' => 0,
+        'year_selected' => null,
+        'year_previous' => null,
+        'latest_year' => null,
+    ];
+    $statChartData = [
+        'perYear' => ['labels' => [], 'data' => []],
+        'gender' => ['labels' => [], 'data' => []],
+        'age' => ['labels' => [], 'data' => []],
+        'education' => ['labels' => [], 'data' => []],
+        'kecamatan' => ['labels' => [], 'data' => []],
+    ];
+    $statYearOptions = [];
     if (Schema::hasTable('kbihu')) {
         $kbihuData = Kbihu::where('is_active', true)
             ->orderBy('order')
@@ -260,7 +281,148 @@ Route::get('/data-informasi', function () {
         }
     }
 
-    return view('data-informasi', compact('kbihuData', 'ppiuData', 'berhakLunasResults', 'berhakLunasQuery', 'berhakLunasSearched'));
+    if (Schema::hasTable('haji_jamaahs')) {
+        $statTotals['total'] = HajiJamaah::count();
+        $statTotals['total_departed'] = $statTotals['total'];
+
+        $perYearRows = HajiJamaah::selectRaw('tahun_keberangkatan as label, COUNT(*) as total')
+            ->whereNotNull('tahun_keberangkatan')
+            ->groupBy('tahun_keberangkatan')
+            ->orderBy('tahun_keberangkatan')
+            ->get();
+        $statChartData['perYear'] = [
+            'labels' => $perYearRows->pluck('label')->map(fn ($v) => (string) $v)->toArray(),
+            'data' => $perYearRows->pluck('total')->toArray(),
+        ];
+
+        $statYearOptions = HajiJamaah::whereNotNull('tahun_keberangkatan')
+            ->distinct()
+            ->orderBy('tahun_keberangkatan', 'desc')
+            ->pluck('tahun_keberangkatan')
+            ->map(fn ($v) => (int) $v)
+            ->values()
+            ->toArray();
+
+        $selectedYear = request()->query('tahun');
+        if ($selectedYear !== null && $selectedYear !== '') {
+            $selectedYear = (int) $selectedYear;
+        } else {
+            $selectedYear = $statYearOptions[0] ?? null;
+        }
+
+        $statTotals['year_selected'] = $selectedYear;
+        $statTotals['latest_year'] = $statYearOptions[0] ?? null;
+
+        $yearIndex = $selectedYear !== null ? array_search($selectedYear, $statYearOptions, true) : false;
+        $previousYear = ($yearIndex !== false && isset($statYearOptions[$yearIndex + 1])) ? $statYearOptions[$yearIndex + 1] : null;
+        $statTotals['year_previous'] = $previousYear;
+
+        if ($selectedYear !== null) {
+            $statTotals['total_year_selected'] = HajiJamaah::where('tahun_keberangkatan', $selectedYear)->count();
+        }
+        if ($previousYear !== null) {
+            $statTotals['total_year_previous'] = HajiJamaah::where('tahun_keberangkatan', $previousYear)->count();
+        }
+
+        $baseQuery = HajiJamaah::query();
+        if ($selectedYear !== null) {
+            $baseQuery->where('tahun_keberangkatan', $selectedYear);
+        }
+
+        $genderRows = (clone $baseQuery)->selectRaw("COALESCE(NULLIF(jenis_kelamin, ''), 'Tidak diketahui') as label, COUNT(*) as total")
+            ->groupBy('label')
+            ->orderByDesc('total')
+            ->get();
+        $statChartData['gender'] = [
+            'labels' => $genderRows->pluck('label')->toArray(),
+            'data' => $genderRows->pluck('total')->toArray(),
+        ];
+
+        $ageBuckets = [
+            '<20' => 0,
+            '20-29' => 0,
+            '30-39' => 0,
+            '40-49' => 0,
+            '50-59' => 0,
+            '60+' => 0,
+        ];
+        $ages = (clone $baseQuery)->whereNotNull('usia')->pluck('usia');
+        foreach ($ages as $age) {
+            $age = (int) $age;
+            if ($age < 20) {
+                $ageBuckets['<20']++;
+            } elseif ($age < 30) {
+                $ageBuckets['20-29']++;
+            } elseif ($age < 40) {
+                $ageBuckets['30-39']++;
+            } elseif ($age < 50) {
+                $ageBuckets['40-49']++;
+            } elseif ($age < 60) {
+                $ageBuckets['50-59']++;
+            } else {
+                $ageBuckets['60+']++;
+            }
+        }
+        $statChartData['age'] = [
+            'labels' => array_keys($ageBuckets),
+            'data' => array_values($ageBuckets),
+        ];
+
+        $eduRows = (clone $baseQuery)->selectRaw("COALESCE(NULLIF(pendidikan, ''), 'Tidak diketahui') as label, COUNT(*) as total")
+            ->groupBy('label')
+            ->orderByDesc('total')
+            ->get();
+        $eduTop = $eduRows->take(8);
+        $eduOthers = $eduRows->slice(8)->sum('total');
+        $eduLabels = $eduTop->pluck('label')->toArray();
+        $eduData = $eduTop->pluck('total')->toArray();
+        if ($eduOthers > 0) {
+            $eduLabels[] = 'Lainnya';
+            $eduData[] = $eduOthers;
+        }
+        $statChartData['education'] = [
+            'labels' => $eduLabels,
+            'data' => $eduData,
+        ];
+
+        $allowedKecamatan = [
+            'Harjamukti',
+            'Kejaksan',
+            'Lemahwungkuk',
+            'Pekalipan',
+            'Kesambi',
+        ];
+        $kecamatanRows = (clone $baseQuery)->selectRaw("COALESCE(NULLIF(kecamatan, ''), 'Tidak diketahui') as label, COUNT(*) as total")
+            ->groupBy('label')
+            ->get();
+        $kecamatanMap = array_fill_keys($allowedKecamatan, 0);
+        $kecamatanMap['Lainnya'] = 0;
+        foreach ($kecamatanRows as $row) {
+            $label = (string) $row->label;
+            $total = (int) $row->total;
+            $normalized = \Illuminate\Support\Str::title($label);
+            if (in_array($normalized, $allowedKecamatan, true)) {
+                $kecamatanMap[$normalized] += $total;
+            } else {
+                $kecamatanMap['Lainnya'] += $total;
+            }
+        }
+        $statChartData['kecamatan'] = [
+            'labels' => array_keys($kecamatanMap),
+            'data' => array_values($kecamatanMap),
+        ];
+    }
+
+    return view('data-informasi', compact(
+        'kbihuData',
+        'ppiuData',
+        'berhakLunasResults',
+        'berhakLunasQuery',
+        'berhakLunasSearched',
+        'statTotals',
+        'statChartData',
+        'statYearOptions'
+    ));
 });
 Route::get('/dokumen/lk-pih', function () {
     $lkDocuments = collect();
@@ -302,6 +464,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard - bisa diakses semua role yang sudah login
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    // Akun - semua role (profil masing-masing)
+    Route::get('/akun', [AkunController::class, 'show'])->name('akun.profil');
+    Route::post('/akun', [AkunController::class, 'update'])->name('akun.update');
+    Route::post('/akun/password', [AkunController::class, 'updatePassword'])->name('akun.password');
+    Route::post('/akun/avatar/delete', [AkunController::class, 'destroyAvatar'])->name('akun.avatar.delete');
     
     // Posting - Admin, Editor, Kontributor
     Route::middleware(['role:admin,editor,kontributor'])->prefix('posting')->name('posting.')->group(function () {
@@ -403,7 +571,13 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
             Route::get('/{id}/edit', [DataInformasiController::class, 'berhakLunasEdit'])->name('edit');
             Route::post('/{id}/edit', [DataInformasiController::class, 'berhakLunasUpdate'])->name('update');
             Route::delete('/{id}', [DataInformasiController::class, 'berhakLunasDestroy'])->name('destroy');
+            Route::delete('/', [DataInformasiController::class, 'berhakLunasDestroyAll'])->name('destroy-all');
         });
+        // Statistik
+        Route::get('/statistik', [DataInformasiController::class, 'statistikIndex'])->name('statistik.index');
+        Route::post('/statistik/import', [DataInformasiController::class, 'statistikImport'])->name('statistik.import');
+        Route::get('/statistik/template', [DataInformasiController::class, 'statistikTemplate'])->name('statistik.template');
+        Route::post('/statistik/delete-year', [DataInformasiController::class, 'statistikDeleteYear'])->name('statistik.delete-year');
         // KBIHU
         Route::prefix('kbihu')->name('kbihu.')->group(function () {
             Route::get('/', [DataInformasiController::class, 'kbihuIndex'])->name('index');
@@ -468,5 +642,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/pengguna/{id}/edit', [PenggunaController::class, 'edit'])->name('pengguna.edit');
         Route::put('/pengguna/{id}', [PenggunaController::class, 'update'])->name('pengguna.update');
         Route::delete('/pengguna/{id}', [PenggunaController::class, 'destroy'])->name('pengguna.destroy');
+        Route::get('/backup', [PengaturanController::class, 'backup'])->name('backup');
+        Route::post('/backup', [PengaturanController::class, 'downloadBackup'])->name('backup.download');
     });
 });

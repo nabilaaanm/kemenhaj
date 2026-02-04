@@ -13,13 +13,24 @@
     <p style="color: #6b7280; margin-bottom: 32px;">
         Panduan lengkap penggunaan sistem admin Kementerian Haji dan Umrah Kota Cirebon.
         @if($userRole === 'kontributor')
-            <br><strong style="color: #374151;">Role Anda: Kontributor</strong> - Anda dapat mengelola posting dan melihat dashboard.
+            <br><strong style="color: #374151;">Role Anda: Kontributor</strong> - Akses hanya untuk membuat posting. Posting akan menunggu aktivasi Editor.
         @elseif($userRole === 'editor')
-            <br><strong style="color: #374151;">Role Anda: Editor</strong> - Anda dapat mengelola posting, halaman, galeri, layanan, dan regulasi.
+            <br><strong style="color: #374151;">Role Anda: Editor</strong> - Akses konten penuh (posting, halaman, galeri, layanan, regulasi, dan data informasi).
         @else
-            <br><strong style="color: #374151;">Role Anda: Admin</strong> - Anda memiliki akses penuh ke semua fitur sistem.
+            <br><strong style="color: #374151;">Role Anda: Admin</strong> - Akses penuh termasuk pengaturan pengguna, backup database, dan konfigurasi sistem.
         @endif
     </p>
+
+    @if($userRole === 'admin')
+    <div style="margin-bottom: 28px; padding: 20px; background-color: #fff7ed; border-radius: 12px; border: 1px solid #fed7aa;">
+        <h4 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #9a3412;">Ringkasan Akses Role</h4>
+        <ul style="margin: 8px 0 0 20px; color: #6b7280;">
+            <li><strong>Kontributor:</strong> Hanya membuat posting. Postingan tidak langsung aktif dan harus disetujui Editor.</li>
+            <li><strong>Editor:</strong> Posting (aktivasi & publikasi), Halaman, Galeri, Layanan, Regulasi, dan Data Informasi.</li>
+            <li><strong>Admin:</strong> Semua akses Editor + Pengaturan, Pengguna, dan Backup Database.</li>
+        </ul>
+    </div>
+    @endif
     
     <div style="color: #374151; line-height: 1.8;">
         
@@ -43,7 +54,7 @@
             <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: #1f2937;">2. Posting</h4>
             <p style="margin-bottom: 16px; color: #6b7280;">
                 Kelola konten posting termasuk berita, pengumuman, siaran pers, dan klarifikasi hoax. 
-                Dapat diakses oleh Admin, Editor, dan Kontributor.
+                Kontributor hanya membuat draft; Editor/Admin yang mengaktifkan dan menerbitkan.
             </p>
             <div style="background-color: white; padding: 16px; border-radius: 8px; margin-top: 12px;">
                 <strong style="color: #374151;">Langkah-langkah Menambah Posting:</strong>
@@ -54,7 +65,7 @@
                     <li>Pilih kategori posting (Berita, Pengumuman, Siaran Pers, atau Hoax)</li>
                     <li>Pastikan semua field yang wajib diisi sudah terisi</li>
                     <li>Klik tombol <strong>"Simpan"</strong> untuk menyimpan posting</li>
-                    <li>Anda akan melihat notifikasi sukses jika posting berhasil disimpan</li>
+                    <li><strong>Catatan:</strong> Jika Anda Kontributor, posting akan menunggu aktivasi Editor sebelum tampil</li>
                 </ol>
                 <strong style="color: #374151; display: block; margin-top: 16px;">Langkah-langkah Melihat Posting:</strong>
                 <ol style="margin: 12px 0 0 20px; color: #6b7280;">
@@ -213,6 +224,7 @@
                     <li><strong>Tampilan:</strong> Pengaturan tema dan tampilan website</li>
                     <li><strong>Slideshow:</strong> Kelola gambar slideshow di halaman utama</li>
                     <li><strong>Pengguna:</strong> Kelola pengguna sistem (tambah, edit, hapus pengguna dengan role kontributor atau editor)</li>
+                    <li><strong>Backup Database:</strong> Unduh backup database untuk keamanan data</li>
                 </ul>
                 <strong style="color: #374151; display: block; margin-top: 16px;">Langkah-langkah Mengelola Pengguna:</strong>
                 <ol style="margin: 12px 0 0 20px; color: #6b7280;">
