@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\LkPihDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class LkPihController extends Controller
 {
@@ -78,15 +79,10 @@ class LkPihController extends Controller
             ];
 
             if ($request->hasFile('file')) {
-                $directory = public_path('lk-pih');
-                if (!file_exists($directory)) {
-                    mkdir($directory, 0755, true);
-                }
-
                 $file = $request->file('file');
-                $fileName = 'lk-pih/' . Str::random(20) . '.' . $file->getClientOriginalExtension();
-                $file->move($directory, basename($fileName));
-                $data['file_path'] = $fileName;
+                $fileName = Str::random(20) . '.' . $file->getClientOriginalExtension();
+                Storage::disk('lk_pih')->putFileAs('', $file, $fileName);
+                $data['file_path'] = 'lk-pih/' . $fileName;
             }
 
             LkPihDocument::create($data);
@@ -102,8 +98,11 @@ class LkPihController extends Controller
         try {
             $doc = LkPihDocument::findOrFail($id);
 
-            if ($doc->file_path && file_exists(public_path($doc->file_path))) {
-                unlink(public_path($doc->file_path));
+            if ($doc->file_path && str_starts_with($doc->file_path, 'lk-pih/')) {
+                $oldName = substr($doc->file_path, strlen('lk-pih/'));
+                if ($oldName !== '') {
+                    Storage::disk('lk_pih')->delete($oldName);
+                }
             }
 
             $doc->delete();

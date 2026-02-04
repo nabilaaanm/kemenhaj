@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Slideshow;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class SlideshowController extends Controller
@@ -58,11 +59,7 @@ class SlideshowController extends Controller
         $file = $request->file('image');
         $extension = $file->getClientOriginalExtension() ?: $file->extension();
         $filename = time() . '_' . Str::random(12) . ($extension ? '.' . $extension : '');
-        $targetDir = public_path('slideshows');
-        if (!is_dir($targetDir)) {
-            mkdir($targetDir, 0755, true);
-        }
-        $file->move($targetDir, $filename);
+        Storage::disk('slideshows')->putFileAs('', $file, $filename);
         $data['image_path'] = $filename;
 
         Slideshow::create($data);
@@ -114,18 +111,13 @@ class SlideshowController extends Controller
         $data['is_active'] = $request->boolean('is_active', true);
 
         if ($request->hasFile('image')) {
-            $oldPath = public_path('slideshows/' . $slide->image_path);
-            if (file_exists($oldPath)) {
-                unlink($oldPath);
+            if (!empty($slide->image_path)) {
+                Storage::disk('slideshows')->delete($slide->image_path);
             }
             $file = $request->file('image');
             $extension = $file->getClientOriginalExtension() ?: $file->extension();
             $filename = time() . '_' . Str::random(12) . ($extension ? '.' . $extension : '');
-            $targetDir = public_path('slideshows');
-            if (!is_dir($targetDir)) {
-                mkdir($targetDir, 0755, true);
-            }
-            $file->move($targetDir, $filename);
+            Storage::disk('slideshows')->putFileAs('', $file, $filename);
             $data['image_path'] = $filename;
         }
 
@@ -143,9 +135,8 @@ class SlideshowController extends Controller
         }
 
         $slide = Slideshow::findOrFail($id);
-        $path = public_path('slideshows/' . $slide->image_path);
-        if (file_exists($path)) {
-            unlink($path);
+        if (!empty($slide->image_path)) {
+            Storage::disk('slideshows')->delete($slide->image_path);
         }
         $slide->delete();
 

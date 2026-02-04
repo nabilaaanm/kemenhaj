@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CustomPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class HalamanController extends Controller
 {
@@ -77,11 +78,7 @@ class HalamanController extends Controller
         if ($request->hasFile('cover_image')) {
             $file = $request->file('cover_image');
             $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
-            $targetDir = public_path('pages');
-            if (!is_dir($targetDir)) {
-                mkdir($targetDir, 0755, true);
-            }
-            $file->move($targetDir, $filename);
+            Storage::disk('pages')->putFileAs('', $file, $filename);
             $data['cover_image'] = $filename;
         }
 
@@ -138,18 +135,11 @@ class HalamanController extends Controller
 
         if ($request->hasFile('cover_image')) {
             if ($page->cover_image) {
-                $oldPath = public_path('pages/' . $page->cover_image);
-                if (file_exists($oldPath)) {
-                    unlink($oldPath);
-                }
+                Storage::disk('pages')->delete($page->cover_image);
             }
             $file = $request->file('cover_image');
             $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
-            $targetDir = public_path('pages');
-            if (!is_dir($targetDir)) {
-                mkdir($targetDir, 0755, true);
-            }
-            $file->move($targetDir, $filename);
+            Storage::disk('pages')->putFileAs('', $file, $filename);
             $data['cover_image'] = $filename;
         }
 
@@ -163,10 +153,7 @@ class HalamanController extends Controller
     {
         $page = CustomPage::findOrFail($id);
         if ($page->cover_image) {
-            $oldPath = public_path('pages/' . $page->cover_image);
-            if (file_exists($oldPath)) {
-                unlink($oldPath);
-            }
+            Storage::disk('pages')->delete($page->cover_image);
         }
         $page->delete();
 

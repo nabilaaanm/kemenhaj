@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class LkPihDocument extends Model
 {
@@ -34,10 +35,13 @@ class LkPihDocument extends Model
         if (str_starts_with($path, 'storage/')) {
             $path = substr($path, 8);
         }
-        if (!str_starts_with($path, 'lk-pih/')) {
-            $path = 'lk-pih/' . $path;
+        if (str_starts_with($path, 'lk-pih/')) {
+            $path = substr($path, strlen('lk-pih/'));
+        }
+        if ($path === '' || !Storage::disk('lk_pih')->exists($path)) {
+            return null;
         }
 
-        return asset($path);
+        return Storage::disk('lk_pih')->url($path);
     }
 }

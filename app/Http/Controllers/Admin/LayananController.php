@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class LayananController extends Controller
 {
@@ -46,16 +47,10 @@ class LayananController extends Controller
             // Handle icon upload
             if ($request->hasFile('icon')) {
                 $icon = $request->file('icon');
-                
-                // Ensure directory exists
-                $directory = public_path('services');
-                if (!file_exists($directory)) {
-                    mkdir($directory, 0755, true);
-                }
-                
-                $iconName = 'services/' . \Illuminate\Support\Str::random(20) . '.' . $icon->getClientOriginalExtension();
-                $icon->move($directory, basename($iconName));
-                $data['icon'] = $iconName;
+
+                $iconName = \Illuminate\Support\Str::random(20) . '.' . $icon->getClientOriginalExtension();
+                Storage::disk('services')->putFileAs('', $icon, $iconName);
+                $data['icon'] = 'services/' . $iconName;
             }
 
             Service::create($data);
@@ -98,21 +93,18 @@ class LayananController extends Controller
             // Handle icon upload
             if ($request->hasFile('icon')) {
                 // Delete old icon
-                if ($service->icon && file_exists(public_path($service->icon))) {
-                    unlink(public_path($service->icon));
+                if ($service->icon && str_starts_with($service->icon, 'services/')) {
+                    $oldName = substr($service->icon, strlen('services/'));
+                    if ($oldName !== '') {
+                        Storage::disk('services')->delete($oldName);
+                    }
                 }
                 
                 $icon = $request->file('icon');
-                
-                // Ensure directory exists
-                $directory = public_path('services');
-                if (!file_exists($directory)) {
-                    mkdir($directory, 0755, true);
-                }
-                
-                $iconName = 'services/' . \Illuminate\Support\Str::random(20) . '.' . $icon->getClientOriginalExtension();
-                $icon->move($directory, basename($iconName));
-                $data['icon'] = $iconName;
+
+                $iconName = \Illuminate\Support\Str::random(20) . '.' . $icon->getClientOriginalExtension();
+                Storage::disk('services')->putFileAs('', $icon, $iconName);
+                $data['icon'] = 'services/' . $iconName;
             }
 
             $service->update($data);
@@ -129,8 +121,11 @@ class LayananController extends Controller
             $service = Service::findOrFail($id);
             
             // Delete icon if exists
-            if ($service->icon && file_exists(public_path($service->icon))) {
-                unlink(public_path($service->icon));
+            if ($service->icon && str_starts_with($service->icon, 'services/')) {
+                $oldName = substr($service->icon, strlen('services/'));
+                if ($oldName !== '') {
+                    Storage::disk('services')->delete($oldName);
+                }
             }
             
             $service->delete();

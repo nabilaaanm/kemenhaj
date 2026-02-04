@@ -296,10 +296,7 @@ class PengaturanController extends Controller
 
         if ($request->boolean('hapus_struktur_gambar') && !$request->hasFile('struktur_gambar')) {
             if ($profil && $profil->struktur_gambar) {
-                $oldPath = public_path('struktur/' . $profil->struktur_gambar);
-                if (file_exists($oldPath)) {
-                    unlink($oldPath);
-                }
+                Storage::disk('struktur')->delete($profil->struktur_gambar);
             }
             $data['struktur_gambar'] = null;
         }
@@ -307,18 +304,11 @@ class PengaturanController extends Controller
         if ($request->hasFile('struktur_gambar')) {
             $file = $request->file('struktur_gambar');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $targetDir = public_path('struktur');
-            if (!is_dir($targetDir)) {
-                mkdir($targetDir, 0755, true);
-            }
-            $file->move($targetDir, $filename);
+            Storage::disk('struktur')->putFileAs('', $file, $filename);
             $data['struktur_gambar'] = $filename;
 
             if ($profil && $profil->struktur_gambar) {
-                $oldPath = public_path('struktur/' . $profil->struktur_gambar);
-                if (file_exists($oldPath)) {
-                    unlink($oldPath);
-                }
+                Storage::disk('struktur')->delete($profil->struktur_gambar);
             }
         }
         
@@ -435,7 +425,7 @@ class PengaturanController extends Controller
         if ($request->hasFile('lambang')) {
             $file = $request->file('lambang');
             $filename = 'lambang.' . $file->getClientOriginalExtension();
-            $file->move(public_path('image'), $filename);
+            Storage::disk('image')->putFileAs('', $file, $filename);
         }
 
         return redirect()->route('admin.pengaturan.umum')
@@ -458,7 +448,7 @@ class PengaturanController extends Controller
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('tim'), $filename);
+            Storage::disk('tim')->putFileAs('', $file, $filename);
             $data['foto'] = $filename;
         }
 
@@ -483,12 +473,12 @@ class PengaturanController extends Controller
 
         if ($request->hasFile('foto')) {
             // Hapus foto lama jika ada
-            if ($tim->foto && file_exists(public_path('tim/' . $tim->foto))) {
-                unlink(public_path('tim/' . $tim->foto));
+            if ($tim->foto) {
+                Storage::disk('tim')->delete($tim->foto);
             }
             $file = $request->file('foto');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('tim'), $filename);
+            Storage::disk('tim')->putFileAs('', $file, $filename);
             $data['foto'] = $filename;
         }
 
@@ -503,8 +493,8 @@ class PengaturanController extends Controller
         $tim = TimKemenhaj::findOrFail($id);
         
         // Hapus foto jika ada
-        if ($tim->foto && file_exists(public_path('tim/' . $tim->foto))) {
-            unlink(public_path('tim/' . $tim->foto));
+        if ($tim->foto) {
+            Storage::disk('tim')->delete($tim->foto);
         }
         
         $tim->delete();

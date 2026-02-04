@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Regulation extends Model
 {
@@ -40,11 +41,11 @@ class Regulation extends Model
             if (str_starts_with($path, 'storage/')) {
                 $path = substr($path, 8);
             }
-            if (!str_starts_with($path, 'regulations/')) {
-                $path = 'regulations/' . $path;
+            if (str_starts_with($path, 'regulations/')) {
+                $path = substr($path, strlen('regulations/'));
             }
-            if (file_exists(public_path($path))) {
-                return asset($path);
+            if ($path !== '' && Storage::disk('regulations')->exists($path)) {
+                return Storage::disk('regulations')->url($path);
             }
         }
         return null;

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class GaleriController extends Controller
 {
@@ -51,22 +52,10 @@ class GaleriController extends Controller
             // Handle file upload
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
-                
-                // Ensure directory exists
-                $directory = public_path('foto');
-                if (!file_exists($directory)) {
-                    mkdir($directory, 0755, true);
-                }
-                
-                $filename = 'foto/' . Str::random(20) . '.' . $file->getClientOriginalExtension();
-                $file->move($directory, basename($filename));
-                
-                // Verify file was saved
-                if (!file_exists(public_path($filename))) {
-                    return back()->with('error', 'Gagal menyimpan file. Pastikan folder storage memiliki permission yang benar.')->withInput();
-                }
-                
-                $data['file_path'] = $filename;
+
+                $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
+                Storage::disk('foto')->putFileAs('', $file, $filename);
+                $data['file_path'] = 'foto/' . $filename;
             } elseif ($request->url) {
                 $data['url'] = $request->url;
             } else {
@@ -133,28 +122,20 @@ class GaleriController extends Controller
 
         try {
             if ($hasFile) {
-                if ($foto->file_path && file_exists(public_path($foto->file_path))) {
-                    unlink(public_path($foto->file_path));
+                $oldPath = $this->stripDiskPrefix($foto->file_path, 'foto');
+                if ($oldPath) {
+                    Storage::disk('foto')->delete($oldPath);
                 }
 
                 $file = $request->file('file');
-                $directory = public_path('foto');
-                if (!file_exists($directory)) {
-                    mkdir($directory, 0755, true);
-                }
-
-                $filename = 'foto/' . Str::random(20) . '.' . $file->getClientOriginalExtension();
-                $file->move($directory, basename($filename));
-
-                if (!file_exists(public_path($filename))) {
-                    return back()->with('error', 'Gagal menyimpan file. Pastikan folder storage memiliki permission yang benar.')->withInput();
-                }
-
-                $data['file_path'] = $filename;
+                $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
+                Storage::disk('foto')->putFileAs('', $file, $filename);
+                $data['file_path'] = 'foto/' . $filename;
                 $data['url'] = null;
             } elseif ($hasUrl) {
-                if ($foto->file_path && file_exists(public_path($foto->file_path))) {
-                    unlink(public_path($foto->file_path));
+                $oldPath = $this->stripDiskPrefix($foto->file_path, 'foto');
+                if ($oldPath) {
+                    Storage::disk('foto')->delete($oldPath);
                 }
                 $data['url'] = $request->url;
                 $data['file_path'] = null;
@@ -172,8 +153,9 @@ class GaleriController extends Controller
     {
         $foto = Gallery::findOrFail($id);
         
-        if ($foto->file_path && file_exists(public_path($foto->file_path))) {
-            unlink(public_path($foto->file_path));
+        $oldPath = $this->stripDiskPrefix($foto->file_path, 'foto');
+        if ($oldPath) {
+            Storage::disk('foto')->delete($oldPath);
         }
         
         $foto->delete();
@@ -270,21 +252,9 @@ class GaleriController extends Controller
                     return back()->with('error', 'Ukuran file melebihi batas maksimal (' . ini_get('upload_max_filesize') . '). Silakan gunakan URL video atau perbesar batas upload di PHP.')->withInput();
                 }
                 
-                // Ensure directory exists
-                $directory = public_path('video');
-                if (!file_exists($directory)) {
-                    mkdir($directory, 0755, true);
-                }
-                
-                $filename = 'video/' . Str::random(20) . '.' . $file->getClientOriginalExtension();
-                $file->move($directory, basename($filename));
-                
-                // Verify file was saved
-                if (!file_exists(public_path($filename))) {
-                    return back()->with('error', 'Gagal menyimpan file. Pastikan folder storage memiliki permission yang benar.')->withInput();
-                }
-                
-                $data['file_path'] = $filename;
+                $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
+                Storage::disk('video')->putFileAs('', $file, $filename);
+                $data['file_path'] = 'video/' . $filename;
             } elseif ($hasUrl) {
                 // User memasukkan URL (prioritas URL jika keduanya ada)
                 $url = $request->url;
@@ -308,16 +278,10 @@ class GaleriController extends Controller
             // Handle thumbnail upload
             if ($request->hasFile('thumbnail')) {
                 $thumbnail = $request->file('thumbnail');
-                
-                // Ensure directory exists
-                $thumbnailDir = public_path('video/thumbnails');
-                if (!file_exists($thumbnailDir)) {
-                    mkdir($thumbnailDir, 0755, true);
-                }
-                
-                $thumbnailName = 'video/thumbnails/' . Str::random(20) . '.' . $thumbnail->getClientOriginalExtension();
-                $thumbnail->move($thumbnailDir, basename($thumbnailName));
-                $data['thumbnail'] = $thumbnailName;
+
+                $thumbnailName = Str::random(20) . '.' . $thumbnail->getClientOriginalExtension();
+                Storage::disk('video')->putFileAs('thumbnails', $thumbnail, $thumbnailName);
+                $data['thumbnail'] = 'video/thumbnails/' . $thumbnailName;
             }
 
             Gallery::create($data);
@@ -347,6 +311,20 @@ class GaleriController extends Controller
         }
         
         return $size;
+    }
+
+    private function stripDiskPrefix(?string $path, string $prefix): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        $path = ltrim($path, '/');
+        if (str_starts_with($path, $prefix . '/')) {
+            return substr($path, strlen($prefix) + 1);
+        }
+
+        return $path;
     }
 
     public function videoIndex()
@@ -427,23 +405,15 @@ class GaleriController extends Controller
                     return back()->with('error', 'Ukuran file melebihi batas maksimal (' . ini_get('upload_max_filesize') . '). Silakan gunakan URL video atau perbesar batas upload di PHP.')->withInput();
                 }
 
-                $directory = public_path('video');
-                if (!file_exists($directory)) {
-                    mkdir($directory, 0755, true);
+                $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
+                Storage::disk('video')->putFileAs('', $file, $filename);
+
+                $oldPath = $this->stripDiskPrefix($video->file_path, 'video');
+                if ($oldPath) {
+                    Storage::disk('video')->delete($oldPath);
                 }
 
-                $filename = 'video/' . Str::random(20) . '.' . $file->getClientOriginalExtension();
-                $file->move($directory, basename($filename));
-
-                if (!file_exists(public_path($filename))) {
-                    return back()->with('error', 'Gagal menyimpan file. Pastikan folder storage memiliki permission yang benar.')->withInput();
-                }
-
-                if ($video->file_path && file_exists(public_path($video->file_path))) {
-                    unlink(public_path($video->file_path));
-                }
-
-                $data['file_path'] = $filename;
+                $data['file_path'] = 'video/' . $filename;
                 $data['url'] = null;
             } elseif ($hasUrl) {
                 $url = $request->url;
@@ -457,8 +427,9 @@ class GaleriController extends Controller
                     return back()->with('error', 'URL video tidak valid. Gunakan link YouTube atau Vimeo.')->withInput();
                 }
 
-                if ($video->file_path && file_exists(public_path($video->file_path))) {
-                    unlink(public_path($video->file_path));
+                $oldPath = $this->stripDiskPrefix($video->file_path, 'video');
+                if ($oldPath) {
+                    Storage::disk('video')->delete($oldPath);
                 }
 
                 $data['url'] = $url;
@@ -466,19 +437,15 @@ class GaleriController extends Controller
             }
 
             if ($request->hasFile('thumbnail')) {
-                if ($video->thumbnail && file_exists(public_path($video->thumbnail))) {
-                    unlink(public_path($video->thumbnail));
+                $oldThumb = $this->stripDiskPrefix($video->thumbnail, 'video');
+                if ($oldThumb) {
+                    Storage::disk('video')->delete($oldThumb);
                 }
 
                 $thumbnail = $request->file('thumbnail');
-                $thumbnailDir = public_path('video/thumbnails');
-                if (!file_exists($thumbnailDir)) {
-                    mkdir($thumbnailDir, 0755, true);
-                }
-
-                $thumbnailName = 'video/thumbnails/' . Str::random(20) . '.' . $thumbnail->getClientOriginalExtension();
-                $thumbnail->move($thumbnailDir, basename($thumbnailName));
-                $data['thumbnail'] = $thumbnailName;
+                $thumbnailName = Str::random(20) . '.' . $thumbnail->getClientOriginalExtension();
+                Storage::disk('video')->putFileAs('thumbnails', $thumbnail, $thumbnailName);
+                $data['thumbnail'] = 'video/thumbnails/' . $thumbnailName;
             }
 
             $video->update($data);
@@ -493,12 +460,14 @@ class GaleriController extends Controller
     {
         $video = Gallery::findOrFail($id);
         
-        if ($video->file_path && file_exists(public_path($video->file_path))) {
-            unlink(public_path($video->file_path));
+        $oldPath = $this->stripDiskPrefix($video->file_path, 'video');
+        if ($oldPath) {
+            Storage::disk('video')->delete($oldPath);
         }
         
-        if ($video->thumbnail && file_exists(public_path($video->thumbnail))) {
-            unlink(public_path($video->thumbnail));
+        $oldThumb = $this->stripDiskPrefix($video->thumbnail, 'video');
+        if ($oldThumb) {
+            Storage::disk('video')->delete($oldThumb);
         }
         
         $video->delete();
@@ -545,22 +514,10 @@ class GaleriController extends Controller
             // Handle file upload
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
-                
-                // Ensure directory exists
-                $directory = public_path('infografis');
-                if (!file_exists($directory)) {
-                    mkdir($directory, 0755, true);
-                }
-                
-                $filename = 'infografis/' . Str::random(20) . '.' . $file->getClientOriginalExtension();
-                $file->move($directory, basename($filename));
-                
-                // Verify file was saved
-                if (!file_exists(public_path($filename))) {
-                    return back()->with('error', 'Gagal menyimpan file. Pastikan folder storage memiliki permission yang benar.')->withInput();
-                }
-                
-                $data['file_path'] = $filename;
+
+                $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
+                Storage::disk('infografis')->putFileAs('', $file, $filename);
+                $data['file_path'] = 'infografis/' . $filename;
             } elseif ($request->url) {
                 $data['url'] = $request->url;
             } else {
@@ -627,28 +584,20 @@ class GaleriController extends Controller
 
         try {
             if ($hasFile) {
-                if ($infografis->file_path && file_exists(public_path($infografis->file_path))) {
-                    unlink(public_path($infografis->file_path));
+                $oldPath = $this->stripDiskPrefix($infografis->file_path, 'infografis');
+                if ($oldPath) {
+                    Storage::disk('infografis')->delete($oldPath);
                 }
 
                 $file = $request->file('file');
-                $directory = public_path('infografis');
-                if (!file_exists($directory)) {
-                    mkdir($directory, 0755, true);
-                }
-
-                $filename = 'infografis/' . Str::random(20) . '.' . $file->getClientOriginalExtension();
-                $file->move($directory, basename($filename));
-
-                if (!file_exists(public_path($filename))) {
-                    return back()->with('error', 'Gagal menyimpan file. Pastikan folder storage memiliki permission yang benar.')->withInput();
-                }
-
-                $data['file_path'] = $filename;
+                $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
+                Storage::disk('infografis')->putFileAs('', $file, $filename);
+                $data['file_path'] = 'infografis/' . $filename;
                 $data['url'] = null;
             } elseif ($hasUrl) {
-                if ($infografis->file_path && file_exists(public_path($infografis->file_path))) {
-                    unlink(public_path($infografis->file_path));
+                $oldPath = $this->stripDiskPrefix($infografis->file_path, 'infografis');
+                if ($oldPath) {
+                    Storage::disk('infografis')->delete($oldPath);
                 }
                 $data['url'] = $request->url;
                 $data['file_path'] = null;
@@ -666,8 +615,9 @@ class GaleriController extends Controller
     {
         $infografis = Gallery::findOrFail($id);
         
-        if ($infografis->file_path && file_exists(public_path($infografis->file_path))) {
-            unlink(public_path($infografis->file_path));
+        $oldPath = $this->stripDiskPrefix($infografis->file_path, 'infografis');
+        if ($oldPath) {
+            Storage::disk('infografis')->delete($oldPath);
         }
         
         $infografis->delete();

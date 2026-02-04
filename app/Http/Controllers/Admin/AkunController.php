@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class AkunController extends Controller
@@ -50,19 +51,14 @@ class AkunController extends Controller
 
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
-            $destinationPath = public_path('uploads/avatars');
-            if (!is_dir($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-
             $filename = Str::uuid()->toString() . '.' . $avatar->getClientOriginalExtension();
-            $avatar->move($destinationPath, $filename);
+            Storage::disk('uploads')->putFileAs('avatars', $avatar, $filename);
             $relativePath = 'uploads/avatars/' . $filename;
 
             if (!empty($user->avatar) && str_starts_with($user->avatar, 'uploads/avatars/')) {
-                $oldPath = public_path($user->avatar);
-                if (is_file($oldPath)) {
-                    unlink($oldPath);
+                $oldName = substr($user->avatar, strlen('uploads/avatars/'));
+                if ($oldName !== '') {
+                    Storage::disk('uploads')->delete('avatars/' . $oldName);
                 }
             }
 
@@ -95,9 +91,9 @@ class AkunController extends Controller
         $user = User::findOrFail($sessionUser['id']);
 
         if (!empty($user->avatar) && str_starts_with($user->avatar, 'uploads/avatars/')) {
-            $oldPath = public_path($user->avatar);
-            if (is_file($oldPath)) {
-                unlink($oldPath);
+            $oldName = substr($user->avatar, strlen('uploads/avatars/'));
+            if ($oldName !== '') {
+                Storage::disk('uploads')->delete('avatars/' . $oldName);
             }
         }
 

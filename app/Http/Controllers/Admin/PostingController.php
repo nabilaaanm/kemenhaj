@@ -7,6 +7,7 @@ use App\Models\Posting;
 use App\Models\PostingCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PostingController extends Controller
@@ -142,11 +143,7 @@ class PostingController extends Controller
             $file = $request->file('cover_image');
             $extension = $file->getClientOriginalExtension() ?: $file->extension();
             $filename = time() . '_' . Str::random(12) . ($extension ? '.' . $extension : '');
-            $targetDir = public_path('postings');
-            if (!is_dir($targetDir)) {
-                mkdir($targetDir, 0755, true);
-            }
-            $file->move($targetDir, $filename);
+            Storage::disk('postings')->putFileAs('', $file, $filename);
             $data['cover_image'] = $filename;
         }
 
@@ -205,11 +202,7 @@ class PostingController extends Controller
             $file = $request->file('cover_image');
             $extension = $file->getClientOriginalExtension() ?: $file->extension();
             $filename = time() . '_' . Str::random(12) . ($extension ? '.' . $extension : '');
-            $targetDir = public_path('postings');
-            if (!is_dir($targetDir)) {
-                mkdir($targetDir, 0755, true);
-            }
-            $file->move($targetDir, $filename);
+            Storage::disk('postings')->putFileAs('', $file, $filename);
             $data['cover_image'] = $filename;
         }
 
