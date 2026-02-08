@@ -66,10 +66,14 @@
             </div>
         </div>
 
-        <div style="margin-bottom: 16px;">
+        <div style="margin-bottom: 16px; display: flex; gap: 10px; flex-wrap: wrap;">
             <a href="{{ route('admin.data-informasi.statistik.template') }}"
                style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; background: #f3f4f6; color: #374151; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; border: 1px solid #e5e7eb;">
                 Download Template Excel
+            </a>
+            <a href="{{ route('admin.data-informasi.statistik.export') }}"
+               style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; background: #111827; color: #ffffff; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; border: 1px solid #111827;">
+                Download Semua Data
             </a>
         </div>
 

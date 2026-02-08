@@ -577,6 +577,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/statistik', [DataInformasiController::class, 'statistikIndex'])->name('statistik.index');
         Route::post('/statistik/import', [DataInformasiController::class, 'statistikImport'])->name('statistik.import');
         Route::get('/statistik/template', [DataInformasiController::class, 'statistikTemplate'])->name('statistik.template');
+        Route::get('/statistik/export', [DataInformasiController::class, 'statistikExportAll'])->name('statistik.export');
         Route::post('/statistik/delete-year', [DataInformasiController::class, 'statistikDeleteYear'])->name('statistik.delete-year');
         // KBIHU
         Route::prefix('kbihu')->name('kbihu.')->group(function () {

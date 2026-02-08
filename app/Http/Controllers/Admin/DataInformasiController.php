@@ -1005,4 +1005,55 @@ class DataInformasiController extends Controller
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ]);
     }
+
+    public function statistikExportAll()
+    {
+        $headers = [
+            'Nomor Porsi',
+            'Nama Calon Haji',
+            'Pendidikan',
+            'KBIHU',
+            'Alamat',
+            'Kelurahan',
+            'Kecamatan',
+            'Usia',
+            'Jenis Kelamin',
+            'Tahun Keberangkatan',
+        ];
+
+        $rows = HajiJamaah::orderByDesc('tahun_keberangkatan')
+            ->orderBy('nama')
+            ->get()
+            ->map(function (HajiJamaah $row) {
+                return [
+                    (string) ($row->nomor_porsi ?? ''),
+                    (string) ($row->nama ?? ''),
+                    (string) ($row->pendidikan ?? ''),
+                    (string) ($row->kbihu ?? ''),
+                    (string) ($row->alamat ?? ''),
+                    (string) ($row->kelurahan ?? ''),
+                    (string) ($row->kecamatan ?? ''),
+                    $row->usia !== null ? (int) $row->usia : '',
+                    (string) ($row->jenis_kelamin ?? ''),
+                    $row->tahun_keberangkatan !== null ? (int) $row->tahun_keberangkatan : '',
+                ];
+            })
+            ->toArray();
+
+        return response()->streamDownload(function () use ($headers, $rows) {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->fromArray($headers, null, 'A1');
+            $sheet->getStyle('A')->getNumberFormat()->setFormatCode('@');
+
+            if (!empty($rows)) {
+                $sheet->fromArray($rows, null, 'A2');
+            }
+
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, 'statistik-haji-semua-tahun.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
 }
