@@ -222,14 +222,16 @@
                                 </svg>
                             </div>
                             <div class="stat-card__body">
-                                <h3 class="stat-card__title">Jamaah Berangkat</h3>
+                                <h3 class="stat-card__title">Jamaah Berangkat per Tahun</h3>
                                 <p class="stat-card__value">{{ number_format($statTotals['total_departed']) }}</p>
-                                <p class="stat-card__meta">Berdasarkan tahun keberangkatan</p>
+                                <p class="stat-card__meta">Tahun {{ $statTotals['year_selected'] ?? '-' }}</p>
                             </div>
                         </div>
                         <div class="stat-panel stat-panel--wide">
                             <h3 class="text-sm font-semibold mb-2">Total Jamaah per Tahun</h3>
-                            <canvas id="chartPerYear" width="600" height="170"></canvas>
+                            <div class="stat-panel__chart stat-panel__chart--wide">
+                                <canvas id="chartPerYear" width="600" height="170"></canvas>
+                            </div>
                         </div>
                     </div>
 
@@ -696,6 +698,9 @@
     .stat-panel--wide {
         grid-column: span 2;
     }
+    .stat-panel__chart--wide {
+        height: 220px;
+    }
     .stat-panel canvas {
         width: 100%;
         height: 100%;
@@ -707,6 +712,21 @@
     @media (max-width: 768px) {
         .stat-panel--wide {
             grid-column: span 1;
+        }
+        .stat-panel {
+            padding: 10px;
+        }
+        .stat-panel__chart--wide {
+            height: 180px;
+        }
+        .stat-panel--chart {
+            min-height: 220px;
+        }
+        .stat-panel__chart {
+            height: 180px;
+        }
+        .stat-panel--tall .stat-panel__chart {
+            height: 220px;
         }
         .stat-panel canvas {
             height: 100%;
@@ -861,7 +881,7 @@
         ];
 
         const baseOptions = {
-            responsive: false,
+            responsive: true,
             maintainAspectRatio: false,
             animation: false,
             devicePixelRatio: 1,
