@@ -1,5 +1,8 @@
 <!-- Modal Tambah/Edit Tim -->
 <div id="timModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    @php
+        $rowSlots = $rowSlots ?? [1 => [1,2,3,4], 2 => [1,2,3,4], 3 => [1,2,3,4]];
+    @endphp
     <div style="background: white; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h3 id="modalTitle" style="font-size: 20px; font-weight: 700; color: #1f2937; margin: 0;">Tambah Anggota Tim</h3>

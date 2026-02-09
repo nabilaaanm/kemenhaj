@@ -173,12 +173,15 @@ class PengaturanController extends Controller
         } else {
             $hasBaris = Schema::hasColumn('tim_kemenhaj', 'baris');
             $hasSlot = Schema::hasColumn('tim_kemenhaj', 'slot');
+            $hasUrutan = Schema::hasColumn('tim_kemenhaj', 'urutan');
             $query = TimKemenhaj::query();
             if ($hasBaris && $hasSlot) {
                 $query->orderByRaw('baris is null, baris')
                     ->orderByRaw('slot is null, slot');
-            } else {
+            } elseif ($hasUrutan) {
                 $query->orderBy('urutan')->orderBy('id');
+            } else {
+                $query->orderBy('id');
             }
             $tim = $query->get();
         }
@@ -449,7 +452,7 @@ class PengaturanController extends Controller
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'baris' => 'required|integer|min:1|max:3',
+            'baris' => 'required|integer|min:1|max:7',
             'slot' => 'required|integer|min:1|max:4',
         ]);
 
@@ -474,7 +477,7 @@ class PengaturanController extends Controller
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'baris' => 'required|integer|min:1|max:3',
+            'baris' => 'required|integer|min:1|max:7',
             'slot' => 'required|integer|min:1|max:4',
         ]);
 
