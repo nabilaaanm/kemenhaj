@@ -168,10 +168,20 @@ class PengaturanController extends Controller
     public function profilStruktur()
     {
         $profil = Profil::first();
-        $tim = TimKemenhaj::orderByRaw('baris is null, baris')
-            ->orderByRaw('slot is null, slot')
-            ->orderBy('id')
-            ->get();
+        if (!Schema::hasTable('tim_kemenhaj')) {
+            $tim = collect();
+        } else {
+            $hasBaris = Schema::hasColumn('tim_kemenhaj', 'baris');
+            $hasSlot = Schema::hasColumn('tim_kemenhaj', 'slot');
+            $query = TimKemenhaj::query();
+            if ($hasBaris && $hasSlot) {
+                $query->orderByRaw('baris is null, baris')
+                    ->orderByRaw('slot is null, slot');
+            } else {
+                $query->orderBy('urutan')->orderBy('id');
+            }
+            $tim = $query->get();
+        }
         return view('admin.profil.struktur', compact('profil', 'tim'));
     }
 

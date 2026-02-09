@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Profil;
 use App\Models\TimKemenhaj;
+use Illuminate\Support\Facades\Schema;
 
 class ProfilController extends Controller
 {
@@ -16,7 +17,11 @@ class ProfilController extends Controller
     public function strukturOrganisasi()
     {
         $profil = Profil::first();
-        $tim = TimKemenhaj::orderBy('urutan')->orderBy('id')->get();
+        if (!Schema::hasTable('tim_kemenhaj')) {
+            $tim = collect();
+        } else {
+            $tim = TimKemenhaj::orderBy('urutan')->orderBy('id')->get();
+        }
         return view('profil.struktur-organisasi', compact('profil', 'tim'));
     }
 
