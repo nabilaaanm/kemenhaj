@@ -213,12 +213,12 @@
     <div style="background: #fff; width: 100%; max-width: 560px; border-radius: 16px; padding: 24px; position: relative; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);">
         <button type="button" onclick="closeBerhakLunasModal('create')" style="position: absolute; top: 14px; right: 14px; background: transparent; border: none; font-size: 18px; cursor: pointer;">✕</button>
         <h3 style="font-size: 18px; font-weight: 700; color: #1f2937; margin-bottom: 8px;">Tambah Data Berhak Lunas</h3>
-        <form method="POST" action="{{ route('admin.data-informasi.berhak-lunas.store') }}">
+        <form method="POST" action="{{ route('admin.data-informasi.berhak-lunas.store') }}" id="berhakLunasCreateForm">
             @csrf
             <div style="display: grid; gap: 12px;">
                 <div>
                     <label style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 6px; display: block;">Nomor Porsi</label>
-                    <input type="text" name="nomor_porsi" required minlength="10" maxlength="10" pattern="\d{10}"
+                    <input type="text" name="nomor_porsi" id="berhakLunasNomorPorsi" required minlength="10" maxlength="10" pattern="\d{10}"
                            style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
                 </div>
                 <div>
@@ -233,7 +233,7 @@
                 </div>
                 <div>
                     <label style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 6px; display: block;">No Paspor</label>
-                    <input type="text" name="nomor_paspor" minlength="8" maxlength="8" pattern="[A-Za-z0-9]{8}"
+                    <input type="text" name="nomor_paspor" id="berhakLunasNomorPaspor" minlength="8" maxlength="8" pattern="[A-Za-z0-9]{8}"
                            style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;">
                 </div>
                 <div>
@@ -274,11 +274,41 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        const createForm = document.getElementById('berhakLunasCreateForm');
+        const nomorPorsiInput = document.getElementById('berhakLunasNomorPorsi');
+        const nomorPasporInput = document.getElementById('berhakLunasNomorPaspor');
         const input = document.getElementById('berhakLunasSearchInput');
         const form = document.getElementById('berhakLunasSearchForm');
         const table = document.getElementById('berhakLunasTable');
         const rows = table ? Array.from(table.querySelectorAll('tbody tr')) : [];
         let debounceTimer;
+
+        const showValidationError = (message) => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validasi Gagal',
+                text: message,
+                confirmButtonColor: '#ECB176'
+            });
+        };
+
+        if (createForm) {
+            createForm.addEventListener('submit', function (event) {
+                const nomorPorsi = (nomorPorsiInput?.value || '').trim();
+                const nomorPaspor = (nomorPasporInput?.value || '').trim();
+
+                if (!/^\d{10}$/.test(nomorPorsi)) {
+                    event.preventDefault();
+                    showValidationError('Nomor porsi harus 10 digit angka.');
+                    return;
+                }
+
+                if (nomorPaspor !== '' && !/^[A-Za-z0-9]{8}$/.test(nomorPaspor)) {
+                    event.preventDefault();
+                    showValidationError('Nomor paspor harus 8 karakter huruf/angka.');
+                }
+            });
+        }
 
         const filterRows = () => {
             const query = (input?.value || '').toLowerCase().trim();
