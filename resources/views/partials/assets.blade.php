@@ -1,18 +1,17 @@
-@if (file_exists(public_path('hot')))
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-@elseif (file_exists(public_path('build/manifest.json')))
+@if (file_exists(public_path('build/manifest.json')))
     @php
-        $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
-        $cssFile = $manifest['resources/css/app.css']['file'] ?? null;
-        $jsFile = $manifest['resources/js/app.js']['file'] ?? null;
+        $manifest = json_decode(
+            file_get_contents(public_path('build/manifest.json')),
+            true
+        );
     @endphp
-    @if ($cssFile)
-        <link rel="stylesheet" href="{{ asset('build/' . $cssFile) }}">
+
+    @if(isset($manifest['resources/css/app.css']))
+        <link rel="stylesheet"
+              href="{{ asset('build/' . $manifest['resources/css/app.css']['file']) }}">
     @endif
-    @if ($jsFile)
-        <script src="{{ asset('build/' . $jsFile) }}" defer></script>
+
+    @if(isset($manifest['resources/js/app.js']))
+        <script src="{{ asset('build/' . $manifest['resources/js/app.js']['file']) }}" defer></script>
     @endif
-@else
-    <link rel="stylesheet" href="{{ asset('build/assets/app-Byobma2p.css') }}">
-    <script src="{{ asset('build/assets/app-CAiCLEjY.js') }}" defer></script>
 @endif
