@@ -37,7 +37,7 @@
                     <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Baris</label>
                     <select name="baris" id="tim_baris" required
                             style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;">
-                        @foreach(($rowSlots ?? [1 => [1,2,3,4], 2 => [1,2,3,4], 3 => [1,2,3,4]]) as $row => $slots)
+                        @foreach($rowSlots as $row => $slots)
                             <option value="{{ $row }}">Baris {{ $row }}</option>
                         @endforeach
                     </select>
@@ -69,7 +69,7 @@ function buildSlotOptions(row, selectedSlot = null) {
     const slotSelect = document.getElementById('tim_slot');
     if (!slotSelect) return;
 
-    const slotsByRow = @json($rowSlots ?? [1 => [1,2,3,4], 2 => [1,2,3,4], 3 => [1,2,3,4]]);
+    const slotsByRow = @json($rowSlots);
     const slots = slotsByRow[row] || [];
     const usedSlots = new Set();
 
