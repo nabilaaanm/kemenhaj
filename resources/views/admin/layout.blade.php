@@ -15,10 +15,14 @@
         body {
             font-family: system-ui, -apple-system, sans-serif;
             background-color: #f3f4f6;
+            overflow-x: hidden;
         }
         .admin-container {
             display: flex;
             min-height: 100vh;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
         }
         /* Sidebar */
         .sidebar {
@@ -452,17 +456,18 @@
         }
         @media (max-width: 768px) {
             .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
+                position: relative !important;
+                width: 100% !important;
+                height: auto !important;
             }
-            .sidebar.open {
-                transform: translateX(0);
+            .admin-container {
+                flex-direction: column;
             }
-            .main-content {
-                margin-left: 0;
-            }
-            .menu-toggle {
-                display: block;
+            .main-content,
+            .content-area {
+                width: 100% !important;
+                margin-left: 0 !important;
+                padding: 16px;
             }
         }
     </style>
