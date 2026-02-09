@@ -55,7 +55,7 @@
                     <th style="padding:10px;">Judul</th>
                     <th style="padding:10px;">Slug</th>
                     <th style="padding:10px;">Menu</th>
-                    <th style="padding:10px;">Aktif</th>
+                    <th style="padding:10px;">Status</th>
                     <th style="padding:10px;">Urutan</th>
                     <th style="padding:10px;">Aksi</th>
                 </tr>
@@ -66,7 +66,7 @@
                         <td style="padding:10px;">{{ $page->title }}</td>
                         <td style="padding:10px;">{{ $page->slug }}</td>
                         <td style="padding:10px;">{{ ucfirst($page->group) }}</td>
-                        <td style="padding:10px;">{{ $page->is_active ? 'Ya' : 'Tidak' }}</td>
+                        <td style="padding:10px;">{{ $page->is_active ? 'Aktif' : 'Non Aktif' }}</td>
                         <td style="padding:10px;">{{ $page->order }}</td>
                         <td style="padding:10px; display:flex; gap:8px;">
                             <a href="{{ route('admin.halaman.edit', $page->id) }}" style="padding:6px 10px; background:#3b82f6; color:white; border-radius:6px; font-size:12px; text-decoration: none;">Edit</a>
