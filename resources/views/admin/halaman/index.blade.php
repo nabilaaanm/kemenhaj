@@ -5,15 +5,45 @@
 
 @section('content')
 <div class="card">
-    @if(session('success'))
-        <div style="margin-bottom: 16px; padding: 10px 12px; background: #ecfdf3; border: 1px solid #34d399; border-radius: 8px; color: #065f46;">
-            {{ session('success') }}
-        </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ addslashes(session('success')) }}',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            });
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ addslashes(session('error')) }}',
+                    timer: 4000,
+                    timerProgressBar: true,
+                    showConfirmButton: true,
+                    toast: true,
+                    position: 'top-end'
+                });
+            });
+        </script>
     @endif
 
     <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 16px;">
         <p style="color: #6b7280;">Daftar semua halaman custom.</p>
-        <a href="{{ route('admin.halaman.create') }}" style="padding: 8px 14px; background-color: #ECB176; color: white; border-radius: 8px; font-size: 13px; font-weight: 600;">
+        <a href="{{ route('admin.halaman.create') }}" style="padding: 8px 14px; background-color: #ECB176; color: white; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none;">
             + Tambah Halaman
         </a>
     </div>
@@ -39,7 +69,7 @@
                         <td style="padding:10px;">{{ $page->is_active ? 'Ya' : 'Tidak' }}</td>
                         <td style="padding:10px;">{{ $page->order }}</td>
                         <td style="padding:10px; display:flex; gap:8px;">
-                            <a href="{{ route('admin.halaman.edit', $page->id) }}" style="padding:6px 10px; background:#3b82f6; color:white; border-radius:6px; font-size:12px;">Edit</a>
+                            <a href="{{ route('admin.halaman.edit', $page->id) }}" style="padding:6px 10px; background:#3b82f6; color:white; border-radius:6px; font-size:12px; text-decoration: none;">Edit</a>
                             <form action="{{ route('admin.halaman.destroy', $page->id) }}" method="POST" onsubmit="return confirm('Hapus halaman ini?');">
                                 @csrf
                                 @method('DELETE')

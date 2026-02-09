@@ -305,7 +305,8 @@ class DataInformasiController extends Controller
     {
         $data = Kbihu::orderBy('order', 'asc')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(5)
+            ->withQueryString();
         
         return view('admin.data-informasi.kbihu.index', compact('data'));
     }
@@ -572,7 +573,8 @@ class DataInformasiController extends Controller
     {
         $data = Ppiu::orderBy('order', 'asc')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(5)
+            ->withQueryString();
         
         return view('admin.data-informasi.ppiu.index', compact('data'));
     }

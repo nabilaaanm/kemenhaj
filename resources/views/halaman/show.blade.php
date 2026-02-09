@@ -93,6 +93,25 @@
         .dropdown-item:hover { background-color: var(--color-primary-bg); color: var(--color-primary); padding-left: 24px; }
         .dropdown-menu:hover .dropdown-toggle,
         .dropdown-menu.active .dropdown-toggle { color: var(--color-primary); }
+
+        /* Footer */
+        .footer-custom {
+            background-color: var(--color-primary);
+        }
+        .footer-text {
+            color: var(--footer-text) !important;
+        }
+        .footer-muted {
+            color: var(--footer-muted) !important;
+        }
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            width: 100%;
+            padding-left: 24px;
+            padding-right: 24px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">

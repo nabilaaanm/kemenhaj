@@ -76,7 +76,7 @@
                 <tbody>
                     @foreach ($data as $index => $item)
                         <tr style="border-bottom: 1px solid #e5e7eb;">
-                            <td style="padding: 12px; color: #374151;">{{ $index + 1 }}</td>
+                            <td style="padding: 12px; color: #374151;">{{ ($data->firstItem() ?? 0) + $index }}</td>
                             <td style="padding: 12px; color: #374151;">
                                 <div style="font-weight: 600;">{{ $item->nama }}</div>
                             </td>
@@ -114,6 +114,9 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+        <div style="margin-top: 16px;">
+            {{ $data->onEachSide(1)->links('pagination.berhak-lunas') }}
         </div>
     @else
         <div style="text-align: center; padding: 48px; color: #6b7280;">

@@ -47,8 +47,11 @@
         <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px;">
             <div>
                 <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Urutan</label>
-                <input type="number" name="order" value="{{ old('order', 0) }}" min="0"
+                <input type="number" name="order" value="{{ old('order', 1) }}" min="1"
                        style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;">
+                @error('order')
+                    <span style="color: #dc2626; font-size: 12px; margin-top: 4px; display: block;">{{ $message }}</span>
+                @enderror
             </div>
         </div>
 
