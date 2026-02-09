@@ -1585,6 +1585,37 @@
     .carousel-dot:hover {
         background: rgba(255, 255, 255, 0.8);
     }
+
+    @media (max-width: 768px) {
+        .hero-slider-container {
+            height: 320px !important;
+            min-height: 320px !important;
+            max-height: 380px !important;
+        }
+        .hero-content {
+            max-width: 100% !important;
+            padding: 0 16px;
+        }
+        .hero-content .page-title {
+            font-size: 24px !important;
+            line-height: 1.25;
+        }
+        .carousel-nav {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            min-height: 36px;
+        }
+        .carousel-prev {
+            left: 10px;
+        }
+        .carousel-next {
+            right: 10px;
+        }
+        .carousel-dots {
+            bottom: 12px;
+        }
+    }
     
     .home-video-thumb {
         position: relative;
