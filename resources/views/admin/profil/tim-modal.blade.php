@@ -34,9 +34,9 @@
                     <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Baris</label>
                     <select name="baris" id="tim_baris" required
                             style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;">
-                        <option value="1">Baris 1</option>
-                        <option value="2">Baris 2</option>
-                        <option value="3">Baris 3</option>
+                        @for($i = 1; $i <= ($maxRows ?? 3); $i++)
+                            <option value="{{ $i }}">Baris {{ $i }}</option>
+                        @endfor
                     </select>
                 </div>
                 <div>
@@ -66,11 +66,7 @@ function buildSlotOptions(row, selectedSlot = null) {
     const slotSelect = document.getElementById('tim_slot');
     if (!slotSelect) return;
 
-    const slotsByRow = {
-        1: [1, 2, 3, 4],
-        2: [1, 2, 3, 4],
-        3: [1, 2, 3, 4],
-    };
+    const slotsByRow = @json(collect(range(1, ($maxRows ?? 3)))->mapWithKeys(fn ($row) => [$row => [1, 2, 3, 4]]));
     const slots = slotsByRow[row] || [];
     const usedSlots = new Set();
 

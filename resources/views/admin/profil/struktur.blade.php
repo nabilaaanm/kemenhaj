@@ -66,12 +66,20 @@
             </div>
 
             @php
-                $rowSlots = [
-                    1 => [1, 2, 3, 4],
-                    2 => [1, 2, 3, 4],
-                    3 => [1, 2, 3, 4],
-                ];
-                $maxRows = 3;
+                $maxBaseRows = 3;
+                $extraRowsRequested = request()->boolean('extra_rows');
+                $maxRowFromData = collect($tim ?? [])->max(function ($member) {
+                    return (int) ($member->baris ?? 0);
+                }) ?: 0;
+                $maxRows = max($maxBaseRows, $maxRowFromData);
+                if ($extraRowsRequested) {
+                    $maxRows = max($maxRows, 7);
+                }
+                $extraRowsEnabled = $maxRows > $maxBaseRows;
+                $rowSlots = [];
+                for ($i = 1; $i <= $maxRows; $i++) {
+                    $rowSlots[$i] = [1, 2, 3, 4];
+                }
                 $grid = [];
                 $unassigned = collect();
                 foreach (($tim ?? collect()) as $member) {
@@ -102,13 +110,21 @@
 
             @for($rowIndex = 1; $rowIndex <= $maxRows; $rowIndex++)
                 <div style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 10px; flex-wrap: wrap;">
                         <h4 style="font-size: 14px; font-weight: 700; color: #374151; margin: 0;">Baris {{ $rowIndex }}</h4>
-                        <button type="button" onclick="openTimModal(null, {{ $rowIndex }})" style="padding: 6px 12px; background-color: #ECB176; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">
-                            + Tambah Anggota
-                        </button>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            @if($rowIndex === 3 && !$extraRowsEnabled)
+                                <a href="{{ route('admin.profil.struktur', ['extra_rows' => 1]) }}" style="padding: 6px 12px; background-color: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none;">
+                                    + Tambah 4 Baris
+                                </a>
+                            @endif
+                            <button type="button" onclick="openTimModal(null, {{ $rowIndex }})" style="padding: 6px 12px; background-color: #ECB176; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">
+                                + Tambah Anggota
+                            </button>
+                        </div>
                     </div>
-                    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; width: 100%;">
+                    <div style="overflow-x: auto;">
+                        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; width: 100%; min-width: 920px;">
                         @for($col = 1; $col <= 4; $col++)
                             @if(in_array($col, $rowSlots[$rowIndex], true))
                                 @php $member = $grid[$rowIndex][$col] ?? null; @endphp
@@ -143,6 +159,7 @@
                                 <div></div>
                             @endif
                         @endfor
+                        </div>
                     </div>
                 </div>
             @endfor
