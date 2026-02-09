@@ -283,7 +283,6 @@ Route::get('/data-informasi', function () {
 
     if (Schema::hasTable('haji_jamaahs')) {
         $statTotals['total'] = HajiJamaah::count();
-        $statTotals['total_departed'] = $statTotals['total'];
 
         $perYearRows = HajiJamaah::selectRaw('tahun_keberangkatan as label, COUNT(*) as total')
             ->whereNotNull('tahun_keberangkatan')
@@ -319,6 +318,7 @@ Route::get('/data-informasi', function () {
 
         if ($selectedYear !== null) {
             $statTotals['total_year_selected'] = HajiJamaah::where('tahun_keberangkatan', $selectedYear)->count();
+            $statTotals['total_departed'] = $statTotals['total_year_selected'];
         }
         if ($previousYear !== null) {
             $statTotals['total_year_previous'] = HajiJamaah::where('tahun_keberangkatan', $previousYear)->count();
