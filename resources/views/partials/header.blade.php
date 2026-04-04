@@ -593,7 +593,8 @@
                     <a href="/data-informasi" class="hover-custom whitespace-nowrap" data-i18n="nav.data">Data dan Informasi</a>
                 @endif
 
-                <!-- @if($menuLkPihPages->isNotEmpty())
+                {{-- LK & PIH (disabled) --}}
+                {{-- @if($menuLkPihPages->isNotEmpty())
                     <div class="relative dropdown-menu">
                         <button class="hover-custom whitespace-nowrap flex items-center gap-1 dropdown-toggle" data-dropdown="lk-pih">
                             <span data-i18n="nav.lk">LK & PIH</span>
@@ -610,7 +611,7 @@
                     </div>
                 @else
                     <a href="{{ route('lk-pih') }}" class="hover-custom whitespace-nowrap" data-i18n="nav.lk">LK & PIH</a>
-                @endif -->
+                @endif --}}
 
                 <!-- Galeri Dropdown -->
                 <div class="relative dropdown-menu">
@@ -720,13 +721,14 @@
             <a href="{{ route('page.show', $menuPage->slug) }}" class="mobile-menu-link">{{ $menuPage->title }}</a>
         @endforeach
     </div>
-    <!-- <div class="mobile-menu-section">
+    {{-- LK & PIH (disabled) --}}
+    {{-- <div class="mobile-menu-section">
         <div class="mobile-menu-title">LK & PIH</div>
         <a href="{{ route('lk-pih') }}" class="mobile-menu-link">LK & PIH</a>
         @foreach($menuLkPihPages as $menuPage)
             <a href="{{ route('page.show', $menuPage->slug) }}" class="mobile-menu-link">{{ $menuPage->title }}</a>
         @endforeach
-    </div> -->
+    </div> --}}
     <div class="mobile-menu-section">
         <div class="mobile-menu-title">Galeri</div>
         <a href="{{ route('galeri.foto') }}" class="mobile-menu-link">Foto</a>
