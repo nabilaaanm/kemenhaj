@@ -424,26 +424,26 @@ Route::get('/data-informasi', function () {
         'statYearOptions'
     ));
 });
-Route::get('/dokumen/lk-pih', function () {
-    $lkDocuments = collect();
-    $pihDocuments = collect();
-    if (Schema::hasTable('lk_pih_documents')) {
-        $lkDocuments = LkPihDocument::where('type', 'lk')
-            ->where('is_active', true)
-            ->orderBy('order')
-            ->orderByDesc('document_date')
-            ->orderByDesc('created_at')
-            ->get();
-        $pihDocuments = LkPihDocument::where('type', 'pih')
-            ->where('is_active', true)
-            ->orderBy('order')
-            ->orderByDesc('document_date')
-            ->orderByDesc('created_at')
-            ->get();
-    }
-
-    return view('lk-pih', compact('lkDocuments', 'pihDocuments'));
-})->name('lk-pih');
+// Route::get('/dokumen/lk-pih', function () {
+//     $lkDocuments = collect();
+//     $pihDocuments = collect();
+//     if (Schema::hasTable('lk_pih_documents')) {
+//         $lkDocuments = LkPihDocument::where('type', 'lk')
+//             ->where('is_active', true)
+//             ->orderBy('order')
+//             ->orderByDesc('document_date')
+//             ->orderByDesc('created_at')
+//             ->get();
+//         $pihDocuments = LkPihDocument::where('type', 'pih')
+//             ->where('is_active', true)
+//             ->orderBy('order')
+//             ->orderByDesc('document_date')
+//             ->orderByDesc('created_at')
+//             ->get();
+//     }
+//
+//     return view('lk-pih', compact('lkDocuments', 'pihDocuments'));
+// })->name('lk-pih');
 Route::get('/berita', [PostingPublicController::class, 'berita'])->name('berita');
 Route::get('/berita-terkini', [PostingPublicController::class, 'terbaru'])->name('berita.terkini');
 Route::get('/pengumuman', [PostingPublicController::class, 'pengumuman'])->name('pengumuman');
