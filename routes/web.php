@@ -552,15 +552,15 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::delete('/{id}', [RegulasiController::class, 'destroy'])->name('destroy');
     });
 
-    // LK & PIH - Admin, Editor
-    Route::middleware(['role:admin,editor'])->prefix('lk-pih')->name('lk-pih.')->group(function () {
-        Route::get('/', [LkPihController::class, 'index'])->name('index');
-        Route::post('/upload', [LkPihController::class, 'store'])->name('store');
-        Route::delete('/{id}', [LkPihController::class, 'destroy'])->name('destroy');
-    });
+    // LK & PIH - Admin (disabled)
+    // Route::middleware(['role:admin'])->prefix('lk-pih')->name('lk-pih.')->group(function () {
+    //     Route::get('/', [LkPihController::class, 'index'])->name('index');
+    //     Route::post('/upload', [LkPihController::class, 'store'])->name('store');
+    //     Route::delete('/{id}', [LkPihController::class, 'destroy'])->name('destroy');
+    // });
     
-    // Data Informasi - Admin, Editor
-    Route::middleware(['role:admin,editor'])->prefix('data-informasi')->name('data-informasi.')->group(function () {
+    // Data Informasi - Admin only
+    Route::middleware(['role:admin'])->prefix('data-informasi')->name('data-informasi.')->group(function () {
         // Berhak Lunas
         Route::prefix('berhak-lunas')->name('berhak-lunas.')->group(function () {
             Route::get('/', [DataInformasiController::class, 'berhakLunasIndex'])->name('index');
@@ -643,7 +643,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/pengguna/{id}/edit', [PenggunaController::class, 'edit'])->name('pengguna.edit');
         Route::put('/pengguna/{id}', [PenggunaController::class, 'update'])->name('pengguna.update');
         Route::delete('/pengguna/{id}', [PenggunaController::class, 'destroy'])->name('pengguna.destroy');
-        Route::get('/backup', [PengaturanController::class, 'backup'])->name('backup');
-        Route::post('/backup', [PengaturanController::class, 'downloadBackup'])->name('backup.download');
+        // Route::get('/backup', [PengaturanController::class, 'backup'])->name('backup');
+        // Route::post('/backup', [PengaturanController::class, 'downloadBackup'])->name('backup.download');
     });
 });

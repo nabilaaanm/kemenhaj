@@ -194,6 +194,25 @@
         margin-top: 0 !important;
         z-index: 9999 !important;
     }
+    .dropdown-item {
+        color: #111827;
+        text-decoration: none;
+    }
+    .dropdown-item.dropdown-active {
+        color: var(--color-primary) !important;
+        background-color: var(--color-primary-bg) !important;
+    }
+    .dropdown-item:hover,
+    .dropdown-item:focus {
+        color: var(--color-primary) !important;
+        background-color: var(--color-primary-bg) !important;
+    }
+    .nav-active {
+        color: var(--color-primary) !important;
+    }
+    .nav-active svg {
+        color: inherit;
+    }
     .accessibility-widget {
         position: fixed;
         right: 22px;
@@ -488,6 +507,9 @@
                 </button>
             </div>
 
+            @php
+                $isGaleriActive = request()->is('galeri') || request()->is('galeri/*');
+            @endphp
             <!-- Navigation -->
             <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-gray-700 flex-shrink-0 header-nav" style="margin-right: auto;">
                 <a href="/" class="hover-custom whitespace-nowrap" data-i18n="nav.home">Beranda</a>
@@ -592,16 +614,16 @@
 
                 <!-- Galeri Dropdown -->
                 <div class="relative dropdown-menu">
-                    <button class="hover-custom whitespace-nowrap flex items-center gap-1 dropdown-toggle" data-dropdown="galeri">
+                    <button class="hover-custom whitespace-nowrap flex items-center gap-1 dropdown-toggle {{ $isGaleriActive ? 'nav-active' : '' }}" data-dropdown="galeri">
                         <span data-i18n="nav.gallery">Galeri</span>
                         <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
                     <div class="dropdown-content" id="dropdown-galeri">
-                        <a href="{{ route('galeri.foto') }}" class="dropdown-item" data-i18n="nav.photos">Foto</a>
-                        <a href="{{ route('galeri.video') }}" class="dropdown-item" data-i18n="nav.videos">Video</a>
-                        <a href="{{ route('galeri.infografis') }}" class="dropdown-item" data-i18n="nav.infographics">Infografis</a>
+                        <a href="{{ route('galeri.foto') }}" class="dropdown-item {{ request()->routeIs('galeri.foto') ? 'dropdown-active' : '' }}" data-i18n="nav.photos">Foto</a>
+                        <a href="{{ route('galeri.video') }}" class="dropdown-item {{ request()->routeIs('galeri.video') ? 'dropdown-active' : '' }}" data-i18n="nav.videos">Video</a>
+                        <a href="{{ route('galeri.infografis') }}" class="dropdown-item {{ request()->routeIs('galeri.infografis') ? 'dropdown-active' : '' }}" data-i18n="nav.infographics">Infografis</a>
                         @foreach($menuGaleriPages as $menuPage)
                             <a href="{{ route('page.show', $menuPage->slug) }}" class="dropdown-item">{{ $menuPage->title }}</a>
                         @endforeach

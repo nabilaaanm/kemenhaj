@@ -615,6 +615,7 @@
                     </a>
                 </div>
 
+                @if($userRole === 'admin')
                 <!-- Data Informasi -->
                 <div class="menu-item has-submenu {{ request()->routeIs('admin.data-informasi.*') ? 'active' : '' }}" onclick="toggleSubmenu(this)">
                     <div style="display: flex; align-items: center; gap: 12px;">
@@ -638,10 +639,12 @@
                     <a href="{{ route('admin.data-informasi.ppiu.index') }}" class="submenu-item {{ request()->routeIs('admin.data-informasi.ppiu.*') ? 'active' : '' }}">
                         <span>PPIU</span>
                     </a>
-                    <a href="{{ route('admin.lk-pih.index') }}" class="submenu-item {{ request()->routeIs('admin.lk-pih.*') ? 'active' : '' }}">
-                        <span>LK & PIH</span>
-                    </a>
+                    {{-- disabled untuk sementara --}}
+                    {{-- <a href="{{ route('admin.lk-pih.index') }}" class="submenu-item {{ request()->routeIs('admin.lk-pih.*') ? 'active' : '' }}">
+                         <span>LK & PIH</span>
+                    </a> --}}
                 </div>
+                @endif
                 @endif
 
                 @if($userRole === 'admin')
@@ -697,9 +700,9 @@
                     <a href="{{ route('admin.pengaturan.pengguna') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.pengguna') ? 'active' : '' }}">
                         <span>Pengguna</span>
                     </a>
-                    <a href="{{ route('admin.pengaturan.backup') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.backup') ? 'active' : '' }}">
+                    {{-- <a href="{{ route('admin.pengaturan.backup') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.backup') ? 'active' : '' }}">
                         <span>Backup Database</span>
-                    </a>
+                    </a> --}}
                     @endif
                 </div>
 
