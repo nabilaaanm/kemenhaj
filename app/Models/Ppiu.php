@@ -10,6 +10,7 @@ class Ppiu extends Model
     
     protected $fillable = [
         'nama',
+        'no_izin',
         'direktur',
         'alamat',
         'no_telp',

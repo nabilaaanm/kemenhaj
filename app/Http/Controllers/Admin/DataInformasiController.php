@@ -327,7 +327,6 @@ class DataInformasiController extends Controller
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'maps_url' => 'nullable|string|max:255',
-            'order' => 'nullable|integer|min:0',
         ], [
             'nama.required' => 'Nama wajib diisi',
             'alamat.required' => 'Alamat wajib diisi',
@@ -335,6 +334,7 @@ class DataInformasiController extends Controller
 
         try {
             $mapsUrl = $this->buildMapsUrl($request->maps_url, $request->latitude, $request->longitude);
+            $nextOrder = ((int) Kbihu::max('order')) + 1;
             Kbihu::create([
                 'nama' => $request->nama,
                 'alamat' => $request->alamat,
@@ -344,7 +344,7 @@ class DataInformasiController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'maps_url' => $mapsUrl,
-                'order' => $request->order ?? 0,
+                'order' => $nextOrder,
                 'is_active' => true,
             ]);
 
@@ -373,7 +373,6 @@ class DataInformasiController extends Controller
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'maps_url' => 'nullable|string|max:255',
-            'order' => 'nullable|integer|min:0',
         ], [
             'nama.required' => 'Nama wajib diisi',
             'alamat.required' => 'Alamat wajib diisi',
@@ -390,7 +389,6 @@ class DataInformasiController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'maps_url' => $mapsUrl,
-                'order' => $request->order ?? 0,
             ]);
 
             return redirect()->route('admin.data-informasi.kbihu.index')->with('success', 'Data KBIHU berhasil diperbarui');
@@ -595,7 +593,6 @@ class DataInformasiController extends Controller
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'maps_url' => 'nullable|string|max:255',
-            'order' => 'nullable|integer|min:0',
         ], [
             'nama.required' => 'Nama PPIU wajib diisi',
             'alamat.required' => 'Alamat wajib diisi',
@@ -603,7 +600,8 @@ class DataInformasiController extends Controller
 
         try {
             $mapsUrl = $this->buildMapsUrl($request->maps_url, $request->latitude, $request->longitude);
-            Ppiu::create([
+            $nextOrder = ((int) Ppiu::max('order')) + 1;
+            $payload = [
                 'nama' => $request->nama,
                 'alamat' => $request->alamat,
                 'direktur' => $request->direktur,
@@ -613,9 +611,15 @@ class DataInformasiController extends Controller
                 'longitude' => $request->longitude,
                 'maps_url' => $mapsUrl,
                 'status' => 'Aktif',
-                'order' => $request->order ?? 0,
+                'order' => $nextOrder,
                 'is_active' => true,
-            ]);
+            ];
+
+            if (Schema::hasColumn('ppiu', 'no_izin')) {
+                $payload['no_izin'] = 'AUTO-' . strtoupper(Str::random(8));
+            }
+
+            Ppiu::create($payload);
 
             return redirect()->route('admin.data-informasi.ppiu.index')->with('success', 'Data PPIU berhasil ditambahkan');
         } catch (\Exception $e) {
@@ -642,7 +646,6 @@ class DataInformasiController extends Controller
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'maps_url' => 'nullable|string|max:255',
-            'order' => 'nullable|integer|min:0',
         ], [
             'nama.required' => 'Nama PPIU wajib diisi',
             'alamat.required' => 'Alamat wajib diisi',
@@ -659,7 +662,6 @@ class DataInformasiController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'maps_url' => $mapsUrl,
-                'order' => $request->order ?? 0,
             ]);
 
             return redirect()->route('admin.data-informasi.ppiu.index')->with('success', 'Data PPIU berhasil diperbarui');
