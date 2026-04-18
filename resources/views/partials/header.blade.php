@@ -933,58 +933,71 @@
             }
         });
 
+        panel.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+
         document.getElementById('accIncrease')?.addEventListener('click', () => {
             settings.fontScale = Math.min(settings.fontScale + 10, 130);
             saveSettings(settings);
             applySettings();
+            setPanel(true);
         });
 
         document.getElementById('accDecrease')?.addEventListener('click', () => {
             settings.fontScale = Math.max(settings.fontScale - 10, 90);
             saveSettings(settings);
             applySettings();
+            setPanel(true);
         });
 
         document.getElementById('accContrast')?.addEventListener('click', () => {
             settings.contrast = !settings.contrast;
             saveSettings(settings);
             applySettings();
+            setPanel(true);
         });
 
         document.getElementById('accGrayscale')?.addEventListener('click', () => {
             settings.grayscale = !settings.grayscale;
             saveSettings(settings);
             applySettings();
+            setPanel(true);
         });
 
         document.getElementById('accUnderline')?.addEventListener('click', () => {
             settings.underline = !settings.underline;
             saveSettings(settings);
             applySettings();
+            setPanel(true);
         });
 
         document.getElementById('accLineHeight')?.addEventListener('click', () => {
             settings.lineHeight = !settings.lineHeight;
             saveSettings(settings);
             applySettings();
+            setPanel(true);
         });
 
         document.getElementById('accLetterSpacing')?.addEventListener('click', () => {
             settings.letterSpacing = !settings.letterSpacing;
             saveSettings(settings);
             applySettings();
+            setPanel(true);
         });
 
         document.getElementById('accCursor')?.addEventListener('click', () => {
             settings.cursor = !settings.cursor;
             saveSettings(settings);
             applySettings();
+            setPanel(true);
         });
 
         document.getElementById('accPauseAnim')?.addEventListener('click', () => {
             settings.pauseAnim = !settings.pauseAnim;
             saveSettings(settings);
             applySettings();
+            setPanel(true);
         });
 
         document.getElementById('accReset')?.addEventListener('click', () => {
@@ -998,6 +1011,7 @@
             settings.pauseAnim = defaultSettings.pauseAnim;
             saveSettings(settings);
             applySettings();
+            setPanel(true);
         });
     })();
 </script>
