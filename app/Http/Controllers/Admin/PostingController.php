@@ -96,6 +96,34 @@ class PostingController extends Controller
         return back()->with('success', 'Kategori berhasil dihapus.');
     }
 
+    /**
+     * Unggah gambar untuk editor TinyMCE (bukan base64 di HTML) agar konten tidak terpotong oleh batas post_max_size.
+     */
+    public function uploadEditorImage(Request $request)
+    {
+        if (!Schema::hasTable('postings')) {
+            return response()->json(['error' => 'Tabel posting belum tersedia.'], 503);
+        }
+
+        $request->validate([
+            'file' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        ], [
+            'file.required' => 'Berkas gambar wajib diunggah.',
+            'file.image' => 'Berkas harus berupa gambar.',
+            'file.max' => 'Ukuran gambar maksimal 5 MB.',
+        ]);
+
+        $file = $request->file('file');
+        $extension = $file->getClientOriginalExtension() ?: $file->extension();
+        $filename = time() . '_' . Str::random(12) . ($extension ? '.' . $extension : '');
+
+        Storage::disk('postings')->putFileAs('', $file, $filename);
+
+        $url = Storage::disk('postings')->url($filename);
+
+        return response()->json(['location' => $url]);
+    }
+
     public function store(Request $request)
     {
         if (!Schema::hasTable('postings')) {

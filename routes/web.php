@@ -475,6 +475,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
     Route::middleware(['role:admin,editor,kontributor'])->prefix('posting')->name('posting.')->group(function () {
         Route::get('/create', [PostingController::class, 'create'])->name('create');
         Route::post('/create', [PostingController::class, 'store'])->name('store');
+        Route::post('/upload-editor-image', [PostingController::class, 'uploadEditorImage'])->name('upload-editor-image');
         Route::get('/', [PostingController::class, 'index'])->name('index');
     });
 

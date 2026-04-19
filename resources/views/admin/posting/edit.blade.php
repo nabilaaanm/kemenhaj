@@ -70,6 +70,7 @@
             </div>
             <div style="grid-column: span 2;">
                 <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Isi Lengkap</label>
+                <p style="font-size: 12px; color: #6b7280; margin: 0 0 8px;">Sisipkan gambar lewat ikon gambar di toolbar atau tempel dari clipboard; gambar diunggah ke server (bukan disematkan sebagai data panjang) agar teks tidak hilang saat simpan.</p>
                 <textarea name="content" rows="8" class="js-rich-content"
                           style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px;">{!! old('content', $post->content) !!}</textarea>
             </div>
@@ -131,27 +132,5 @@
         </div>
     </form>
 </div>
-<script src="https://cdn.tiny.cloud/1/7d9sxbgag2cw1r4ro2xb9fd14o86qhizw4iys2ac1rg5kh7d/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-<script>
-    const baseTinyConfig = {
-        menubar: 'file edit view insert format tools table help',
-        plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help quickbars emoticons',
-        toolbar: [
-            'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter alignright alignjustify',
-            'bullist numlist outdent indent | link image media table | removeformat | preview fullscreen | code'
-        ],
-        toolbar_mode: 'sliding',
-        branding: false,
-        relative_urls: false,
-        remove_script_host: false,
-        convert_urls: true,
-        content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; }'
-    };
-
-    tinymce.init({
-        ...baseTinyConfig,
-        selector: 'textarea.js-rich-content',
-        height: 420
-    });
-</script>
+@include('admin.posting._tinymce')
 @endsection
