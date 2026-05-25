@@ -336,10 +336,6 @@
     </style>
 
     <div class="stat-page">
-        <div class="stat-hero">
-            <h2>Statistik Haji</h2>
-            <p>Kelola, impor, dan ekspor data jamaah haji. Statistik halaman publik diperbarui otomatis setelah import.</p>
-        </div>
 
         <div class="stat-metrics">
             <div class="stat-metric">
