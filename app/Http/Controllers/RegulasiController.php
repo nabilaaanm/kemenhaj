@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Regulation;
+use App\Models\Regulasi;
 use Illuminate\Http\Request;
 
 class RegulasiController extends Controller
@@ -10,7 +10,7 @@ class RegulasiController extends Controller
     public function index()
     {
         try {
-            $regulations = Regulation::where('is_active', true)
+            $regulations = Regulasi::where('is_active', true)
                 ->orderBy('regulation_date', 'desc')
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -18,6 +18,6 @@ class RegulasiController extends Controller
             $regulations = collect([]);
         }
         
-        return view('regulasi', compact('regulations'));
+        return view('regulasi', compact('regulasi'));
     }
 }

@@ -54,7 +54,7 @@
         </script>
     @endif
 
-    <form action="{{ route('admin.layanan.update', $service->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('admin.layanan.update', $service->name) }}" method="POST" enctype="multipart/form-data">
         @csrf
         
         <div style="margin-bottom: 24px;">

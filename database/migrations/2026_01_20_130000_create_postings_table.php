@@ -14,7 +14,8 @@ return new class extends Migration
 
         Schema::create('postings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->nullable()->constrained('posting_categories')->nullOnDelete();
+            $table->string('category_slug')->nullable();
+            $table->foreign('category_slug')->references('slug')->on('posting_kategori')->nullOnDelete();
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('excerpt')->nullable();

@@ -8,7 +8,7 @@
     <h3>Edit Halaman</h3>
     <p style="color: #6b7280; margin-bottom: 24px;">Perbarui data halaman.</p>
 
-    <form method="POST" action="{{ route('admin.halaman.edit', $page->id) }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('admin.halaman.edit', $page->slug) }}" enctype="multipart/form-data">
         @csrf
         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px;">
             <div>
@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px;">
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px;">
             <div>
                 <label style="display:block; font-weight:600; margin-bottom:8px;">Posisi Menu</label>
                 <select name="group" required
@@ -37,11 +37,7 @@
                     <option value="lk-pih" {{ old('group', $page->group) === 'lk-pih' ? 'selected' : '' }}>Submenu LK & PIH</option>
                     <option value="regulasi" {{ old('group', $page->group) === 'regulasi' ? 'selected' : '' }}>Submenu Regulasi</option>
                 </select>
-            </div>
-            <div>
-                <label style="display:block; font-weight:600; margin-bottom:8px;">Urutan</label>
-                <input type="number" name="order" value="{{ old('order', $page->order) }}" min="0"
-                       style="width:100%; padding:12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px;">
+                <p style="color: #6b7280; font-size: 12px; margin-top: 6px;">Jika posisi menu diubah, halaman dipindahkan ke bagian bawah submenu baru.</p>
             </div>
             <div style="display:flex; align-items:center; gap:10px; padding-top:28px;">
                 <input type="checkbox" name="is_active" value="1" {{ old('is_active', $page->is_active) ? 'checked' : '' }}>

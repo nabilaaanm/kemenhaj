@@ -22,7 +22,7 @@ class AkunController extends Controller
             return redirect()->route('login');
         }
 
-        $user = User::findOrFail($sessionUser['id']);
+        $user = User::findOrFail($sessionUser['email']);
         return view('admin.akun.profil', compact('user'));
     }
 
@@ -46,7 +46,7 @@ class AkunController extends Controller
             'avatar.max' => 'Ukuran avatar maksimal 2MB',
         ]);
 
-        $user = User::findOrFail($sessionUser['id']);
+        $user = User::findOrFail($sessionUser['email']);
         $user->name = $request->name;
 
         if ($request->hasFile('avatar')) {
@@ -68,7 +68,6 @@ class AkunController extends Controller
         $user->save();
 
         Session::put('user', [
-            'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
             'role' => $user->role ?? 'kontributor',
@@ -88,7 +87,7 @@ class AkunController extends Controller
             return redirect()->route('login');
         }
 
-        $user = User::findOrFail($sessionUser['id']);
+        $user = User::findOrFail($sessionUser['email']);
 
         if (!empty($user->avatar) && str_starts_with($user->avatar, 'uploads/avatars/')) {
             $oldName = substr($user->avatar, strlen('uploads/avatars/'));
@@ -101,7 +100,6 @@ class AkunController extends Controller
         $user->save();
 
         Session::put('user', [
-            'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
             'role' => $user->role ?? 'kontributor',
@@ -131,7 +129,7 @@ class AkunController extends Controller
             'password.confirmed' => 'Konfirmasi password tidak cocok',
         ]);
 
-        $user = User::findOrFail($sessionUser['id']);
+        $user = User::findOrFail($sessionUser['email']);
 
         if (!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors([

@@ -9,6 +9,12 @@ class Slideshow extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'title';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
     protected $fillable = [
         'badge',
         'title',

@@ -51,7 +51,6 @@ class AuthController extends Controller
         if ($user && Hash::check($request->password, $user->password)) {
             // Simpan data user ke session (tanpa password)
             Session::put('user', [
-                'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->role ?? 'kontributor', // Default role jika null

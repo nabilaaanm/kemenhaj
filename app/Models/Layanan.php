@@ -4,8 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Service extends Model
+class Layanan extends Model
 {
+    protected $table = 'layanan';
+
+    protected $primaryKey = 'name';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
     protected $fillable = [
         'name',
         'description',

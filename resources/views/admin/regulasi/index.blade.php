@@ -101,11 +101,11 @@
                             </td>
                             <td style="padding: 12px; text-align: center; white-space: nowrap;">
                                 <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: nowrap;">
-                                    <a href="{{ route('admin.regulasi.edit', $regulation->id) }}" 
+                                    <a href="{{ route('admin.regulasi.edit', ['judul' => $regulation->title, 'tanggal' => $regulation->regulation_date->format('Y-m-d')]) }}" 
                                        style="padding: 6px 12px; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap;">
                                         Edit
                                     </a>
-                                    <form action="{{ route('admin.regulasi.destroy', $regulation->id) }}" method="POST" style="display: inline;">
+                                    <form action="{{ route('admin.regulasi.destroy', ['judul' => $regulation->title, 'tanggal' => $regulation->regulation_date->format('Y-m-d')]) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 

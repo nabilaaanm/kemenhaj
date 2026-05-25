@@ -16,7 +16,6 @@
 
     <h3 style="margin-bottom: 24px;">Edit Pengguna</h3>
 
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     @if ($errors->any())
@@ -54,7 +53,7 @@
         </script>
     @endif
 
-    <form action="{{ route('admin.pengaturan.pengguna.update', $pengguna->id) }}" method="POST">
+    <form action="{{ route('admin.pengaturan.pengguna.update', $pengguna->email) }}" method="POST">
         @csrf
         @method('PUT')
         
@@ -88,17 +87,24 @@
         </div>
 
         <div style="margin-bottom: 24px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Role <span style="color: #ef4444;">*</span></label>
-            <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Pilih role untuk pengguna</p>
-            <select name="role" required
-                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: white;">
-                <option value="">-- Pilih Role --</option>
-                <option value="kontributor" {{ old('role', $pengguna->role) === 'kontributor' ? 'selected' : '' }}>Kontributor</option>
-                <option value="editor" {{ old('role', $pengguna->role) === 'editor' ? 'selected' : '' }}>Editor</option>
-                @if($pengguna->role === 'admin')
-                    <option value="admin" {{ old('role', $pengguna->role) === 'admin' ? 'selected' : '' }}>Admin</option>
-                @endif
-            </select>
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Role</label>
+            @if($pengguna->role === 'admin')
+                <input type="hidden" name="role" value="admin">
+                <div style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: #f9fafb; color: #374151; font-weight: 600;">
+                    Admin
+                </div>
+                <p style="color: #6b7280; font-size: 13px; margin-top: 8px;">
+                    Akun admin tidak dapat diubah rolenya karena hanya ada satu administrator sistem. Anda tetap dapat mengubah nama, email, dan password.
+                </p>
+            @else
+                <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Pilih role untuk pengguna</p>
+                <select name="role" required
+                        style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: white;">
+                    <option value="">-- Pilih Role --</option>
+                    <option value="kontributor" {{ old('role', $pengguna->role) === 'kontributor' ? 'selected' : '' }}>Kontributor</option>
+                    <option value="editor" {{ old('role', $pengguna->role) === 'editor' ? 'selected' : '' }}>Editor</option>
+                </select>
+            @endif
             <div style="margin-top: 8px; padding: 12px; background-color: #f3f4f6; border-radius: 8px; font-size: 13px; color: #6b7280;">
                 <strong>Kontributor:</strong> Dapat membuat dan mengelola postingan sendiri<br>
                 <strong>Editor:</strong> Dapat membuat, mengedit, dan menghapus semua postingan serta mengelola halaman dan galeri

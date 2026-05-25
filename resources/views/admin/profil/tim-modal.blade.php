@@ -98,7 +98,7 @@ function buildSlotOptions(row, selectedSlot = null) {
     });
 }
 
-function openTimModal(id = null, defaultRow = null) {
+function openTimModal(nama = null, jabatan = null, defaultRow = null) {
     const modal = document.getElementById('timModal');
     const form = document.getElementById('timForm');
     const title = document.getElementById('modalTitle');
@@ -109,11 +109,14 @@ function openTimModal(id = null, defaultRow = null) {
     
     const barisSelect = document.getElementById('tim_baris');
 
-    if (id) {
-        const member = timData.find(t => t.id === id);
+    if (nama && jabatan) {
+        const member = timData.find(t => t.nama === nama && t.jabatan === jabatan);
         if (member) {
             title.textContent = 'Edit Anggota Tim';
-            form.action = '{{ route("admin.profil.tim.update", ":id") }}'.replace(':id', id);
+            const updateUrl = '{{ route("admin.profil.tim.update", ["nama" => "__NAMA__", "jabatan" => "__JABATAN__"]) }}'
+                .replace('__NAMA__', encodeURIComponent(nama))
+                .replace('__JABATAN__', encodeURIComponent(jabatan));
+            form.action = updateUrl;
             
             let methodInput = form.querySelector('input[name="_method"]');
             if (!methodInput) {
@@ -153,8 +156,8 @@ function openTimModal(id = null, defaultRow = null) {
     modal.style.display = 'flex';
 }
 
-function editTim(id) {
-    openTimModal(id);
+function editTim(nama, jabatan) {
+    openTimModal(nama, jabatan);
 }
 
 function closeTimModal() {

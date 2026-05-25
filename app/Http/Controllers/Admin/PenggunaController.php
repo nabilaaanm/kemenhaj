@@ -84,7 +84,7 @@ class PenggunaController extends Controller
     /**
      * Menampilkan form edit pengguna
      */
-    public function edit($id)
+    public function edit($email)
     {
         // Pastikan hanya admin yang bisa akses
         $user = Session::get('user');
@@ -92,14 +92,14 @@ class PenggunaController extends Controller
             abort(403, 'Akses ditolak. Hanya admin yang dapat mengakses halaman ini.');
         }
 
-        $pengguna = User::findOrFail($id);
+        $pengguna = User::findOrFail(urldecode($email));
         return view('admin.pengaturan.pengguna-edit', compact('pengguna'));
     }
 
     /**
      * Update pengguna
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $email)
     {
         // Pastikan hanya admin yang bisa akses
         $user = Session::get('user');
@@ -107,19 +107,21 @@ class PenggunaController extends Controller
             abort(403, 'Akses ditolak. Hanya admin yang dapat mengakses halaman ini.');
         }
 
-        $pengguna = User::findOrFail($id);
+        $pengguna = User::findOrFail(urldecode($email));
 
-        $allowedRoles = ['kontributor', 'editor'];
-        if ($pengguna->role === 'admin') {
-            $allowedRoles[] = 'admin';
+        $isAdminAccount = $pengguna->role === 'admin';
+
+        $rules = [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $pengguna->email . ',email|max:255',
+            'password' => 'nullable|min:6|confirmed',
+        ];
+
+        if (!$isAdminAccount) {
+            $rules['role'] = 'required|in:kontributor,editor';
         }
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id . '|max:255',
-            'password' => 'nullable|min:6|confirmed',
-            'role' => 'required|in:' . implode(',', $allowedRoles),
-        ], [
+        $request->validate($rules, [
             'name.required' => 'Nama wajib diisi',
             'email.required' => 'Email wajib diisi',
             'email.email' => 'Email tidak valid',
@@ -134,7 +136,7 @@ class PenggunaController extends Controller
             $data = [
                 'name' => $request->name,
                 'email' => $request->email,
-                'role' => $request->role,
+                'role' => $isAdminAccount ? 'admin' : $request->role,
             ];
 
             // Update password hanya jika diisi
@@ -142,7 +144,29 @@ class PenggunaController extends Controller
                 $data['password'] = Hash::make($request->password);
             }
 
-            $pengguna->update($data);
+            $editingSelf = $pengguna->email === $user['email'];
+
+            if ($request->email !== $pengguna->email) {
+                User::create([
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'password' => $data['password'] ?? $pengguna->password,
+                    'role' => $data['role'],
+                ]);
+                $pengguna->delete();
+            } else {
+                $pengguna->update($data);
+            }
+
+            if ($editingSelf || $request->email === $user['email']) {
+                $updatedUser = User::findOrFail($request->email);
+                Session::put('user', [
+                    'name' => $updatedUser->name,
+                    'email' => $updatedUser->email,
+                    'role' => $updatedUser->role ?? 'kontributor',
+                    'avatar' => $updatedUser->avatar,
+                ]);
+            }
 
             return redirect()->route('admin.pengaturan.pengguna')->with('success', 'Pengguna berhasil diperbarui');
         } catch (\Exception $e) {
@@ -153,7 +177,7 @@ class PenggunaController extends Controller
     /**
      * Hapus pengguna
      */
-    public function destroy($id)
+    public function destroy($email)
     {
         // Pastikan hanya admin yang bisa akses
         $user = Session::get('user');
@@ -162,11 +186,15 @@ class PenggunaController extends Controller
         }
 
         try {
-            $pengguna = User::findOrFail($id);
+            $pengguna = User::findOrFail(urldecode($email));
             
             // Jangan izinkan menghapus diri sendiri
-            if ($pengguna->id == $user['id']) {
+            if ($pengguna->email === $user['email']) {
                 return back()->with('error', 'Anda tidak dapat menghapus akun sendiri');
+            }
+
+            if ($pengguna->role === 'admin') {
+                return back()->with('error', 'Akun admin tidak dapat dihapus.');
             }
 
             $pengguna->delete();

@@ -94,12 +94,12 @@
                             </td>
                             <td style="padding: 12px; text-align: center;">
                                 <div style="display: flex; gap: 8px; justify-content: center;">
-                                    <a href="{{ route('admin.pengaturan.pengguna.edit', $user->id) }}" 
+                                    <a href="{{ route('admin.pengaturan.pengguna.edit', $user->email) }}" 
                                        style="padding: 6px 12px; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; text-decoration: none;">
                                         Edit
                                     </a>
                                     @if($user->role !== 'admin')
-                                        <form action="{{ route('admin.pengaturan.pengguna.destroy', $user->id) }}" method="POST" style="display: inline;">
+                                        <form action="{{ route('admin.pengaturan.pengguna.destroy', $user->email) }}" method="POST" style="display: inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" 

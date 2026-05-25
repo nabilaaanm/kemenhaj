@@ -7,24 +7,30 @@ use App\Models\CustomPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
 
 class HalamanController extends Controller
 {
-    private function makeUniqueSlug(string $title, ?string $currentId = null): string
+    private function makeUniqueSlug(string $title, ?string $currentSlug = null): string
     {
         $base = Str::slug($title);
         $slug = $base !== '' ? $base : 'halaman';
         $counter = 1;
         while (
             CustomPage::where('slug', $slug)
-                ->when($currentId, fn($q) => $q->where('id', '!=', $currentId))
+                ->when($currentSlug, fn($q) => $q->where('slug', '!=', $currentSlug))
                 ->exists()
         ) {
             $slug = $base . '-' . $counter;
             $counter++;
         }
         return $slug;
+    }
+
+    private function nextOrderForGroup(string $group): int
+    {
+        $max = CustomPage::where('group', $group)->max('order');
+
+        return (int) ($max ?? 0) + 1;
     }
 
     public function create()
@@ -36,7 +42,7 @@ class HalamanController extends Controller
     {
         $pages = CustomPage::orderBy('group')
             ->orderBy('order')
-            ->orderByDesc('id')
+            ->orderByDesc('slug')
             ->get();
         return view('admin.halaman.index', compact('pages'));
     }
@@ -55,12 +61,6 @@ class HalamanController extends Controller
             'source' => 'nullable|string|max:255',
             'photographer' => 'nullable|string|max:255',
             'other_info' => 'nullable|string',
-            'order' => [
-                'required',
-                'integer',
-                'min:1',
-                Rule::unique('custom_pages', 'order'),
-            ],
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -78,7 +78,7 @@ class HalamanController extends Controller
             'other_info',
         ]);
         $data['slug'] = $slug;
-        $data['order'] = $request->order;
+        $data['order'] = $this->nextOrderForGroup($request->group);
         $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('cover_image')) {
@@ -94,15 +94,15 @@ class HalamanController extends Controller
             ->with('success', 'Halaman berhasil ditambahkan.');
     }
 
-    public function edit($id)
+    public function edit($slug)
     {
-        $page = CustomPage::findOrFail($id);
+        $page = CustomPage::findOrFail($slug);
         return view('admin.halaman.edit', compact('page'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $slug)
     {
-        $page = CustomPage::findOrFail($id);
+        $page = CustomPage::findOrFail($slug);
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -116,18 +116,12 @@ class HalamanController extends Controller
             'source' => 'nullable|string|max:255',
             'photographer' => 'nullable|string|max:255',
             'other_info' => 'nullable|string',
-            'order' => [
-                'required',
-                'integer',
-                'min:1',
-                Rule::unique('custom_pages', 'order')->ignore($page->id),
-            ],
             'is_active' => 'nullable|boolean',
         ]);
 
         $slug = $request->slug
             ? Str::slug($request->slug)
-            : $this->makeUniqueSlug($request->title, $page->id);
+            : $this->makeUniqueSlug($request->title, $page->slug);
 
         $data = $request->only([
             'title',
@@ -141,7 +135,9 @@ class HalamanController extends Controller
             'other_info',
         ]);
         $data['slug'] = $slug;
-        $data['order'] = $request->order;
+        if ($request->group !== $page->group) {
+            $data['order'] = $this->nextOrderForGroup($request->group);
+        }
         $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('cover_image')) {
@@ -154,15 +150,21 @@ class HalamanController extends Controller
             $data['cover_image'] = $filename;
         }
 
-        $page->update($data);
+        $newSlug = $data['slug'];
+        if ($newSlug !== $page->slug) {
+            $page->delete();
+            CustomPage::create($data);
+        } else {
+            $page->update($data);
+        }
 
         return redirect()->route('admin.halaman.index')
             ->with('success', 'Halaman berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    public function destroy($slug)
     {
-        $page = CustomPage::findOrFail($id);
+        $page = CustomPage::findOrFail($slug);
         if ($page->cover_image) {
             Storage::disk('pages')->delete($page->cover_image);
         }

@@ -20,7 +20,7 @@ class SlideshowController extends Controller
             ])->with('warning', 'Tabel slideshow belum dibuat. Silakan jalankan migrasi terlebih dahulu.');
         }
 
-        $slides = Slideshow::orderBy('order')->orderBy('id')->get();
+        $slides = Slideshow::orderBy('order')->orderBy('title')->get();
         return view('admin.pengaturan.slideshow', compact('slides'));
     }
 
@@ -36,18 +36,13 @@ class SlideshowController extends Controller
         }
 
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|max:255|unique:slideshows,title',
             'badge' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'button_text' => 'nullable|string|max:255',
             'button_url' => 'nullable|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:4096',
-            'order' => [
-                'required',
-                'integer',
-                'min:1',
-                Rule::unique('slideshows', 'order'),
-            ],
+            'order' => 'required|integer|min:1',
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -74,39 +69,34 @@ class SlideshowController extends Controller
             ->with('success', 'Slide berhasil ditambahkan.');
     }
 
-    public function edit($id)
+    public function edit($title)
     {
         if (!Schema::hasTable('slideshows')) {
             return redirect()->route('admin.pengaturan.slideshow')
                 ->with('warning', 'Tabel slideshow belum dibuat. Jalankan migrasi terlebih dahulu.');
         }
 
-        $slide = Slideshow::findOrFail($id);
+        $slide = Slideshow::findOrFail(urldecode($title));
         return view('admin.pengaturan.slideshow-edit', compact('slide'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $title)
     {
         if (!Schema::hasTable('slideshows')) {
             return redirect()->route('admin.pengaturan.slideshow')
                 ->with('warning', 'Tabel slideshow belum dibuat. Jalankan migrasi terlebih dahulu.');
         }
 
-        $slide = Slideshow::findOrFail($id);
+        $slide = Slideshow::findOrFail(urldecode($title));
 
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|max:255|unique:slideshows,title,' . $slide->title . ',title',
             'badge' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'button_text' => 'nullable|string|max:255',
             'button_url' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
-            'order' => [
-                'required',
-                'integer',
-                'min:1',
-                Rule::unique('slideshows', 'order')->ignore($slide->id),
-            ],
+            'order' => 'required|integer|min:1',
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -132,20 +122,28 @@ class SlideshowController extends Controller
             $data['image_path'] = $filename;
         }
 
-        $slide->update($data);
+        if ($data['title'] !== $slide->title) {
+            if (!isset($data['image_path'])) {
+                $data['image_path'] = $slide->image_path;
+            }
+            $slide->delete();
+            Slideshow::create($data);
+        } else {
+            $slide->update($data);
+        }
 
         return redirect()->route('admin.pengaturan.slideshow')
             ->with('success', 'Slide berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    public function destroy($title)
     {
         if (!Schema::hasTable('slideshows')) {
             return redirect()->route('admin.pengaturan.slideshow')
                 ->with('warning', 'Tabel slideshow belum dibuat. Jalankan migrasi terlebih dahulu.');
         }
 
-        $slide = Slideshow::findOrFail($id);
+        $slide = Slideshow::findOrFail(urldecode($title));
         if (!empty($slide->image_path)) {
             Storage::disk('slideshows')->delete($slide->image_path);
         }

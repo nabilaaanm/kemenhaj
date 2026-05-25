@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Gallery extends Model
+class Galeri extends Model
 {
+    protected $table = 'galeri';
+
     protected $fillable = [
         'type',
         'title',
@@ -49,7 +51,6 @@ class Gallery extends Model
         return str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
     }
 
-    // Get image URL (either from file_path or url)
     public function getImageUrlAttribute()
     {
         if ($this->file_path) {
@@ -61,7 +62,6 @@ class Gallery extends Model
         return $this->url ?: 'https://via.placeholder.com/400x300/ECB176/FFFFFF?text=No+Image';
     }
 
-    // Get video URL
     public function getVideoUrlAttribute()
     {
         if ($this->file_path) {
@@ -73,7 +73,6 @@ class Gallery extends Model
         return $this->url;
     }
 
-    // Get thumbnail URL
     public function getThumbnailUrlAttribute()
     {
         if ($this->thumbnail) {

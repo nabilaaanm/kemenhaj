@@ -99,7 +99,7 @@
                         <strong>{{ $category->name }}</strong>
                         <div style="font-size: 12px; color: #6b7280; margin-top: 6px;">Slug: {{ $category->slug }}</div>
                     </div>
-                    <form action="{{ route('admin.posting.category.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Hapus kategori ini?')">
+                    <form action="{{ route('admin.posting.category.destroy', $category->slug) }}" method="POST" onsubmit="return confirm('Hapus kategori ini?')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" style="padding: 6px 10px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer;">

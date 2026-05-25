@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\CustomPage;
-use App\Models\Gallery;
+use App\Models\Galeri;
 use App\Models\LkPihDocument;
 use App\Models\Posting;
-use App\Models\Regulation;
-use App\Models\Service;
+use App\Models\Regulasi;
+use App\Models\Layanan;
 use App\Models\Slideshow;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -68,11 +68,11 @@ class AdminController extends Controller
             );
         }
 
-        if (Schema::hasTable('galleries')) {
-            $galleryTotal = Gallery::count();
-            $galleryActive = Gallery::where('is_active', true)->count();
-            $galleryMonthlyTotal = Gallery::where('created_at', '>=', $monthStart)->count();
-            $galleryMonthlyActive = Gallery::where('is_active', true)
+        if (Schema::hasTable('galeri')) {
+            $galleryTotal = Galeri::count();
+            $galleryActive = Galeri::where('is_active', true)->count();
+            $galleryMonthlyTotal = Galeri::where('created_at', '>=', $monthStart)->count();
+            $galleryMonthlyActive = Galeri::where('is_active', true)
                 ->where('created_at', '>=', $monthStart)
                 ->count();
             $stats['total'] += $galleryTotal;
@@ -81,7 +81,7 @@ class AdminController extends Controller
             $stats['monthly_active'] = ($stats['monthly_active'] ?? 0) + $galleryMonthlyActive;
 
             $recentItems = $recentItems->concat(
-                Gallery::orderByDesc('created_at')
+                Galeri::orderByDesc('created_at')
                     ->take(5)
                     ->get()
                     ->map(function ($item) {
@@ -138,11 +138,11 @@ class AdminController extends Controller
             );
         }
 
-        if (Schema::hasTable('regulations')) {
-            $regTotal = Regulation::count();
-            $regActive = Regulation::where('is_active', true)->count();
-            $regMonthlyTotal = Regulation::where('created_at', '>=', $monthStart)->count();
-            $regMonthlyActive = Regulation::where('is_active', true)
+        if (Schema::hasTable('regulasi')) {
+            $regTotal = Regulasi::count();
+            $regActive = Regulasi::where('is_active', true)->count();
+            $regMonthlyTotal = Regulasi::where('created_at', '>=', $monthStart)->count();
+            $regMonthlyActive = Regulasi::where('is_active', true)
                 ->where('created_at', '>=', $monthStart)
                 ->count();
             $stats['total'] += $regTotal;
@@ -151,7 +151,7 @@ class AdminController extends Controller
             $stats['monthly_active'] = ($stats['monthly_active'] ?? 0) + $regMonthlyActive;
 
             $recentItems = $recentItems->concat(
-                Regulation::orderByDesc('created_at')
+                Regulasi::orderByDesc('created_at')
                     ->take(5)
                     ->get()
                     ->map(function ($regulation) {
@@ -161,17 +161,17 @@ class AdminController extends Controller
                             'description' => Str::limit((string) $regulation->description, 140),
                             'date' => $regulation->created_at,
                             'image' => null,
-                            'url' => route('admin.regulasi.edit', $regulation->id),
+                            'url' => route('admin.regulasi.edit', ['judul' => $regulation->title, 'tanggal' => $regulation->regulation_date->format('Y-m-d')]),
                         ];
                     })
             );
         }
 
-        if (Schema::hasTable('services')) {
-            $servicesTotal = Service::count();
-            $servicesActive = Service::where('is_active', true)->count();
-            $servicesMonthlyTotal = Service::where('created_at', '>=', $monthStart)->count();
-            $servicesMonthlyActive = Service::where('is_active', true)
+        if (Schema::hasTable('layanan')) {
+            $servicesTotal = Layanan::count();
+            $servicesActive = Layanan::where('is_active', true)->count();
+            $servicesMonthlyTotal = Layanan::where('created_at', '>=', $monthStart)->count();
+            $servicesMonthlyActive = Layanan::where('is_active', true)
                 ->where('created_at', '>=', $monthStart)
                 ->count();
             $stats['total'] += $servicesTotal;
@@ -180,7 +180,7 @@ class AdminController extends Controller
             $stats['monthly_active'] = ($stats['monthly_active'] ?? 0) + $servicesMonthlyActive;
 
             $recentItems = $recentItems->concat(
-                Service::orderByDesc('created_at')
+                Layanan::orderByDesc('created_at')
                     ->take(5)
                     ->get()
                     ->map(function ($service) {
@@ -190,7 +190,7 @@ class AdminController extends Controller
                             'description' => Str::limit((string) $service->description, 140),
                             'date' => $service->created_at,
                             'image' => $service->icon_url ?: null,
-                            'url' => route('admin.layanan.edit', $service->id),
+                            'url' => route('admin.layanan.edit', $service->name),
                         ];
                     })
             );
@@ -219,7 +219,7 @@ class AdminController extends Controller
                             'description' => Str::limit((string) $page->description, 140),
                             'date' => $page->created_at,
                             'image' => $page->cover_url ?: null,
-                            'url' => route('admin.halaman.edit', $page->id),
+                            'url' => route('admin.halaman.edit', $page->slug),
                         ];
                     })
             );
@@ -248,7 +248,7 @@ class AdminController extends Controller
                             'description' => Str::limit((string) $slide->description, 140),
                             'date' => $slide->created_at,
                             'image' => $slide->image_url ?: null,
-                            'url' => route('admin.pengaturan.slideshow.edit', $slide->id),
+                            'url' => route('admin.pengaturan.slideshow.edit', $slide->title),
                         ];
                     })
             );

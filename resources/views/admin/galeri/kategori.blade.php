@@ -71,7 +71,7 @@
                                 <tr style="border-bottom: 1px solid #f3f4f6;">
                                     <td style="padding: 10px;">{{ $category->name }}</td>
                                     <td style="padding: 10px; text-align: right;">
-                                        <form action="{{ route('admin.galeri.kategori.destroy', $category->id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Hapus kategori ini?')">
+                                        <form action="{{ route('admin.galeri.kategori.destroy', ['type' => $category->type, 'name' => $category->name]) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Hapus kategori ini?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" style="padding: 6px 10px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer;">
@@ -113,7 +113,7 @@
                                 <tr style="border-bottom: 1px solid #f3f4f6;">
                                     <td style="padding: 10px;">{{ $category->name }}</td>
                                     <td style="padding: 10px; text-align: right;">
-                                        <form action="{{ route('admin.galeri.kategori.destroy', $category->id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Hapus kategori ini?')">
+                                        <form action="{{ route('admin.galeri.kategori.destroy', ['type' => $category->type, 'name' => $category->name]) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Hapus kategori ini?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" style="padding: 6px 10px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer;">
@@ -155,7 +155,7 @@
                                 <tr style="border-bottom: 1px solid #f3f4f6;">
                                     <td style="padding: 10px;">{{ $category->name }}</td>
                                     <td style="padding: 10px; text-align: right;">
-                                        <form action="{{ route('admin.galeri.kategori.destroy', $category->id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Hapus kategori ini?')">
+                                        <form action="{{ route('admin.galeri.kategori.destroy', ['type' => $category->type, 'name' => $category->name]) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Hapus kategori ini?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" style="padding: 6px 10px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer;">

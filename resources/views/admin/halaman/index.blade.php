@@ -71,8 +71,8 @@
                             </span>
                         </td>
                         <td style="padding:10px; display:flex; gap:8px;">
-                            <a href="{{ route('admin.halaman.edit', $page->id) }}" style="padding:6px 10px; background:#3b82f6; color:white; border-radius:6px; font-size:12px; text-decoration: none;">Edit</a>
-                            <form action="{{ route('admin.halaman.destroy', $page->id) }}" method="POST" onsubmit="return confirm('Hapus halaman ini?');">
+                            <a href="{{ route('admin.halaman.edit', $page->slug) }}" style="padding:6px 10px; background:#3b82f6; color:white; border-radius:6px; font-size:12px; text-decoration: none;">Edit</a>
+                            <form action="{{ route('admin.halaman.destroy', $page->slug) }}" method="POST" onsubmit="return confirm('Hapus halaman ini?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" style="padding:6px 10px; background:#ef4444; color:white; border:none; border-radius:6px; font-size:12px;">Hapus</button>

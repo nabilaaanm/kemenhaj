@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Ppiu extends Model
 {
     protected $table = 'ppiu';
+
+    protected $primaryKey = 'no_izin';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
     
     protected $fillable = [
         'nama',

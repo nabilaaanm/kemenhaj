@@ -83,11 +83,11 @@
                                 @endif
                             </td>
                             <td style="padding: 12px; text-align: right;">
-                                <a href="{{ route('admin.pengaturan.slideshow.edit', $slide->id) }}" 
+                                <a href="{{ route('admin.pengaturan.slideshow.edit', $slide->title) }}" 
                                    style="padding: 6px 12px; background-color: #3b82f6; color: white; border-radius: 6px; text-decoration: none; font-size: 12px; margin-right: 6px;">
                                     Edit
                                 </a>
-                                <form action="{{ route('admin.pengaturan.slideshow.destroy', $slide->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Hapus slide ini?');">
+                                <form action="{{ route('admin.pengaturan.slideshow.destroy', $slide->title) }}" method="POST" style="display: inline;" onsubmit="return confirm('Hapus slide ini?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" style="padding: 6px 12px; background-color: #ef4444; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">

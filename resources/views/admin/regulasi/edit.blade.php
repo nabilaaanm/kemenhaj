@@ -54,7 +54,7 @@
         </script>
     @endif
 
-    <form action="{{ route('admin.regulasi.update', $regulation->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('admin.regulasi.update', ['judul' => $regulation->title, 'tanggal' => $regulation->regulation_date->format('Y-m-d')]) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('POST')
         

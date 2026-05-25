@@ -39,7 +39,7 @@
         </script>
     @endif
 
-    <form action="{{ route('admin.data-informasi.berhak-lunas.update', $data->id) }}" method="POST">
+    <form action="{{ route('admin.data-informasi.berhak-lunas.update', $data->nomor_porsi) }}" method="POST">
         @csrf
         
         <div style="margin-bottom: 24px;">

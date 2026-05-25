@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class BerhakLunas extends Model
 {
     protected $table = 'berhak_lunas';
+
+    protected $primaryKey = 'nomor_porsi';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
     
     protected $fillable = [
         'nama',

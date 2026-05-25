@@ -8,20 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (Schema::hasTable('posting_categories')) {
+        if (Schema::hasTable('posting_kategori')) {
             return;
         }
 
-        Schema::create('posting_categories', function (Blueprint $table) {
-            $table->id();
+        Schema::create('posting_kategori', function (Blueprint $table) {
+            $table->string('slug')->primary();
             $table->string('name')->unique();
-            $table->string('slug')->unique();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('posting_categories');
+        Schema::dropIfExists('posting_kategori');
     }
 };

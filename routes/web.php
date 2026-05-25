@@ -18,8 +18,8 @@ use App\Http\Controllers\Admin\AkunController;
 use App\Http\Controllers\PageController;
 use App\Models\Slideshow;
 use App\Models\Posting;
-use App\Models\Regulation;
-use App\Models\Gallery;
+use App\Models\Regulasi;
+use App\Models\Galeri;
 use App\Models\Kbihu;
 use App\Models\Ppiu;
 use App\Models\LkPihDocument;
@@ -87,17 +87,17 @@ Route::get('/', function () {
                 ->get();
         }
 
-        if (Schema::hasTable('galleries')) {
-            $homeVideos = Gallery::where('type', 'video')->where('is_active', true)
+        if (Schema::hasTable('galeri')) {
+            $homeVideos = Galeri::where('type', 'video')->where('is_active', true)
                 ->orderByDesc('created_at')->take(3)->get();
-            $homeInfografis = Gallery::where('type', 'infografis')->where('is_active', true)
+            $homeInfografis = Galeri::where('type', 'infografis')->where('is_active', true)
                 ->orderByDesc('created_at')->take(3)->get();
-            $homeFotos = Gallery::where('type', 'foto')->where('is_active', true)
+            $homeFotos = Galeri::where('type', 'foto')->where('is_active', true)
                 ->orderByDesc('created_at')->take(3)->get();
         }
 
-        if (Schema::hasTable('regulations')) {
-            $homeRegulations = Regulation::where('is_active', true)
+        if (Schema::hasTable('regulasi')) {
+            $homeRegulations = Regulasi::where('is_active', true)
                 ->orderByDesc('regulation_date')
                 ->take(3)
                 ->get();
@@ -204,17 +204,17 @@ Route::get('/', function () {
             ->get();
     }
 
-    if (Schema::hasTable('galleries')) {
-        $homeVideos = Gallery::where('type', 'video')->where('is_active', true)
+    if (Schema::hasTable('galeri')) {
+        $homeVideos = Galeri::where('type', 'video')->where('is_active', true)
             ->orderByDesc('created_at')->take(3)->get();
-        $homeInfografis = Gallery::where('type', 'infografis')->where('is_active', true)
+        $homeInfografis = Galeri::where('type', 'infografis')->where('is_active', true)
             ->orderByDesc('created_at')->take(3)->get();
-        $homeFotos = Gallery::where('type', 'foto')->where('is_active', true)
+        $homeFotos = Galeri::where('type', 'foto')->where('is_active', true)
             ->orderByDesc('created_at')->take(3)->get();
     }
 
-    if (Schema::hasTable('regulations')) {
-        $homeRegulations = Regulation::where('is_active', true)
+    if (Schema::hasTable('regulasi')) {
+        $homeRegulations = Regulasi::where('is_active', true)
             ->orderByDesc('regulation_date')
             ->take(3)
             ->get();
@@ -486,7 +486,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::delete('/{id}', [PostingController::class, 'destroy'])->name('destroy');
         Route::get('/category', [PostingController::class, 'category'])->name('category');
         Route::post('/category', [PostingController::class, 'categoryStore'])->name('category.store');
-        Route::delete('/category/{id}', [PostingController::class, 'categoryDestroy'])->name('category.destroy');
+        Route::delete('/category/{slug}', [PostingController::class, 'categoryDestroy'])->name('category.destroy');
     });
     
     // Halaman - Admin, Editor
@@ -494,16 +494,16 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::post('/create', [HalamanController::class, 'store'])->name('store');
         Route::get('/create', [HalamanController::class, 'create'])->name('create');
         Route::get('/', [HalamanController::class, 'index'])->name('index');
-        Route::get('/{id}/edit', [HalamanController::class, 'edit'])->name('edit');
-        Route::post('/{id}/edit', [HalamanController::class, 'update'])->name('update');
-        Route::delete('/{id}', [HalamanController::class, 'destroy'])->name('destroy');
+        Route::get('/{slug}/edit', [HalamanController::class, 'edit'])->name('edit');
+        Route::post('/{slug}/edit', [HalamanController::class, 'update'])->name('update');
+        Route::delete('/{slug}', [HalamanController::class, 'destroy'])->name('destroy');
     });
     
     // Galeri - Admin, Editor
     Route::middleware(['role:admin,editor'])->prefix('galeri')->name('galeri.')->group(function () {
         Route::get('/kategori', [GaleriController::class, 'kategoriIndex'])->name('kategori');
         Route::post('/kategori', [GaleriController::class, 'kategoriStore'])->name('kategori.store');
-        Route::delete('/kategori/{id}', [GaleriController::class, 'kategoriDestroy'])->name('kategori.destroy');
+        Route::delete('/kategori/{type}/{name}', [GaleriController::class, 'kategoriDestroy'])->name('kategori.destroy');
         // Foto
         Route::prefix('foto')->name('foto.')->group(function () {
             Route::get('/create', [GaleriController::class, 'fotoCreate'])->name('create');
@@ -538,9 +538,9 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/', [LayananController::class, 'index'])->name('index');
         Route::get('/create', [LayananController::class, 'create'])->name('create');
         Route::post('/create', [LayananController::class, 'store'])->name('store');
-        Route::get('/{id}/edit', [LayananController::class, 'edit'])->name('edit');
-        Route::post('/{id}/edit', [LayananController::class, 'update'])->name('update');
-        Route::delete('/{id}', [LayananController::class, 'destroy'])->name('destroy');
+        Route::get('/{name}/edit', [LayananController::class, 'edit'])->name('edit');
+        Route::post('/{name}/edit', [LayananController::class, 'update'])->name('update');
+        Route::delete('/{name}', [LayananController::class, 'destroy'])->name('destroy');
     });
     
     // Regulasi - Admin, Editor
@@ -548,9 +548,9 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/', [RegulasiController::class, 'index'])->name('index');
         Route::get('/create', [RegulasiController::class, 'create'])->name('create');
         Route::post('/create', [RegulasiController::class, 'store'])->name('store');
-        Route::get('/{id}/edit', [RegulasiController::class, 'edit'])->name('edit');
-        Route::post('/{id}/edit', [RegulasiController::class, 'update'])->name('update');
-        Route::delete('/{id}', [RegulasiController::class, 'destroy'])->name('destroy');
+        Route::get('/{judul}/{tanggal}/edit', [RegulasiController::class, 'edit'])->name('edit');
+        Route::post('/{judul}/{tanggal}/edit', [RegulasiController::class, 'update'])->name('update');
+        Route::delete('/{judul}/{tanggal}', [RegulasiController::class, 'destroy'])->name('destroy');
     });
 
     // LK & PIH - Admin (disabled)
@@ -569,9 +569,9 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
             Route::post('/create', [DataInformasiController::class, 'berhakLunasStore'])->name('store');
             Route::post('/import', [DataInformasiController::class, 'berhakLunasImport'])->name('import');
             Route::get('/template', [DataInformasiController::class, 'berhakLunasTemplate'])->name('template');
-            Route::get('/{id}/edit', [DataInformasiController::class, 'berhakLunasEdit'])->name('edit');
-            Route::post('/{id}/edit', [DataInformasiController::class, 'berhakLunasUpdate'])->name('update');
-            Route::delete('/{id}', [DataInformasiController::class, 'berhakLunasDestroy'])->name('destroy');
+            Route::get('/{nomor_porsi}/edit', [DataInformasiController::class, 'berhakLunasEdit'])->name('edit');
+            Route::post('/{nomor_porsi}/edit', [DataInformasiController::class, 'berhakLunasUpdate'])->name('update');
+            Route::delete('/{nomor_porsi}', [DataInformasiController::class, 'berhakLunasDestroy'])->name('destroy');
             Route::delete('/', [DataInformasiController::class, 'berhakLunasDestroyAll'])->name('destroy-all');
         });
         // Statistik
@@ -587,9 +587,9 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
             Route::post('/create', [DataInformasiController::class, 'kbihuStore'])->name('store');
             Route::post('/import', [DataInformasiController::class, 'kbihuImport'])->name('import');
             Route::get('/template', [DataInformasiController::class, 'kbihuTemplate'])->name('template');
-            Route::get('/{id}/edit', [DataInformasiController::class, 'kbihuEdit'])->name('edit');
-            Route::post('/{id}/edit', [DataInformasiController::class, 'kbihuUpdate'])->name('update');
-            Route::delete('/{id}', [DataInformasiController::class, 'kbihuDestroy'])->name('destroy');
+            Route::get('/{nama}/edit', [DataInformasiController::class, 'kbihuEdit'])->name('edit');
+            Route::post('/{nama}/edit', [DataInformasiController::class, 'kbihuUpdate'])->name('update');
+            Route::delete('/{nama}', [DataInformasiController::class, 'kbihuDestroy'])->name('destroy');
         });
         // PPIU
         Route::prefix('ppiu')->name('ppiu.')->group(function () {
@@ -598,9 +598,9 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
             Route::post('/create', [DataInformasiController::class, 'ppiuStore'])->name('store');
             Route::post('/import', [DataInformasiController::class, 'ppiuImport'])->name('import');
             Route::get('/template', [DataInformasiController::class, 'ppiuTemplate'])->name('template');
-            Route::get('/{id}/edit', [DataInformasiController::class, 'ppiuEdit'])->name('edit');
-            Route::post('/{id}/edit', [DataInformasiController::class, 'ppiuUpdate'])->name('update');
-            Route::delete('/{id}', [DataInformasiController::class, 'ppiuDestroy'])->name('destroy');
+            Route::get('/{no_izin}/edit', [DataInformasiController::class, 'ppiuEdit'])->name('edit');
+            Route::post('/{no_izin}/edit', [DataInformasiController::class, 'ppiuUpdate'])->name('update');
+            Route::delete('/{no_izin}', [DataInformasiController::class, 'ppiuDestroy'])->name('destroy');
         });
     });
     
@@ -618,8 +618,8 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/visi-misi', [PengaturanController::class, 'profilVisiMisi'])->name('visi-misi');
         Route::post('/visi-misi', [PengaturanController::class, 'updateProfil'])->name('visi-misi.update');
         Route::post('/tim', [PengaturanController::class, 'timStore'])->name('tim.store');
-        Route::put('/tim/{id}', [PengaturanController::class, 'timUpdate'])->name('tim.update');
-        Route::delete('/tim/{id}', [PengaturanController::class, 'timDestroy'])->name('tim.destroy');
+        Route::put('/tim/{nama}/{jabatan}', [PengaturanController::class, 'timUpdate'])->name('tim.update');
+        Route::delete('/tim/{nama}/{jabatan}', [PengaturanController::class, 'timDestroy'])->name('tim.destroy');
     });
 
     // Pengaturan - Admin & Editor
@@ -631,9 +631,9 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/slideshow', [SlideshowController::class, 'index'])->name('slideshow');
         Route::get('/slideshow/create', [SlideshowController::class, 'create'])->name('slideshow.create');
         Route::post('/slideshow', [SlideshowController::class, 'store'])->name('slideshow.store');
-        Route::get('/slideshow/{id}/edit', [SlideshowController::class, 'edit'])->name('slideshow.edit');
-        Route::put('/slideshow/{id}', [SlideshowController::class, 'update'])->name('slideshow.update');
-        Route::delete('/slideshow/{id}', [SlideshowController::class, 'destroy'])->name('slideshow.destroy');
+        Route::get('/slideshow/{title}/edit', [SlideshowController::class, 'edit'])->name('slideshow.edit');
+        Route::put('/slideshow/{title}', [SlideshowController::class, 'update'])->name('slideshow.update');
+        Route::delete('/slideshow/{title}', [SlideshowController::class, 'destroy'])->name('slideshow.destroy');
     });
 
     // Pengaturan - Admin Only (Pengguna)
@@ -641,9 +641,9 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/pengguna', [PenggunaController::class, 'index'])->name('pengguna');
         Route::get('/pengguna/create', [PenggunaController::class, 'create'])->name('pengguna.create');
         Route::post('/pengguna', [PenggunaController::class, 'store'])->name('pengguna.store');
-        Route::get('/pengguna/{id}/edit', [PenggunaController::class, 'edit'])->name('pengguna.edit');
-        Route::put('/pengguna/{id}', [PenggunaController::class, 'update'])->name('pengguna.update');
-        Route::delete('/pengguna/{id}', [PenggunaController::class, 'destroy'])->name('pengguna.destroy');
+        Route::get('/pengguna/{email}/edit', [PenggunaController::class, 'edit'])->name('pengguna.edit');
+        Route::put('/pengguna/{email}', [PenggunaController::class, 'update'])->name('pengguna.update');
+        Route::delete('/pengguna/{email}', [PenggunaController::class, 'destroy'])->name('pengguna.destroy');
         // Route::get('/backup', [PengaturanController::class, 'backup'])->name('backup');
         // Route::post('/backup', [PengaturanController::class, 'downloadBackup'])->name('backup.download');
     });

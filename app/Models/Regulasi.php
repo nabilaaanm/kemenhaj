@@ -5,8 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
-class Regulation extends Model
+class Regulasi extends Model
 {
+    protected $table = 'regulasi';
+
+    protected $primaryKey = ['title', 'regulation_date'];
+
+    public $incrementing = false;
+
     protected $fillable = [
         'title',
         'description',
@@ -21,7 +27,6 @@ class Regulation extends Model
         'regulation_date' => 'date',
     ];
 
-    // Accessor for badge text based on category
     public function getBadgeTextAttribute()
     {
         $badges = [
@@ -33,7 +38,6 @@ class Regulation extends Model
         return $badges[$this->category] ?? 'PERATURAN LAINNYA';
     }
 
-    // Accessor for file URL
     public function getFileUrlAttribute()
     {
         if ($this->file_path) {

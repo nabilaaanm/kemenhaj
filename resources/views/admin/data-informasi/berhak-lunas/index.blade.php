@@ -143,11 +143,11 @@
                             </td>
                             <td style="padding: 12px; text-align: center;">
                                 <div style="display: flex; gap: 8px; justify-content: center;">
-                                    <a href="{{ route('admin.data-informasi.berhak-lunas.edit', $item->id) }}" 
+                                    <a href="{{ route('admin.data-informasi.berhak-lunas.edit', $item->nomor_porsi) }}" 
                                        style="padding: 6px 12px; background-color: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; text-decoration: none;">
                                         Edit
                                     </a>
-                                    <form action="{{ route('admin.data-informasi.berhak-lunas.destroy', $item->id) }}" method="POST" 
+                                    <form action="{{ route('admin.data-informasi.berhak-lunas.destroy', $item->nomor_porsi) }}" method="POST" 
                                           onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');" style="display: inline;">
                                         @csrf
                                         @method('DELETE')

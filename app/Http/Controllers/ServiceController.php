@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Service;
+use App\Models\Layanan;
 use Illuminate\Http\Request;
 
 class ServiceController extends Controller
@@ -10,7 +10,7 @@ class ServiceController extends Controller
     public function index()
     {
         try {
-            $services = Service::where('is_active', true)
+            $services = Layanan::where('is_active', true)
                 ->orderBy('created_at', 'desc')
                 ->get();
         } catch (\Exception $e) {

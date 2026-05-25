@@ -11,7 +11,14 @@ class Profil extends Model
 
     protected $table = 'profil';
 
+    protected $primaryKey = 'kode';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
     protected $fillable = [
+        'kode',
         'struktur_organisasi',
         'struktur_subjudul',
         'struktur_gambar',

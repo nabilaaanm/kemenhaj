@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Posting;
-use App\Models\PostingCategory;
+use App\Models\PostingKategori;
 use Illuminate\Support\Facades\Schema;
 
 class PostingPublicController extends Controller
@@ -20,8 +20,8 @@ class PostingPublicController extends Controller
                 $query->whereHas('category', function ($q) use ($slug) {
                     $q->where('slug', $slug);
                 });
-                $category = Schema::hasTable('posting_categories')
-                    ? PostingCategory::where('slug', $slug)->first()
+                $category = Schema::hasTable('posting_kategori')
+                    ? PostingKategori::where('slug', $slug)->first()
                     : null;
             }
 

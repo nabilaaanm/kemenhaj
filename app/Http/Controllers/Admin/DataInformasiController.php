@@ -84,23 +84,23 @@ class DataInformasiController extends Controller
         }
     }
 
-    public function berhakLunasEdit($id)
+    public function berhakLunasEdit($nomor_porsi)
     {
-        $data = BerhakLunas::findOrFail($id);
+        $data = BerhakLunas::findOrFail($nomor_porsi);
         return view('admin.data-informasi.berhak-lunas.edit', compact('data'));
     }
 
-    public function berhakLunasUpdate(Request $request, $id)
+    public function berhakLunasUpdate(Request $request, $nomor_porsi)
     {
-        $data = BerhakLunas::findOrFail($id);
+        $data = BerhakLunas::findOrFail($nomor_porsi);
 
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nomor_porsi' => 'required|digits:10|unique:berhak_lunas,nomor_porsi,' . $data->id,
+            'nomor_porsi' => 'required|digits:10|unique:berhak_lunas,nomor_porsi,' . $data->nomor_porsi . ',nomor_porsi',
             'nama_ayah' => 'nullable|string|max:255',
             'status' => 'required|in:Cadangan,Bukan Cadangan',
             'keterangan' => 'nullable|string|max:255',
-            'nomor_paspor' => 'nullable|alpha_num|size:8|unique:berhak_lunas,nomor_paspor,' . $data->id,
+            'nomor_paspor' => 'nullable|alpha_num|size:8|unique:berhak_lunas,nomor_paspor,' . $data->nomor_porsi . ',nomor_porsi',
         ], [
             'nama.required' => 'Nama wajib diisi',
             'nomor_porsi.required' => 'Nomor porsi wajib diisi',
@@ -112,14 +112,22 @@ class DataInformasiController extends Controller
         ]);
 
         try {
-            $data->update([
+            $payload = [
                 'nama' => $request->nama,
                 'nama_ayah' => $request->nama_ayah,
                 'nomor_porsi' => $request->nomor_porsi,
                 'status' => $request->status,
                 'keterangan' => $request->keterangan,
                 'nomor_paspor' => $request->nomor_paspor,
-            ]);
+                'is_active' => $data->is_active,
+            ];
+
+            if ($request->nomor_porsi !== $data->nomor_porsi) {
+                $data->delete();
+                BerhakLunas::create($payload);
+            } else {
+                $data->update($payload);
+            }
 
             return redirect()->route('admin.data-informasi.berhak-lunas.index')->with('success', 'Data berhak lunas berhasil diperbarui');
         } catch (\Exception $e) {
@@ -127,10 +135,10 @@ class DataInformasiController extends Controller
         }
     }
 
-    public function berhakLunasDestroy($id)
+    public function berhakLunasDestroy($nomor_porsi)
     {
         try {
-            $data = BerhakLunas::findOrFail($id);
+            $data = BerhakLunas::findOrFail($nomor_porsi);
             $data->delete();
 
             return redirect()->route('admin.data-informasi.berhak-lunas.index')->with('success', 'Data berhak lunas berhasil dihapus');
@@ -354,18 +362,18 @@ class DataInformasiController extends Controller
         }
     }
 
-    public function kbihuEdit($id)
+    public function kbihuEdit($nama)
     {
-        $data = Kbihu::findOrFail($id);
+        $data = Kbihu::findOrFail(urldecode($nama));
         return view('admin.data-informasi.kbihu.edit', compact('data'));
     }
 
-    public function kbihuUpdate(Request $request, $id)
+    public function kbihuUpdate(Request $request, $nama)
     {
-        $data = Kbihu::findOrFail($id);
+        $data = Kbihu::findOrFail(urldecode($nama));
 
         $request->validate([
-            'nama' => 'required|string|max:255',
+            'nama' => 'required|string|max:255|unique:kbihu,nama,' . $data->nama . ',nama',
             'alamat' => 'required|string',
             'tahun_berdiri' => 'nullable|string|max:255',
             'nama_pimpinan' => 'nullable|string|max:255',
@@ -375,12 +383,13 @@ class DataInformasiController extends Controller
             'maps_url' => 'nullable|string|max:255',
         ], [
             'nama.required' => 'Nama wajib diisi',
+            'nama.unique' => 'Nama KBIHU sudah terdaftar',
             'alamat.required' => 'Alamat wajib diisi',
         ]);
 
         try {
             $mapsUrl = $this->buildMapsUrl($request->maps_url, $request->latitude, $request->longitude);
-            $data->update([
+            $payload = [
                 'nama' => $request->nama,
                 'alamat' => $request->alamat,
                 'tahun_berdiri' => $request->tahun_berdiri,
@@ -389,7 +398,16 @@ class DataInformasiController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'maps_url' => $mapsUrl,
-            ]);
+                'order' => $data->order,
+                'is_active' => $data->is_active,
+            ];
+
+            if ($request->nama !== $data->nama) {
+                $data->delete();
+                Kbihu::create($payload);
+            } else {
+                $data->update($payload);
+            }
 
             return redirect()->route('admin.data-informasi.kbihu.index')->with('success', 'Data KBIHU berhasil diperbarui');
         } catch (\Exception $e) {
@@ -397,10 +415,10 @@ class DataInformasiController extends Controller
         }
     }
 
-    public function kbihuDestroy($id)
+    public function kbihuDestroy($nama)
     {
         try {
-            $data = Kbihu::findOrFail($id);
+            $data = Kbihu::findOrFail(urldecode($nama));
             $data->delete();
 
             return redirect()->route('admin.data-informasi.kbihu.index')->with('success', 'Data KBIHU berhasil dihapus');
@@ -627,15 +645,15 @@ class DataInformasiController extends Controller
         }
     }
 
-    public function ppiuEdit($id)
+    public function ppiuEdit($no_izin)
     {
-        $data = Ppiu::findOrFail($id);
+        $data = Ppiu::findOrFail(urldecode($no_izin));
         return view('admin.data-informasi.ppiu.edit', compact('data'));
     }
 
-    public function ppiuUpdate(Request $request, $id)
+    public function ppiuUpdate(Request $request, $no_izin)
     {
-        $data = Ppiu::findOrFail($id);
+        $data = Ppiu::findOrFail(urldecode($no_izin));
 
         $request->validate([
             'nama' => 'required|string|max:255',
@@ -670,10 +688,10 @@ class DataInformasiController extends Controller
         }
     }
 
-    public function ppiuDestroy($id)
+    public function ppiuDestroy($no_izin)
     {
         try {
-            $data = Ppiu::findOrFail($id);
+            $data = Ppiu::findOrFail(urldecode($no_izin));
             $data->delete();
 
             return redirect()->route('admin.data-informasi.ppiu.index')->with('success', 'Data PPIU berhasil dihapus');

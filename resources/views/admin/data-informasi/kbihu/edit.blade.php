@@ -38,7 +38,7 @@
         </script>
     @endif
 
-    <form action="{{ route('admin.data-informasi.kbihu.update', $data->id) }}" method="POST">
+    <form action="{{ route('admin.data-informasi.kbihu.update', $data->nama) }}" method="POST">
         @csrf
         
         <div style="margin-bottom: 24px;">

@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Kbihu extends Model
 {
     protected $table = 'kbihu';
+
+    protected $primaryKey = 'nama';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
     
     protected $fillable = [
         'nama',

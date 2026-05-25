@@ -180,9 +180,9 @@ class PengaturanController extends Controller
                 $query->orderByRaw('baris is null, baris')
                     ->orderByRaw('slot is null, slot');
             } elseif ($hasUrutan) {
-                $query->orderBy('urutan')->orderBy('id');
+                $query->orderBy('urutan')->orderBy('nama');
             } else {
-                $query->orderBy('id');
+                $query->orderBy('nama');
             }
             $tim = $query->get();
         }
@@ -331,6 +331,7 @@ class PengaturanController extends Controller
         $data = array_intersect_key($data, array_flip($availableColumns));
 
         if (!$profil) {
+            $data['kode'] = 'utama';
             $profil = Profil::create($data);
         } else {
             $profil->update($data);
@@ -472,7 +473,7 @@ class PengaturanController extends Controller
             ->with('success', 'Anggota tim berhasil ditambahkan.');
     }
 
-    public function timUpdate(Request $request, $id)
+    public function timUpdate(Request $request, $nama, $jabatan)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
@@ -482,11 +483,13 @@ class PengaturanController extends Controller
             'slot' => 'required|integer|min:1|max:4',
         ]);
 
-        $tim = TimKemenhaj::findOrFail($id);
+        $tim = TimKemenhaj::where('nama', urldecode($nama))
+            ->where('jabatan', urldecode($jabatan))
+            ->firstOrFail();
+
         $data = $request->only(['nama', 'jabatan', 'baris', 'slot']);
 
         if ($request->hasFile('foto')) {
-            // Hapus foto lama jika ada
             if ($tim->foto) {
                 Storage::disk('tim')->delete($tim->foto);
             }
@@ -496,15 +499,26 @@ class PengaturanController extends Controller
             $data['foto'] = $filename;
         }
 
-        $tim->update($data);
+        $pkChanged = $data['nama'] !== $tim->nama || $data['jabatan'] !== $tim->jabatan;
+
+        if ($pkChanged) {
+            $data['foto'] = $data['foto'] ?? $tim->foto;
+            $data['is_active'] = $tim->is_active;
+            $tim->delete();
+            TimKemenhaj::create($data);
+        } else {
+            $tim->update($data);
+        }
 
         return redirect()->route('admin.profil.struktur')
             ->with('success', 'Anggota tim berhasil diperbarui.');
     }
 
-    public function timDestroy($id)
+    public function timDestroy($nama, $jabatan)
     {
-        $tim = TimKemenhaj::findOrFail($id);
+        $tim = TimKemenhaj::where('nama', urldecode($nama))
+            ->where('jabatan', urldecode($jabatan))
+            ->firstOrFail();
         
         // Hapus foto jika ada
         if ($tim->foto) {

@@ -8,11 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (Schema::hasTable('gallery_categories')) {
+        if (Schema::hasTable('galeri_kategori')) {
             return;
         }
 
-        Schema::create('gallery_categories', function (Blueprint $table) {
+        Schema::create('galeri_kategori', function (Blueprint $table) {
             $table->id();
             $table->string('type'); // foto, video, infografis
             $table->string('name');
@@ -24,6 +24,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('gallery_categories');
+        Schema::dropIfExists('galeri_kategori');
     }
 };

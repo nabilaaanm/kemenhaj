@@ -41,7 +41,7 @@
         </script>
     @endif
 
-    <form method="POST" action="{{ route('admin.pengaturan.slideshow.update', $slide->id) }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('admin.pengaturan.slideshow.update', $slide->title) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 

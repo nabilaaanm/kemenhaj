@@ -11,6 +11,12 @@ class CustomPage extends Model
 
     protected $table = 'custom_pages';
 
+    protected $primaryKey = 'slug';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
     protected $fillable = [
         'title',
         'slug',

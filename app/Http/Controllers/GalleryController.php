@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Gallery;
-use App\Models\GalleryCategory;
+use App\Models\Galeri;
+use App\Models\GaleriKategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -12,7 +12,7 @@ class GalleryController extends Controller
     public function foto()
     {
         try {
-            $fotos = Gallery::where('type', 'foto')
+            $fotos = Galeri::where('type', 'foto')
                 ->where('is_active', true)
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -21,8 +21,8 @@ class GalleryController extends Controller
         }
 
         $categories = [];
-        if (Schema::hasTable('gallery_categories')) {
-            $categories = GalleryCategory::where('type', 'foto')->orderBy('name')->get();
+        if (Schema::hasTable('galeri_kategori')) {
+            $categories = GaleriKategori::where('type', 'foto')->orderBy('name')->get();
         }
 
         return view('galeri.foto', compact('fotos', 'categories'));
@@ -31,7 +31,7 @@ class GalleryController extends Controller
     public function video()
     {
         try {
-            $videos = Gallery::where('type', 'video')
+            $videos = Galeri::where('type', 'video')
                 ->where('is_active', true)
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -40,8 +40,8 @@ class GalleryController extends Controller
         }
 
         $categories = [];
-        if (Schema::hasTable('gallery_categories')) {
-            $categories = GalleryCategory::where('type', 'video')->orderBy('name')->get();
+        if (Schema::hasTable('galeri_kategori')) {
+            $categories = GaleriKategori::where('type', 'video')->orderBy('name')->get();
         }
 
         return view('galeri.video', compact('videos', 'categories'));
@@ -50,7 +50,7 @@ class GalleryController extends Controller
     public function infografis()
     {
         try {
-            $infografis = Gallery::where('type', 'infografis')
+            $infografis = Galeri::where('type', 'infografis')
                 ->where('is_active', true)
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -59,8 +59,8 @@ class GalleryController extends Controller
         }
 
         $categories = [];
-        if (Schema::hasTable('gallery_categories')) {
-            $categories = GalleryCategory::where('type', 'infografis')->orderBy('name')->get();
+        if (Schema::hasTable('galeri_kategori')) {
+            $categories = GaleriKategori::where('type', 'infografis')->orderBy('name')->get();
         }
 
         return view('galeri.infografis', compact('infografis', 'categories'));

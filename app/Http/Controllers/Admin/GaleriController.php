@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\GalleryCategory;
-use App\Models\Gallery;
+use App\Models\GaleriKategori;
+use App\Models\Galeri;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
@@ -17,8 +17,8 @@ class GaleriController extends Controller
     public function fotoCreate()
     {
         $categories = [];
-        if (Schema::hasTable('gallery_categories')) {
-            $categories = GalleryCategory::where('type', 'foto')->orderBy('name')->get();
+        if (Schema::hasTable('galeri_kategori')) {
+            $categories = GaleriKategori::where('type', 'foto')->orderBy('name')->get();
         }
 
         return view('admin.galeri.foto.create', compact('categories'));
@@ -58,7 +58,7 @@ class GaleriController extends Controller
                 return back()->with('error', 'Harus mengupload file foto.')->withInput();
             }
 
-            Gallery::create($data);
+            Galeri::create($data);
 
             return redirect()->route('admin.galeri.foto.index')->with('success', 'Foto berhasil ditambahkan');
         } catch (\Exception $e) {
@@ -68,7 +68,7 @@ class GaleriController extends Controller
 
     public function fotoIndex()
     {
-        $fotos = Gallery::where('type', 'foto')
+        $fotos = Galeri::where('type', 'foto')
             ->orderBy('created_at', 'desc')
             ->get();
         return view('admin.galeri.foto.index', compact('fotos'));
@@ -77,17 +77,17 @@ class GaleriController extends Controller
     public function fotoEdit($id)
     {
         $categories = [];
-        if (Schema::hasTable('gallery_categories')) {
-            $categories = GalleryCategory::where('type', 'foto')->orderBy('name')->get();
+        if (Schema::hasTable('galeri_kategori')) {
+            $categories = GaleriKategori::where('type', 'foto')->orderBy('name')->get();
         }
 
-        $foto = Gallery::where('type', 'foto')->findOrFail($id);
+        $foto = Galeri::where('type', 'foto')->findOrFail($id);
         return view('admin.galeri.foto.edit', compact('foto', 'categories'));
     }
 
     public function fotoUpdate(Request $request, $id)
     {
-        $foto = Gallery::where('type', 'foto')->findOrFail($id);
+        $foto = Galeri::where('type', 'foto')->findOrFail($id);
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -136,7 +136,7 @@ class GaleriController extends Controller
 
     public function fotoDestroy($id)
     {
-        $foto = Gallery::findOrFail($id);
+        $foto = Galeri::findOrFail($id);
         
         $oldPath = $this->stripDiskPrefix($foto->file_path, 'foto');
         if ($oldPath) {
@@ -152,8 +152,8 @@ class GaleriController extends Controller
     public function videoCreate()
     {
         $categories = [];
-        if (Schema::hasTable('gallery_categories')) {
-            $categories = GalleryCategory::where('type', 'video')->orderBy('name')->get();
+        if (Schema::hasTable('galeri_kategori')) {
+            $categories = GaleriKategori::where('type', 'video')->orderBy('name')->get();
         }
 
         return view('admin.galeri.video.create', compact('categories'));
@@ -267,7 +267,7 @@ class GaleriController extends Controller
                 $data['thumbnail'] = 'video/thumbnails/' . $thumbnailName;
             }
 
-            Gallery::create($data);
+            Galeri::create($data);
 
             return redirect()->route('admin.galeri.video.index')->with('success', 'Video berhasil ditambahkan');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -312,7 +312,7 @@ class GaleriController extends Controller
 
     public function videoIndex()
     {
-        $videos = Gallery::where('type', 'video')
+        $videos = Galeri::where('type', 'video')
             ->orderBy('created_at', 'desc')
             ->get();
         return view('admin.galeri.video.index', compact('videos'));
@@ -321,17 +321,17 @@ class GaleriController extends Controller
     public function videoEdit($id)
     {
         $categories = [];
-        if (Schema::hasTable('gallery_categories')) {
-            $categories = GalleryCategory::where('type', 'video')->orderBy('name')->get();
+        if (Schema::hasTable('galeri_kategori')) {
+            $categories = GaleriKategori::where('type', 'video')->orderBy('name')->get();
         }
 
-        $video = Gallery::where('type', 'video')->findOrFail($id);
+        $video = Galeri::where('type', 'video')->findOrFail($id);
         return view('admin.galeri.video.edit', compact('video', 'categories'));
     }
 
     public function videoUpdate(Request $request, $id)
     {
-        $video = Gallery::where('type', 'video')->findOrFail($id);
+        $video = Galeri::where('type', 'video')->findOrFail($id);
 
         $hasUrl = !empty($request->url);
         $hasFile = $request->hasFile('file');
@@ -439,7 +439,7 @@ class GaleriController extends Controller
 
     public function videoDestroy($id)
     {
-        $video = Gallery::findOrFail($id);
+        $video = Galeri::findOrFail($id);
         
         $oldPath = $this->stripDiskPrefix($video->file_path, 'video');
         if ($oldPath) {
@@ -460,8 +460,8 @@ class GaleriController extends Controller
     public function infografisCreate()
     {
         $categories = [];
-        if (Schema::hasTable('gallery_categories')) {
-            $categories = GalleryCategory::where('type', 'infografis')->orderBy('name')->get();
+        if (Schema::hasTable('galeri_kategori')) {
+            $categories = GaleriKategori::where('type', 'infografis')->orderBy('name')->get();
         }
 
         return view('admin.galeri.infografis.create', compact('categories'));
@@ -505,7 +505,7 @@ class GaleriController extends Controller
                 return back()->with('error', 'Harus mengupload file atau memasukkan URL')->withInput();
             }
 
-            Gallery::create($data);
+            Galeri::create($data);
 
             return redirect()->route('admin.galeri.infografis.index')->with('success', 'Infografis berhasil ditambahkan');
         } catch (\Exception $e) {
@@ -515,7 +515,7 @@ class GaleriController extends Controller
 
     public function infografisIndex()
     {
-        $infografis = Gallery::where('type', 'infografis')
+        $infografis = Galeri::where('type', 'infografis')
             ->orderBy('created_at', 'desc')
             ->get();
         return view('admin.galeri.infografis.index', compact('infografis'));
@@ -524,17 +524,17 @@ class GaleriController extends Controller
     public function infografisEdit($id)
     {
         $categories = [];
-        if (Schema::hasTable('gallery_categories')) {
-            $categories = GalleryCategory::where('type', 'infografis')->orderBy('name')->get();
+        if (Schema::hasTable('galeri_kategori')) {
+            $categories = GaleriKategori::where('type', 'infografis')->orderBy('name')->get();
         }
 
-        $infografis = Gallery::where('type', 'infografis')->findOrFail($id);
+        $infografis = Galeri::where('type', 'infografis')->findOrFail($id);
         return view('admin.galeri.infografis.edit', compact('infografis', 'categories'));
     }
 
     public function infografisUpdate(Request $request, $id)
     {
-        $infografis = Gallery::where('type', 'infografis')->findOrFail($id);
+        $infografis = Galeri::where('type', 'infografis')->findOrFail($id);
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -594,7 +594,7 @@ class GaleriController extends Controller
 
     public function infografisDestroy($id)
     {
-        $infografis = Gallery::findOrFail($id);
+        $infografis = Galeri::findOrFail($id);
         
         $oldPath = $this->stripDiskPrefix($infografis->file_path, 'infografis');
         if ($oldPath) {
@@ -612,10 +612,10 @@ class GaleriController extends Controller
         $videoCategories = [];
         $infografisCategories = [];
 
-        if (Schema::hasTable('gallery_categories')) {
-            $fotoCategories = GalleryCategory::where('type', 'foto')->orderBy('name')->get();
-            $videoCategories = GalleryCategory::where('type', 'video')->orderBy('name')->get();
-            $infografisCategories = GalleryCategory::where('type', 'infografis')->orderBy('name')->get();
+        if (Schema::hasTable('galeri_kategori')) {
+            $fotoCategories = GaleriKategori::where('type', 'foto')->orderBy('name')->get();
+            $videoCategories = GaleriKategori::where('type', 'video')->orderBy('name')->get();
+            $infografisCategories = GaleriKategori::where('type', 'infografis')->orderBy('name')->get();
         }
 
         return view('admin.galeri.kategori', compact('fotoCategories', 'videoCategories', 'infografisCategories'));
@@ -623,7 +623,7 @@ class GaleriController extends Controller
 
     public function kategoriStore(Request $request)
     {
-        if (!Schema::hasTable('gallery_categories')) {
+        if (!Schema::hasTable('galeri_kategori')) {
             return back()->with('error', 'Tabel kategori galeri belum tersedia. Jalankan migrasi terlebih dahulu.');
         }
 
@@ -632,7 +632,7 @@ class GaleriController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        GalleryCategory::firstOrCreate([
+        GaleriKategori::firstOrCreate([
             'type' => $data['type'],
             'name' => $data['name'],
         ]);
@@ -640,13 +640,13 @@ class GaleriController extends Controller
         return back()->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-    public function kategoriDestroy($id)
+    public function kategoriDestroy($type, $name)
     {
-        if (!Schema::hasTable('gallery_categories')) {
+        if (!Schema::hasTable('galeri_kategori')) {
             return back()->with('error', 'Tabel kategori galeri belum tersedia. Jalankan migrasi terlebih dahulu.');
         }
 
-        GalleryCategory::where('id', $id)->delete();
+        GaleriKategori::where('type', $type)->where('name', urldecode($name))->delete();
 
         return back()->with('success', 'Kategori berhasil dihapus.');
     }

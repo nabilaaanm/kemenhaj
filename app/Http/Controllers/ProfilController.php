@@ -20,7 +20,7 @@ class ProfilController extends Controller
         if (!Schema::hasTable('tim_kemenhaj')) {
             $tim = collect();
         } else {
-            $tim = TimKemenhaj::orderBy('urutan')->orderBy('id')->get();
+            $tim = TimKemenhaj::orderBy('urutan')->orderBy('nama')->get();
         }
         return view('profil.struktur-organisasi', compact('profil', 'tim'));
     }

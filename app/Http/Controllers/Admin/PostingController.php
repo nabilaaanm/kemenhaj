@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Posting;
-use App\Models\PostingCategory;
+use App\Models\PostingKategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -19,7 +19,7 @@ class PostingController extends Controller
         $postingTableError = null;
 
         try {
-            $categories = PostingCategory::orderBy('name')->get();
+            $categories = PostingKategori::orderBy('name')->get();
         } catch (\Throwable $e) {
             $tableError = 'Tabel kategori belum tersedia. Jalankan migrasi terlebih dahulu.';
         }
@@ -51,7 +51,7 @@ class PostingController extends Controller
         $tableError = null;
 
         try {
-            $categories = PostingCategory::orderBy('name')->get();
+            $categories = PostingKategori::orderBy('name')->get();
         } catch (\Throwable $e) {
             $tableError = 'Tabel kategori belum tersedia. Jalankan migrasi terlebih dahulu.';
         }
@@ -69,12 +69,12 @@ class PostingController extends Controller
             $baseSlug = Str::slug($data['name']);
             $slug = $baseSlug ?: Str::random(8);
             $counter = 1;
-            while (PostingCategory::where('slug', $slug)->exists()) {
+            while (PostingKategori::where('slug', $slug)->exists()) {
                 $slug = $baseSlug . '-' . $counter;
                 $counter++;
             }
 
-            PostingCategory::create([
+            PostingKategori::create([
                 'name' => $data['name'],
                 'slug' => $slug,
             ]);
@@ -85,10 +85,10 @@ class PostingController extends Controller
         return back()->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-    public function categoryDestroy($id)
+    public function categoryDestroy($slug)
     {
         try {
-            PostingCategory::where('id', $id)->delete();
+            PostingKategori::where('slug', urldecode($slug))->delete();
         } catch (\Throwable $e) {
             return back()->with('error', 'Tabel kategori belum tersedia. Jalankan migrasi terlebih dahulu.');
         }
@@ -132,7 +132,7 @@ class PostingController extends Controller
 
         $data = $request->validate([
             'title' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:posting_categories,id',
+            'category_slug' => 'nullable|exists:posting_kategori,slug',
             'content' => 'nullable|string',
             'cover_image' => 'nullable|image|max:4096',
             'editor_name' => 'nullable|string|max:255',
@@ -191,7 +191,7 @@ class PostingController extends Controller
         } catch (\Throwable $e) {
             return redirect()->route('admin.posting.index')->with('error', 'Tabel posting belum tersedia. Jalankan migrasi terlebih dahulu.');
         }
-        $categories = PostingCategory::orderBy('name')->get();
+        $categories = PostingKategori::orderBy('name')->get();
 
         return view('admin.posting.edit', compact('post', 'categories'));
     }
@@ -206,7 +206,7 @@ class PostingController extends Controller
 
         $data = $request->validate([
             'title' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:posting_categories,id',
+            'category_slug' => 'nullable|exists:posting_kategori,slug',
             'content' => 'nullable|string',
             'cover_image' => 'nullable|image|max:4096',
             'editor_name' => 'nullable|string|max:255',

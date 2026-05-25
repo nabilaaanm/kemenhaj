@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Regulation;
+use App\Models\Regulasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -12,7 +12,7 @@ class RegulasiController extends Controller
 {
     public function index()
     {
-        $regulations = Regulation::orderBy('regulation_date', 'desc')
+        $regulations = Regulasi::orderBy('regulation_date', 'desc')
             ->orderBy('created_at', 'desc')
             ->get();
         
@@ -76,11 +76,11 @@ class RegulasiController extends Controller
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
                 $fileName = Str::random(20) . '.' . $file->getClientOriginalExtension();
-                Storage::disk('regulations')->putFileAs('', $file, $fileName);
+                Storage::disk('regulasi')->putFileAs('', $file, $fileName);
                 $data['file_path'] = 'regulations/' . $fileName;
             }
 
-            Regulation::create($data);
+            Regulasi::create($data);
 
             return redirect()->route('admin.regulasi.index')->with('success', 'Regulasi berhasil ditambahkan');
         } catch (\Exception $e) {
@@ -88,15 +88,15 @@ class RegulasiController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit($judul, $tanggal)
     {
-        $regulation = Regulation::findOrFail($id);
+        $regulation = $this->findRegulasi($judul, $tanggal);
         return view('admin.regulasi.edit', compact('regulation'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $judul, $tanggal)
     {
-        $regulation = Regulation::findOrFail($id);
+        $regulation = $this->findRegulasi($judul, $tanggal);
 
         if (isset($_FILES['file']) && isset($_FILES['file']['error']) && $_FILES['file']['error'] !== UPLOAD_ERR_NO_FILE) {
             $uploadError = $_FILES['file']['error'];
@@ -149,17 +149,33 @@ class RegulasiController extends Controller
                 if ($regulation->file_path && str_starts_with($regulation->file_path, 'regulations/')) {
                     $oldName = substr($regulation->file_path, strlen('regulations/'));
                     if ($oldName !== '') {
-                        Storage::disk('regulations')->delete($oldName);
+                        Storage::disk('regulasi')->delete($oldName);
                     }
                 }
                 
                 $file = $request->file('file');
                 $fileName = Str::random(20) . '.' . $file->getClientOriginalExtension();
-                Storage::disk('regulations')->putFileAs('', $file, $fileName);
+                Storage::disk('regulasi')->putFileAs('', $file, $fileName);
                 $data['file_path'] = 'regulations/' . $fileName;
             }
 
-            $regulation->update($data);
+            $currentDate = $regulation->regulation_date instanceof \Carbon\Carbon
+                ? $regulation->regulation_date->format('Y-m-d')
+                : (string) $regulation->regulation_date;
+
+            $pkChanged = $data['title'] !== $regulation->title
+                || $data['regulation_date'] !== $currentDate;
+
+            if ($pkChanged) {
+                $data['is_active'] = $regulation->is_active;
+                if (!isset($data['file_path'])) {
+                    $data['file_path'] = $regulation->file_path;
+                }
+                $regulation->delete();
+                Regulasi::create($data);
+            } else {
+                $regulation->update($data);
+            }
 
             return redirect()->route('admin.regulasi.index')->with('success', 'Regulasi berhasil diperbarui');
         } catch (\Exception $e) {
@@ -167,16 +183,16 @@ class RegulasiController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy($judul, $tanggal)
     {
         try {
-            $regulation = Regulation::findOrFail($id);
+            $regulation = $this->findRegulasi($judul, $tanggal);
             
             // Delete file if exists
             if ($regulation->file_path && str_starts_with($regulation->file_path, 'regulations/')) {
                 $oldName = substr($regulation->file_path, strlen('regulations/'));
                 if ($oldName !== '') {
-                    Storage::disk('regulations')->delete($oldName);
+                    Storage::disk('regulasi')->delete($oldName);
                 }
             }
             
@@ -186,5 +202,12 @@ class RegulasiController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal menghapus regulasi: ' . $e->getMessage());
         }
+    }
+
+    private function findRegulasi(string $judul, string $tanggal): Regulasi
+    {
+        return Regulasi::where('title', urldecode($judul))
+            ->whereDate('regulation_date', $tanggal)
+            ->firstOrFail();
     }
 }

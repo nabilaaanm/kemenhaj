@@ -114,10 +114,10 @@
             </div>
             <div>
                 <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Kategori</label>
-                <select name="category_id" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff;">
+                <select name="category_slug" style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff;">
                     <option value="">Pilih kategori</option>
                     @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                        <option value="{{ $category->slug }}" {{ old('category_slug') == $category->slug ? 'selected' : '' }}>
                             {{ $category->name }}
                         </option>
                     @endforeach

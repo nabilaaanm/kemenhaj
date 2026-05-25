@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Service;
+use App\Models\Layanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,7 +11,7 @@ class LayananController extends Controller
 {
     public function index()
     {
-        $services = Service::orderBy('created_at', 'desc')
+        $services = Layanan::orderBy('created_at', 'desc')
             ->get();
         
         return view('admin.layanan.index', compact('services'));
@@ -53,7 +53,7 @@ class LayananController extends Controller
                 $data['icon'] = 'services/' . $iconName;
             }
 
-            Service::create($data);
+            Layanan::create($data);
 
             return redirect()->route('admin.layanan.index')->with('success', 'Layanan berhasil ditambahkan');
         } catch (\Exception $e) {
@@ -61,23 +61,24 @@ class LayananController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit($name)
     {
-        $service = Service::findOrFail($id);
+        $service = Layanan::findOrFail(urldecode($name));
         return view('admin.layanan.edit', compact('service'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $name)
     {
-        $service = Service::findOrFail($id);
+        $service = Layanan::findOrFail(urldecode($name));
 
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:layanan,name,' . $service->name . ',name',
             'description' => 'nullable|string',
             'url' => 'required|url',
             'icon' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ], [
             'name.required' => 'Nama layanan wajib diisi',
+            'name.unique' => 'Nama layanan sudah digunakan',
             'url.required' => 'URL layanan wajib diisi',
             'url.url' => 'URL tidak valid',
             'icon.image' => 'Icon harus berupa gambar',
@@ -88,6 +89,7 @@ class LayananController extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'url' => $request->url,
+                'is_active' => $service->is_active,
             ];
 
             // Handle icon upload
@@ -105,9 +107,16 @@ class LayananController extends Controller
                 $iconName = \Illuminate\Support\Str::random(20) . '.' . $icon->getClientOriginalExtension();
                 Storage::disk('services')->putFileAs('', $icon, $iconName);
                 $data['icon'] = 'services/' . $iconName;
+            } elseif ($service->icon) {
+                $data['icon'] = $service->icon;
             }
 
-            $service->update($data);
+            if ($request->name !== $service->name) {
+                $service->delete();
+                Layanan::create($data);
+            } else {
+                $service->update($data);
+            }
 
             return redirect()->route('admin.layanan.index')->with('success', 'Layanan berhasil diperbarui');
         } catch (\Exception $e) {
@@ -115,10 +124,10 @@ class LayananController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy($name)
     {
         try {
-            $service = Service::findOrFail($id);
+            $service = Layanan::findOrFail(urldecode($name));
             
             // Delete icon if exists
             if ($service->icon && str_starts_with($service->icon, 'services/')) {

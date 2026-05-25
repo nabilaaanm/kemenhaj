@@ -8,6 +8,12 @@ class HajiJamaah extends Model
 {
     protected $table = 'haji_jamaahs';
 
+    protected $primaryKey = 'nomor_porsi';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
     protected $fillable = [
         'nomor_porsi',
         'nama',

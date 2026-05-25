@@ -11,7 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('galleries', function (Blueprint $table) {
+        if (Schema::hasTable('galeri')) {
+            return;
+        }
+
+        Schema::create('galeri', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['foto', 'video', 'infografis']);
             $table->string('title');
@@ -32,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('galleries');
+        Schema::dropIfExists('galeri');
     }
 };

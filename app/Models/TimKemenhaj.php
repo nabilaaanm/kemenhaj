@@ -11,6 +11,10 @@ class TimKemenhaj extends Model
 
     protected $table = 'tim_kemenhaj';
 
+    protected $primaryKey = ['nama', 'jabatan'];
+
+    public $incrementing = false;
+
     protected $fillable = [
         'nama',
         'jabatan',

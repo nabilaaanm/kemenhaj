@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Posting extends Model
 {
     protected $fillable = [
-        'category_id',
+        'category_slug',
         'title',
         'slug',
         'content',
@@ -31,7 +31,7 @@ class Posting extends Model
 
     public function category()
     {
-        return $this->belongsTo(PostingCategory::class, 'category_id');
+        return $this->belongsTo(PostingKategori::class, 'category_slug', 'slug');
     }
 
     public function getCoverUrlAttribute()

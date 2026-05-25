@@ -145,10 +145,10 @@
                                         <h4 style="font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 4px;">{{ $member->nama }}</h4>
                                         <p style="font-size: 13px; color: #6b7280; margin-bottom: 12px;">{{ $member->jabatan }}</p>
                                         <div style="display: flex; gap: 8px; justify-content: center;">
-                                            <button type="button" onclick="editTim({{ $member->id }})" style="padding: 6px 12px; background-color: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">
+                                            <button type="button" onclick="editTim(@json($member->nama), @json($member->jabatan))" style="padding: 6px 12px; background-color: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">
                                                 Edit
                                             </button>
-                                            <form action="{{ route('admin.profil.tim.destroy', $member->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus anggota ini?');">
+                                            <form action="{{ route('admin.profil.tim.destroy', ['nama' => $member->nama, 'jabatan' => $member->jabatan]) }}" method="POST" style="display: inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus anggota ini?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" style="padding: 6px 12px; background-color: #ef4444; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">
