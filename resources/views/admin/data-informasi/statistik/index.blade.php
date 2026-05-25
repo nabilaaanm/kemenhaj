@@ -440,8 +440,8 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="stat-btn-primary">
-                        ⬇️ Unduh Data
+                    <button type="submit" class="stat-btn-accent">
+                        Unduh Data <i class="fa-solid fa-download"></i>
                     </button>
                 </form>
             </div>
