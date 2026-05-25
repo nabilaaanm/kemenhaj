@@ -10,9 +10,13 @@ use App\Models\Ppiu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Csv;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DataInformasiController extends Controller
 {
@@ -1028,9 +1032,55 @@ class DataInformasiController extends Controller
         ]);
     }
 
-    public function statistikExportAll()
+    public function statistikExportAll(Request $request)
     {
-        $headers = [
+        $tahunTersedia = HajiJamaah::whereNotNull('tahun_keberangkatan')
+            ->distinct()
+            ->orderBy('tahun_keberangkatan', 'desc')
+            ->pluck('tahun_keberangkatan')
+            ->map(fn ($v) => (int) $v)
+            ->values()
+            ->all();
+
+        $request->validate([
+            'tahun' => ['nullable', 'string', function ($attribute, $value, $fail) use ($tahunTersedia) {
+                if ($value === null || $value === '' || $value === 'all') {
+                    return;
+                }
+                if (!ctype_digit((string) $value)) {
+                    $fail('Tahun tidak valid.');
+                    return;
+                }
+                if (!in_array((int) $value, $tahunTersedia, true)) {
+                    $fail('Tahun yang dipilih tidak tersedia.');
+                }
+            }],
+            'format' => 'required|in:xlsx,csv,pdf',
+        ], [
+            'format.required' => 'Format ekspor wajib dipilih',
+            'format.in' => 'Format ekspor harus Excel, CSV, atau PDF',
+        ]);
+
+        $tahunParam = $request->input('tahun', 'all');
+        $year = ($tahunParam === null || $tahunParam === '' || $tahunParam === 'all')
+            ? null
+            : (int) $tahunParam;
+        $format = $request->input('format', 'xlsx');
+
+        $headers = $this->statistikExportHeaders();
+        $rows = $this->statistikExportRows($year);
+        $filename = $this->statistikExportFilename($year, $format);
+
+        return match ($format) {
+            'csv' => $this->statistikExportAsCsv($headers, $rows, $filename),
+            'pdf' => $this->statistikExportAsPdf($headers, $rows, $filename, $year),
+            default => $this->statistikExportAsXlsx($headers, $rows, $filename),
+        };
+    }
+
+    private function statistikExportHeaders(): array
+    {
+        return [
             'Nomor Porsi',
             'Nama Calon Haji',
             'Pendidikan',
@@ -1042,10 +1092,16 @@ class DataInformasiController extends Controller
             'Jenis Kelamin',
             'Tahun Keberangkatan',
         ];
+    }
 
-        $rows = HajiJamaah::orderByDesc('tahun_keberangkatan')
-            ->orderBy('nama')
-            ->get()
+    private function statistikExportRows(?int $year): array
+    {
+        $query = HajiJamaah::orderByDesc('tahun_keberangkatan')->orderBy('nama');
+        if ($year !== null) {
+            $query->where('tahun_keberangkatan', $year);
+        }
+
+        return $query->get()
             ->map(function (HajiJamaah $row) {
                 return [
                     (string) ($row->nomor_porsi ?? ''),
@@ -1061,7 +1117,22 @@ class DataInformasiController extends Controller
                 ];
             })
             ->toArray();
+    }
 
+    private function statistikExportFilename(?int $year, string $format): string
+    {
+        $yearLabel = $year === null ? 'semua-tahun' : (string) $year;
+        $ext = match ($format) {
+            'csv' => 'csv',
+            'pdf' => 'pdf',
+            default => 'xlsx',
+        };
+
+        return "statistik-haji-{$yearLabel}.{$ext}";
+    }
+
+    private function statistikExportAsXlsx(array $headers, array $rows, string $filename): StreamedResponse
+    {
         return response()->streamDownload(function () use ($headers, $rows) {
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
@@ -1074,8 +1145,56 @@ class DataInformasiController extends Controller
 
             $writer = new Xlsx($spreadsheet);
             $writer->save('php://output');
-        }, 'statistik-haji-semua-tahun.xlsx', [
+        }, $filename, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
+    private function statistikExportAsCsv(array $headers, array $rows, string $filename): StreamedResponse
+    {
+        return response()->streamDownload(function () use ($headers, $rows) {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->fromArray($headers, null, 'A1');
+            $sheet->getStyle('A')->getNumberFormat()->setFormatCode('@');
+
+            if (!empty($rows)) {
+                $sheet->fromArray($rows, null, 'A2');
+            }
+
+            $writer = new Csv($spreadsheet);
+            $writer->setDelimiter(',');
+            $writer->setEnclosure('"');
+            $writer->setUseBOM(true);
+            $writer->save('php://output');
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    private function statistikExportAsPdf(array $headers, array $rows, string $filename, ?int $year)
+    {
+        $judulTahun = $year === null ? 'Semua Tahun' : 'Tahun ' . $year;
+        $html = view('admin.data-informasi.statistik.export-pdf', [
+            'headers' => $headers,
+            'rows' => $rows,
+            'judulTahun' => $judulTahun,
+            'exportedAt' => now()->format('d M Y, H:i'),
+            'total' => count($rows),
+        ])->render();
+
+        $options = new Options();
+        $options->set('isRemoteEnabled', false);
+        $options->set('defaultFont', 'DejaVu Sans');
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        return response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ]);
     }
 }

@@ -66,15 +66,48 @@
             </div>
         </div>
 
-        <div style="margin-bottom: 16px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <div style="margin-bottom: 16px;">
             <a href="{{ route('admin.data-informasi.statistik.template') }}"
                style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; background: #f3f4f6; color: #374151; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; border: 1px solid #e5e7eb;">
                 Download Template Excel
             </a>
-            <a href="{{ route('admin.data-informasi.statistik.export') }}"
-               style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; background: #111827; color: #ffffff; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; border: 1px solid #111827;">
-                Download Semua Data
-            </a>
+        </div>
+
+        <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 20px; max-width: 520px;">
+            <h3 style="margin: 0 0 8px; font-size: 15px;">Ekspor Data</h3>
+            <p style="color: #6b7280; font-size: 13px; margin: 0 0 14px;">
+                Unduh data statistik dalam format Excel, CSV, atau PDF. Pilih tahun tertentu atau semua tahun.
+            </p>
+            @if ($errors->any())
+                <div style="background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 10px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 12px;">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+            <form action="{{ route('admin.data-informasi.statistik.export') }}" method="GET" style="display: grid; gap: 12px;">
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Tahun</label>
+                    <select name="tahun" required
+                            style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;">
+                        <option value="all">Semua tahun</option>
+                        @foreach(($tahunTersedia ?? collect()) as $year)
+                            <option value="{{ $year }}">{{ $year }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Format</label>
+                    <select name="format" required
+                            style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;">
+                        <option value="xlsx">Excel (.xlsx)</option>
+                        <option value="csv">CSV (.csv)</option>
+                        <option value="pdf">PDF (.pdf)</option>
+                    </select>
+                </div>
+                <button type="submit"
+                        style="padding: 10px 16px; background-color: #111827; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer;">
+                    Unduh Data
+                </button>
+            </form>
         </div>
 
         <form action="{{ route('admin.data-informasi.statistik.import') }}" method="POST" enctype="multipart/form-data">
