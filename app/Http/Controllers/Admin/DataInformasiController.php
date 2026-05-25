@@ -14,6 +14,8 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -841,7 +843,16 @@ class DataInformasiController extends Controller
             ->map(fn ($v) => (int) $v)
             ->values();
 
-        return view('admin.data-informasi.statistik.index', compact('total', 'lastUpdated', 'tahunTersedia'));
+        $tahunMin = $tahunTersedia->isNotEmpty() ? $tahunTersedia->min() : null;
+        $tahunMax = $tahunTersedia->isNotEmpty() ? $tahunTersedia->max() : null;
+
+        return view('admin.data-informasi.statistik.index', compact(
+            'total',
+            'lastUpdated',
+            'tahunTersedia',
+            'tahunMin',
+            'tahunMax',
+        ));
     }
 
     public function statistikImport(Request $request)
@@ -1069,13 +1080,64 @@ class DataInformasiController extends Controller
 
         $headers = $this->statistikExportHeaders();
         $rows = $this->statistikExportRows($year);
-        $filename = $this->statistikExportFilename($year, $format);
+        $meta = $this->statistikExportMeta($year);
+        $filename = $this->statistikExportFilename($meta, $format);
 
         return match ($format) {
-            'csv' => $this->statistikExportAsCsv($headers, $rows, $filename),
-            'pdf' => $this->statistikExportAsPdf($headers, $rows, $filename, $year),
-            default => $this->statistikExportAsXlsx($headers, $rows, $filename),
+            'csv' => $this->statistikExportAsCsv($headers, $rows, $filename, $meta),
+            'pdf' => $this->statistikExportAsPdf($headers, $rows, $filename, $meta),
+            default => $this->statistikExportAsXlsx($headers, $rows, $filename, $meta),
         };
+    }
+
+    private function statistikExportMeta(?int $year): array
+    {
+        $query = HajiJamaah::whereNotNull('tahun_keberangkatan');
+        if ($year !== null) {
+            $query->where('tahun_keberangkatan', $year);
+        }
+
+        $minRaw = $query->min('tahun_keberangkatan');
+        $maxRaw = $query->max('tahun_keberangkatan');
+        $tahunMin = $minRaw !== null ? (int) $minRaw : null;
+        $tahunMax = $maxRaw !== null ? (int) $maxRaw : null;
+
+        if ($year !== null) {
+            return [
+                'judul' => 'Tahun ' . $year,
+                'periode_label' => 'Tahun ' . $year,
+                'periode_ringkas' => (string) $year,
+                'tahun_min' => $year,
+                'tahun_max' => $year,
+                'semua_tahun' => false,
+            ];
+        }
+
+        if ($tahunMin === null || $tahunMax === null) {
+            return [
+                'judul' => 'Semua Tahun',
+                'periode_label' => 'Belum ada data dengan tahun keberangkatan',
+                'periode_ringkas' => 'tanpa-tahun',
+                'tahun_min' => null,
+                'tahun_max' => null,
+                'semua_tahun' => true,
+            ];
+        }
+
+        $periodeLabel = $tahunMin === $tahunMax
+            ? 'Tahun ' . $tahunMin
+            : 'Tahun ' . $tahunMin . ' sampai ' . $tahunMax;
+
+        return [
+            'judul' => 'Semua Tahun',
+            'periode_label' => $periodeLabel,
+            'periode_ringkas' => $tahunMin === $tahunMax
+                ? (string) $tahunMin
+                : $tahunMin . '-' . $tahunMax,
+            'tahun_min' => $tahunMin,
+            'tahun_max' => $tahunMax,
+            'semua_tahun' => true,
+        ];
     }
 
     private function statistikExportHeaders(): array
@@ -1119,28 +1181,74 @@ class DataInformasiController extends Controller
             ->toArray();
     }
 
-    private function statistikExportFilename(?int $year, string $format): string
+    private function statistikExportFilename(array $meta, string $format): string
     {
-        $yearLabel = $year === null ? 'semua-tahun' : (string) $year;
         $ext = match ($format) {
             'csv' => 'csv',
             'pdf' => 'pdf',
             default => 'xlsx',
         };
 
-        return "statistik-haji-{$yearLabel}.{$ext}";
+        return 'statistik-haji-' . $meta['periode_ringkas'] . '.' . $ext;
     }
 
-    private function statistikExportAsXlsx(array $headers, array $rows, string $filename): StreamedResponse
+    private function statistikExportPreambleRows(array $meta, int $total): array
     {
-        return response()->streamDownload(function () use ($headers, $rows) {
+        return [
+            ['Data Statistik Haji — Kementerian Haji dan Umrah Kota Cirebon'],
+            ['Periode: ' . $meta['periode_label']],
+            ['Total data: ' . number_format($total) . ' baris · Diekspor: ' . now()->format('d M Y, H:i')],
+            [],
+        ];
+    }
+
+    private function statistikExportApplySheetMeta($sheet, array $meta, int $total, int $colCount): int
+    {
+        $preamble = $this->statistikExportPreambleRows($meta, $total);
+        $sheet->fromArray($preamble, null, 'A1');
+        $lastCol = chr(ord('A') + max(0, $colCount - 1));
+
+        foreach ([1, 2, 3] as $row) {
+            $sheet->mergeCells("A{$row}:{$lastCol}{$row}");
+        }
+
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A1')->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()->setRGB('16213E');
+        $sheet->getStyle('A1')->getFont()->getColor()->setRGB('FFFFFF');
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+        $sheet->getStyle('A2')->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle('A2')->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()->setRGB('ECB176');
+
+        $sheet->getStyle('A3')->getFont()->setSize(10);
+        $sheet->getStyle('A3')->getFont()->getColor()->setRGB('4B5563');
+
+        return count($preamble) + 1;
+    }
+
+    private function statistikExportAsXlsx(array $headers, array $rows, string $filename, array $meta): StreamedResponse
+    {
+        return response()->streamDownload(function () use ($headers, $rows, $meta) {
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
-            $sheet->fromArray($headers, null, 'A1');
+            $sheet->setTitle('Statistik Haji');
+
+            $headerRow = $this->statistikExportApplySheetMeta($sheet, $meta, count($rows), count($headers));
+            $sheet->fromArray($headers, null, 'A' . $headerRow);
+            $sheet->getStyle('A' . $headerRow . ':' . chr(ord('A') + count($headers) - 1) . $headerRow)
+                ->getFont()->setBold(true);
+            $sheet->getStyle('A' . $headerRow . ':' . chr(ord('A') + count($headers) - 1) . $headerRow)
+                ->getFill()
+                ->setFillType(Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('F3F4F6');
             $sheet->getStyle('A')->getNumberFormat()->setFormatCode('@');
 
             if (!empty($rows)) {
-                $sheet->fromArray($rows, null, 'A2');
+                $sheet->fromArray($rows, null, 'A' . ($headerRow + 1));
             }
 
             $writer = new Xlsx($spreadsheet);
@@ -1150,16 +1258,18 @@ class DataInformasiController extends Controller
         ]);
     }
 
-    private function statistikExportAsCsv(array $headers, array $rows, string $filename): StreamedResponse
+    private function statistikExportAsCsv(array $headers, array $rows, string $filename, array $meta): StreamedResponse
     {
-        return response()->streamDownload(function () use ($headers, $rows) {
+        return response()->streamDownload(function () use ($headers, $rows, $meta) {
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
-            $sheet->fromArray($headers, null, 'A1');
+
+            $headerRow = $this->statistikExportApplySheetMeta($sheet, $meta, count($rows), count($headers));
+            $sheet->fromArray($headers, null, 'A' . $headerRow);
             $sheet->getStyle('A')->getNumberFormat()->setFormatCode('@');
 
             if (!empty($rows)) {
-                $sheet->fromArray($rows, null, 'A2');
+                $sheet->fromArray($rows, null, 'A' . ($headerRow + 1));
             }
 
             $writer = new Csv($spreadsheet);
@@ -1172,13 +1282,12 @@ class DataInformasiController extends Controller
         ]);
     }
 
-    private function statistikExportAsPdf(array $headers, array $rows, string $filename, ?int $year)
+    private function statistikExportAsPdf(array $headers, array $rows, string $filename, array $meta)
     {
-        $judulTahun = $year === null ? 'Semua Tahun' : 'Tahun ' . $year;
         $html = view('admin.data-informasi.statistik.export-pdf', [
             'headers' => $headers,
             'rows' => $rows,
-            'judulTahun' => $judulTahun,
+            'meta' => $meta,
             'exportedAt' => now()->format('d M Y, H:i'),
             'total' => count($rows),
         ])->render();
