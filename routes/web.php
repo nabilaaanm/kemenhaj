@@ -108,7 +108,7 @@ Route::get('/', function () {
 
     $slides = Slideshow::where('is_active', true)
         ->orderBy('order')
-        ->orderBy('id')
+        ->orderBy('title')
         ->get();
 
     $popularPosts = collect();
