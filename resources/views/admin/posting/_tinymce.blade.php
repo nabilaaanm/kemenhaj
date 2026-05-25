@@ -13,7 +13,35 @@
         relative_urls: false,
         remove_script_host: false,
         convert_urls: true,
-        content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; }',
+        content_style: `
+            body { font-family: Arial, sans-serif; font-size: 14px; line-height: 1.75; }
+            img { max-width: 100%; height: auto; }
+            p[style*="text-align: center"] img,
+            p[style*="text-align:center"] img,
+            .aligncenter, img.aligncenter, figure.image {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            figure.image { text-align: center; margin: 1em auto; }
+        `,
+        formats: {
+            alignleft: [
+                { selector: 'p,h1,h2,h3,h4,h5,h6,div,figure,td,th', styles: { textAlign: 'left' } },
+                { selector: 'img', styles: { display: 'block', marginLeft: '0', marginRight: 'auto' } },
+            ],
+            aligncenter: [
+                { selector: 'p,h1,h2,h3,h4,h5,h6,div,figure,td,th', styles: { textAlign: 'center' } },
+                { selector: 'img', styles: { display: 'block', marginLeft: 'auto', marginRight: 'auto' } },
+            ],
+            alignright: [
+                { selector: 'p,h1,h2,h3,h4,h5,h6,div,figure,td,th', styles: { textAlign: 'right' } },
+                { selector: 'img', styles: { display: 'block', marginLeft: 'auto', marginRight: '0' } },
+            ],
+            alignjustify: [
+                { selector: 'p,h1,h2,h3,h4,h5,h6,div,figure,td,th', styles: { textAlign: 'justify' } },
+            ],
+        },
         paste_data_images: true,
         automatic_uploads: true
     };

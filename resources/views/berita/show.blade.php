@@ -7,6 +7,7 @@
     <link rel="apple-touch-icon" href="{{ asset('image/lambang.png') }}">
     <title>{{ $post->title }} - Kementerian Haji dan Umrah Kota Cirebon</title>
     @include('partials.assets')
+    @include('partials.rich-content-styles')
     <style>
         * {
             box-sizing: border-box;
@@ -121,7 +122,7 @@
              style="width: 100%; max-height: 420px; object-fit: cover; object-position: center;">
     @endif
 
-    <div class="prose max-w-none">
+    <div class="rich-content">
         {!! $post->content !!}
     </div>
 
