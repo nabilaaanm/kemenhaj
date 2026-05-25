@@ -440,7 +440,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="stat-btn-accent">
+                    <button type="submit" class="stat-btn-accent" style="margin-top: 14px; width: 100%;">
                         Unduh Data <i class="fa-solid fa-download"></i>
                     </button>
                 </form>
