@@ -18,6 +18,6 @@ class RegulasiController extends Controller
             $regulations = collect([]);
         }
         
-        return view('regulasi', compact('regulasi'));
+        return view('regulasi', compact('regulations'));
     }
 }

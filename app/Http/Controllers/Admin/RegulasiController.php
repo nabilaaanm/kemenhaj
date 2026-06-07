@@ -76,7 +76,7 @@ class RegulasiController extends Controller
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
                 $fileName = Str::random(20) . '.' . $file->getClientOriginalExtension();
-                Storage::disk('regulasi')->putFileAs('', $file, $fileName);
+                Storage::disk('regulations')->putFileAs('', $file, $fileName);
                 $data['file_path'] = 'regulations/' . $fileName;
             }
 
@@ -149,13 +149,13 @@ class RegulasiController extends Controller
                 if ($regulation->file_path && str_starts_with($regulation->file_path, 'regulations/')) {
                     $oldName = substr($regulation->file_path, strlen('regulations/'));
                     if ($oldName !== '') {
-                        Storage::disk('regulasi')->delete($oldName);
+                        Storage::disk('regulations')->delete($oldName);
                     }
                 }
                 
                 $file = $request->file('file');
                 $fileName = Str::random(20) . '.' . $file->getClientOriginalExtension();
-                Storage::disk('regulasi')->putFileAs('', $file, $fileName);
+                Storage::disk('regulations')->putFileAs('', $file, $fileName);
                 $data['file_path'] = 'regulations/' . $fileName;
             }
 
@@ -192,7 +192,7 @@ class RegulasiController extends Controller
             if ($regulation->file_path && str_starts_with($regulation->file_path, 'regulations/')) {
                 $oldName = substr($regulation->file_path, strlen('regulations/'));
                 if ($oldName !== '') {
-                    Storage::disk('regulasi')->delete($oldName);
+                    Storage::disk('regulations')->delete($oldName);
                 }
             }
             
