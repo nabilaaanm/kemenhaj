@@ -332,6 +332,8 @@ class DataInformasiController extends Controller
 
     public function kbihuStore(Request $request)
     {
+        $this->mergeNormalizedCoordinates($request);
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string',
@@ -377,6 +379,8 @@ class DataInformasiController extends Controller
     public function kbihuUpdate(Request $request, $nama)
     {
         $data = Kbihu::findOrFail(urldecode($nama));
+
+        $this->mergeNormalizedCoordinates($request);
 
         $request->validate([
             'nama' => 'required|string|max:255|unique:kbihu,nama,' . $data->nama . ',nama',
@@ -512,8 +516,8 @@ class DataInformasiController extends Controller
                     'tahun_berdiri' => $tahun !== '' ? $tahun : null,
                     'nama_pimpinan' => $pimpinan !== '' ? $pimpinan : null,
                     'telp' => $telp !== '' ? $telp : null,
-                    'latitude' => $latitude !== null && $latitude !== '' ? (float) $latitude : null,
-                    'longitude' => $longitude !== null && $longitude !== '' ? (float) $longitude : null,
+                    'latitude' => $this->parseCoordinate($latitude),
+                    'longitude' => $this->parseCoordinate($longitude),
                     'maps_url' => $mapsUrl,
                     'order' => $order,
                     'is_active' => true,
@@ -576,8 +580,8 @@ class DataInformasiController extends Controller
     private function buildMapsUrl($mapsUrl, $latitude, $longitude): ?string
     {
         $mapsUrl = is_string($mapsUrl) ? trim($mapsUrl) : '';
-        $lat = is_numeric($latitude) ? (float) $latitude : null;
-        $lng = is_numeric($longitude) ? (float) $longitude : null;
+        $lat = $this->parseCoordinate($latitude);
+        $lng = $this->parseCoordinate($longitude);
 
         if ($mapsUrl !== '') {
             return $mapsUrl;
@@ -588,6 +592,47 @@ class DataInformasiController extends Controller
         }
 
         return null;
+    }
+
+    private function normalizeCoordinate($value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $normalized = trim((string) $value);
+        if ($normalized === '') {
+            return null;
+        }
+
+        return str_replace(',', '.', $normalized);
+    }
+
+    private function parseCoordinate($value): ?float
+    {
+        $normalized = $this->normalizeCoordinate($value);
+        if ($normalized === null || !is_numeric($normalized)) {
+            return null;
+        }
+
+        return (float) $normalized;
+    }
+
+    private function mergeNormalizedCoordinates(Request $request): void
+    {
+        $request->merge([
+            'latitude' => $this->normalizeCoordinate($request->input('latitude')),
+            'longitude' => $this->normalizeCoordinate($request->input('longitude')),
+        ]);
+    }
+
+    private function generatePpiuNoIzin(): string
+    {
+        do {
+            $noIzin = 'AUTO-' . strtoupper(Str::random(8));
+        } while (Ppiu::where('no_izin', $noIzin)->exists());
+
+        return $noIzin;
     }
 
     // ==================== PPIU ====================
@@ -608,6 +653,8 @@ class DataInformasiController extends Controller
 
     public function ppiuStore(Request $request)
     {
+        $this->mergeNormalizedCoordinates($request);
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
@@ -640,7 +687,7 @@ class DataInformasiController extends Controller
             ];
 
             if (Schema::hasColumn('ppiu', 'no_izin')) {
-                $payload['no_izin'] = 'AUTO-' . strtoupper(Str::random(8));
+                $payload['no_izin'] = $this->generatePpiuNoIzin();
             }
 
             Ppiu::create($payload);
@@ -660,6 +707,8 @@ class DataInformasiController extends Controller
     public function ppiuUpdate(Request $request, $no_izin)
     {
         $data = Ppiu::findOrFail(urldecode($no_izin));
+
+        $this->mergeNormalizedCoordinates($request);
 
         $request->validate([
             'nama' => 'required|string|max:255',
@@ -743,6 +792,7 @@ class DataInformasiController extends Controller
             $colLongitude = $this->resolveColumn($headerMap, ['longitude', 'long', 'lng']);
             $colMaps = $this->resolveColumn($headerMap, ['maps url', 'maps', 'google maps', 'link maps']);
             $colNo = $this->resolveColumn($headerMap, ['no', 'nomor', 'no.']);
+            $colNoIzin = $this->resolveColumn($headerMap, ['no izin', 'nomor izin', 'no. izin', 'no izin ppiu']);
 
             if (!$colNama || !$colAlamat) {
                 $colNama = $colNama ?: 'B';
@@ -768,6 +818,7 @@ class DataInformasiController extends Controller
                 $longitude = $colLongitude ? $row[$colLongitude] ?? null : null;
                 $mapsRaw = $colMaps ? $row[$colMaps] ?? null : null;
                 $noValue = $colNo ? ($row[$colNo] ?? null) : null;
+                $noIzin = $colNoIzin ? trim((string) ($row[$colNoIzin] ?? '')) : '';
 
                 if ($nama === '' && $alamat === '') {
                     $skipped++;
@@ -781,19 +832,29 @@ class DataInformasiController extends Controller
 
                 $mapsUrl = $this->buildMapsUrl($mapsRaw, $latitude, $longitude);
 
-                Ppiu::create([
+                if ($noIzin === '' && Schema::hasColumn('ppiu', 'no_izin')) {
+                    $noIzin = $this->generatePpiuNoIzin();
+                }
+
+                $payload = [
                     'nama' => $nama ?: '-',
                     'direktur' => $direktur !== '' ? $direktur : null,
                     'alamat' => $alamat ?: '-',
                     'no_telp' => $telp !== '' ? $telp : null,
                     'terakreditasi' => $akreditasi !== '' ? $akreditasi : null,
-                    'latitude' => $latitude !== null && $latitude !== '' ? (float) $latitude : null,
-                    'longitude' => $longitude !== null && $longitude !== '' ? (float) $longitude : null,
+                    'latitude' => $this->parseCoordinate($latitude),
+                    'longitude' => $this->parseCoordinate($longitude),
                     'maps_url' => $mapsUrl,
                     'status' => 'Aktif',
                     'order' => $order,
                     'is_active' => true,
-                ]);
+                ];
+
+                if (Schema::hasColumn('ppiu', 'no_izin')) {
+                    $payload['no_izin'] = $noIzin;
+                }
+
+                Ppiu::create($payload);
 
                 $inserted++;
             }
@@ -808,6 +869,7 @@ class DataInformasiController extends Controller
     public function ppiuTemplate()
     {
         $headers = [
+            'No Izin',
             'Nama',
             'Direktur',
             'Alamat Cabang',
