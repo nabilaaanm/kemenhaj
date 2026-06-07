@@ -240,6 +240,9 @@ class DataInformasiController extends Controller
 
             $inserted = 0;
             $skipped = 0;
+            $duplicates = 0;
+            $seenInFile = [];
+            $compareFields = ['nama', 'nama_ayah', 'nomor_porsi', 'status', 'keterangan', 'nomor_paspor'];
 
             foreach ($rows as $row) {
                 $nomorPorsi = trim((string) ($row[$colNomor] ?? ''));
@@ -253,10 +256,6 @@ class DataInformasiController extends Controller
                     $skipped++;
                     continue;
                 }
-                if (BerhakLunas::where('nomor_porsi', $nomorPorsi)->exists()) {
-                    $skipped++;
-                    continue;
-                }
 
                 $status = match (true) {
                     $statusRaw === 'CADANGAN' => 'Cadangan',
@@ -267,7 +266,7 @@ class DataInformasiController extends Controller
                     default => 'Cadangan',
                 };
                 $keterangan = $keteranganRaw !== '' ? $keteranganRaw : null;
-                BerhakLunas::create([
+                $payload = [
                     'nama' => $nama,
                     'nama_ayah' => $namaAyah !== '' ? $namaAyah : null,
                     'nomor_porsi' => $nomorPorsi,
@@ -275,17 +274,31 @@ class DataInformasiController extends Controller
                     'keterangan' => $keterangan,
                     'nomor_paspor' => $paspor !== '' ? $paspor : null,
                     'is_active' => true,
-                ]);
+                ];
+
+                $fingerprint = $this->importFingerprint($payload, $compareFields);
+                if ($this->isDuplicateInFile($fingerprint, $seenInFile)) {
+                    $duplicates++;
+                    continue;
+                }
+
+                $existing = BerhakLunas::find($nomorPorsi);
+                if ($existing && $this->modelMatchesImport($existing, $payload, $compareFields)) {
+                    $duplicates++;
+                    continue;
+                }
+
+                if ($existing) {
+                    $duplicates++;
+                    continue;
+                }
+
+                BerhakLunas::create($payload);
 
                 $inserted++;
             }
 
-            if ($inserted === 0) {
-                return back()->with('error', 'Tidak ada data valid untuk diimpor. Pastikan kolom Nomor Porsi dan Nama terisi.');
-            }
-
-            return redirect()->route('admin.data-informasi.berhak-lunas.index')
-                ->with('success', "Import selesai: {$inserted} data ditambahkan, {$skipped} baris dilewati.");
+            return $this->finishImportRedirect('admin.data-informasi.berhak-lunas.index', $inserted, $duplicates, $skipped);
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal import: ' . $e->getMessage());
         }
@@ -487,6 +500,9 @@ class DataInformasiController extends Controller
 
             $inserted = 0;
             $skipped = 0;
+            $duplicates = 0;
+            $seenInFile = [];
+            $compareFields = ['nama', 'alamat', 'tahun_berdiri', 'nama_pimpinan', 'telp', 'latitude', 'longitude', 'maps_url'];
 
             foreach ($rows as $row) {
                 $nama = trim((string) ($row[$colNama] ?? ''));
@@ -510,7 +526,7 @@ class DataInformasiController extends Controller
                 }
 
                 $mapsUrl = $this->buildMapsUrl($mapsRaw, $latitude, $longitude);
-                Kbihu::create([
+                $payload = [
                     'nama' => $nama ?: '-',
                     'alamat' => $alamat ?: '-',
                     'tahun_berdiri' => $tahun !== '' ? $tahun : null,
@@ -521,13 +537,31 @@ class DataInformasiController extends Controller
                     'maps_url' => $mapsUrl,
                     'order' => $order,
                     'is_active' => true,
-                ]);
+                ];
+
+                $fingerprint = $this->importFingerprint($payload, $compareFields);
+                if ($this->isDuplicateInFile($fingerprint, $seenInFile)) {
+                    $duplicates++;
+                    continue;
+                }
+
+                $existing = Kbihu::find($payload['nama']);
+                if ($existing && $this->modelMatchesImport($existing, $payload, $compareFields)) {
+                    $duplicates++;
+                    continue;
+                }
+
+                if ($existing) {
+                    $duplicates++;
+                    continue;
+                }
+
+                Kbihu::create($payload);
 
                 $inserted++;
             }
 
-            return redirect()->route('admin.data-informasi.kbihu.index')
-                ->with('success', "Import selesai: {$inserted} data ditambahkan, {$skipped} baris dilewati.");
+            return $this->finishImportRedirect('admin.data-informasi.kbihu.index', $inserted, $duplicates, $skipped);
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal import: ' . $e->getMessage());
         }
@@ -624,6 +658,79 @@ class DataInformasiController extends Controller
             'latitude' => $this->normalizeCoordinate($request->input('latitude')),
             'longitude' => $this->normalizeCoordinate($request->input('longitude')),
         ]);
+    }
+
+    private function normalizeImportValue($value): string
+    {
+        if ($value === null) {
+            return '';
+        }
+
+        if (is_bool($value)) {
+            return $value ? '1' : '0';
+        }
+
+        if (is_int($value) || is_float($value)) {
+            $normalized = rtrim(rtrim(sprintf('%.10F', (float) $value), '0'), '.');
+
+            return $normalized === '' ? '0' : $normalized;
+        }
+
+        return mb_strtolower(trim(preg_replace('/\s+/', ' ', (string) $value) ?? ''));
+    }
+
+    private function importFingerprint(array $data, array $fields): string
+    {
+        $parts = [];
+        foreach ($fields as $field) {
+            $parts[] = $field . '=' . $this->normalizeImportValue($data[$field] ?? null);
+        }
+
+        return implode('|', $parts);
+    }
+
+    private function modelMatchesImport($model, array $data, array $fields): bool
+    {
+        foreach ($fields as $field) {
+            if ($this->normalizeImportValue($model->{$field} ?? null) !== $this->normalizeImportValue($data[$field] ?? null)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function isDuplicateInFile(string $fingerprint, array &$seenInFile): bool
+    {
+        if (isset($seenInFile[$fingerprint])) {
+            return true;
+        }
+
+        $seenInFile[$fingerprint] = true;
+
+        return false;
+    }
+
+    private function finishImportRedirect(string $route, int $inserted, int $duplicates, int $skipped)
+    {
+        if ($inserted === 0 && $duplicates === 0) {
+            return redirect()->route($route)->with('error', 'Tidak ada data valid untuk diimpor.');
+        }
+
+        if ($inserted === 0 && $duplicates > 0) {
+            return redirect()->route($route)->with('error', "Import tidak menambahkan data. {$duplicates} data duplikat (sudah ada di sistem).");
+        }
+
+        $message = "Import selesai: {$inserted} data baru ditambahkan";
+        if ($duplicates > 0) {
+            $message .= ", {$duplicates} data duplikat dilewati";
+        }
+        if ($skipped > 0) {
+            $message .= ", {$skipped} baris kosong dilewati";
+        }
+        $message .= '.';
+
+        return redirect()->route($route)->with('success', $message);
     }
 
     private function generatePpiuNoIzin(): string
@@ -807,6 +914,9 @@ class DataInformasiController extends Controller
 
             $inserted = 0;
             $skipped = 0;
+            $duplicates = 0;
+            $seenInFile = [];
+            $compareFields = ['no_izin', 'nama', 'direktur', 'alamat', 'no_telp', 'terakreditasi', 'latitude', 'longitude', 'maps_url', 'status'];
 
             foreach ($rows as $row) {
                 $nama = trim((string) ($row[$colNama] ?? ''));
@@ -832,10 +942,6 @@ class DataInformasiController extends Controller
 
                 $mapsUrl = $this->buildMapsUrl($mapsRaw, $latitude, $longitude);
 
-                if ($noIzin === '' && Schema::hasColumn('ppiu', 'no_izin')) {
-                    $noIzin = $this->generatePpiuNoIzin();
-                }
-
                 $payload = [
                     'nama' => $nama ?: '-',
                     'direktur' => $direktur !== '' ? $direktur : null,
@@ -850,6 +956,41 @@ class DataInformasiController extends Controller
                     'is_active' => true,
                 ];
 
+                $fingerprintPayload = $payload;
+                if (Schema::hasColumn('ppiu', 'no_izin')) {
+                    $fingerprintPayload['no_izin'] = $noIzin;
+                }
+
+                $fingerprint = $this->importFingerprint($fingerprintPayload, $compareFields);
+                if ($this->isDuplicateInFile($fingerprint, $seenInFile)) {
+                    $duplicates++;
+                    continue;
+                }
+
+                $existing = null;
+                if ($noIzin !== '' && Schema::hasColumn('ppiu', 'no_izin')) {
+                    $existing = Ppiu::find($noIzin);
+                }
+                if (!$existing) {
+                    $existing = Ppiu::where('nama', $payload['nama'])
+                        ->where('alamat', $payload['alamat'])
+                        ->first();
+                }
+
+                if ($existing && $this->modelMatchesImport($existing, $fingerprintPayload, $compareFields)) {
+                    $duplicates++;
+                    continue;
+                }
+
+                if ($existing) {
+                    $duplicates++;
+                    continue;
+                }
+
+                if ($noIzin === '' && Schema::hasColumn('ppiu', 'no_izin')) {
+                    $noIzin = $this->generatePpiuNoIzin();
+                }
+
                 if (Schema::hasColumn('ppiu', 'no_izin')) {
                     $payload['no_izin'] = $noIzin;
                 }
@@ -859,8 +1000,7 @@ class DataInformasiController extends Controller
                 $inserted++;
             }
 
-            return redirect()->route('admin.data-informasi.ppiu.index')
-                ->with('success', "Import selesai: {$inserted} data ditambahkan, {$skipped} baris dilewati.");
+            return $this->finishImportRedirect('admin.data-informasi.ppiu.index', $inserted, $duplicates, $skipped);
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal import: ' . $e->getMessage());
         }
@@ -973,8 +1113,10 @@ class DataInformasiController extends Controller
 
             $inserted = 0;
             $skipped = 0;
+            $duplicates = 0;
+            $seenInFile = [];
+            $compareFields = ['nomor_porsi', 'nama', 'pendidikan', 'kbihu', 'alamat', 'kelurahan', 'kecamatan', 'usia', 'jenis_kelamin', 'tahun_keberangkatan'];
             $preparedRows = [];
-            $yearsToReplace = [];
 
             foreach ($rows as $row) {
                 $getValue = function ($field) use ($colIndex, $row) {
@@ -1028,36 +1170,53 @@ class DataInformasiController extends Controller
                     'jenis_kelamin' => $jenisKelamin,
                     'tahun_keberangkatan' => $tahun,
                 ];
-                $preparedRows[] = [
-                    'nomor_porsi' => $nomorPorsi,
-                    'data' => $data,
-                ];
-                if ($tahun !== null) {
-                    $yearsToReplace[$tahun] = true;
-                }
+                $preparedRows[] = $data;
             }
 
             if (count($preparedRows) === 0) {
                 return back()->with('error', 'Tidak ada data valid untuk diimpor. Pastikan kolom terisi dengan benar.');
             }
 
-            if (!empty($yearsToReplace)) {
-                HajiJamaah::whereIn('tahun_keberangkatan', array_keys($yearsToReplace))->delete();
-            }
-
-            foreach ($preparedRows as $rowData) {
-                $nomorPorsi = $rowData['nomor_porsi'];
-                $data = $rowData['data'];
-                if ($nomorPorsi !== '') {
-                    HajiJamaah::updateOrCreate(['nomor_porsi' => $nomorPorsi], $data);
-                } else {
-                    HajiJamaah::create($data);
+            foreach ($preparedRows as $data) {
+                $fingerprint = $this->importFingerprint($data, $compareFields);
+                if ($this->isDuplicateInFile($fingerprint, $seenInFile)) {
+                    $duplicates++;
+                    continue;
                 }
+
+                $existing = null;
+                if (!empty($data['nomor_porsi'])) {
+                    $existing = HajiJamaah::find($data['nomor_porsi']);
+                }
+
+                if (!$existing && !empty($data['nama'])) {
+                    $candidates = HajiJamaah::where('nama', $data['nama'])
+                        ->where('tahun_keberangkatan', $data['tahun_keberangkatan'])
+                        ->get();
+
+                    foreach ($candidates as $candidate) {
+                        if ($this->modelMatchesImport($candidate, $data, $compareFields)) {
+                            $existing = $candidate;
+                            break;
+                        }
+                    }
+                }
+
+                if ($existing && $this->modelMatchesImport($existing, $data, $compareFields)) {
+                    $duplicates++;
+                    continue;
+                }
+
+                if ($existing) {
+                    $duplicates++;
+                    continue;
+                }
+
+                HajiJamaah::create($data);
                 $inserted++;
             }
 
-            return redirect()->route('admin.data-informasi.statistik.index')
-                ->with('success', "Import selesai: {$inserted} data diproses, {$skipped} baris dilewati.");
+            return $this->finishImportRedirect('admin.data-informasi.statistik.index', $inserted, $duplicates, $skipped);
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal import: ' . $e->getMessage());
         }
