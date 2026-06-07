@@ -83,7 +83,7 @@ class RegulasiController extends Controller
             Regulasi::create($data);
 
             return redirect()->route('admin.regulasi.index')->with('success', 'Regulasi berhasil ditambahkan');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return back()->with('error', 'Gagal menambahkan regulasi: ' . $e->getMessage())->withInput();
         }
     }
@@ -178,7 +178,7 @@ class RegulasiController extends Controller
             }
 
             return redirect()->route('admin.regulasi.index')->with('success', 'Regulasi berhasil diperbarui');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return back()->with('error', 'Gagal memperbarui regulasi: ' . $e->getMessage())->withInput();
         }
     }
@@ -199,7 +199,7 @@ class RegulasiController extends Controller
             $regulation->delete();
 
             return redirect()->route('admin.regulasi.index')->with('success', 'Regulasi berhasil dihapus');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return back()->with('error', 'Gagal menghapus regulasi: ' . $e->getMessage());
         }
     }
