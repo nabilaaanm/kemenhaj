@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use App\Models\Profil;
+use App\Models\SiteSetting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +29,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         View::share('profilGlobal', $profilGlobal);
+
+        View::share('siteSetting', SiteSetting::current());
     }
 }

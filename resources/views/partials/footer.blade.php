@@ -5,10 +5,10 @@
             <!-- Column 1: Logo & Social Media -->
             <div>
                 <div class="flex items-center gap-3 mb-4">
-                    <img src="/image/lambang.png" alt="Logo Kementerian Haji dan Umrah" style="height: 40px; width: auto;">
+                    <img src="{{ $siteSetting->lambang_url }}" alt="Logo {{ $siteSetting->nama_kemenhaj }}" style="height: 40px; width: auto;">
                     <div class="leading-tight">
-                        <p class="text-sm font-semibold footer-text">Kementerian Haji dan Umrah</p>
-                        <p class="text-xs footer-muted">Kota Cirebon</p>
+                        <p class="text-sm font-semibold footer-text">{{ $siteSetting->nama_kemenhaj }}</p>
+                        <p class="text-xs footer-muted">{{ $siteSetting->kota }}</p>
                     </div>
                 </div>
                 <div class="flex gap-3">

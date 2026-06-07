@@ -3,9 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-    <link rel="icon" type="image/png" href="{{ asset('image/lambang.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('image/lambang.png') }}">
-    <title>Video - Kementerian Haji dan Umrah Kota Cirebon</title>
+    @include('partials.favicon')
+    <title>Video - {{ $siteSetting->title_suffix }}</title>
     @include('partials.assets')
     <style>
         * {

@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-    <link rel="icon" type="image/png" href="{{ asset('image/lambang.png') }}">
-    <title>@yield('title', 'Admin') - Kementerian Haji dan Umrah Kota Cirebon</title>
+    @include('partials.favicon')
+    <title>@yield('title', 'Admin') - {{ $siteSetting->title_suffix }}</title>
     @include('partials.assets')
     <style>
         * {
@@ -479,10 +479,10 @@
         <aside class="sidebar" id="sidebar">
             <!-- Sidebar Header -->
             <div class="sidebar-header">
-                <img src="{{ asset('image/lambang.png') }}" alt="Logo">
+                <img src="{{ $siteSetting->lambang_url }}" alt="Logo">
                 <div class="sidebar-header-text">
-                    <h1>Kementerian Haji</h1>
-                    <p>dan Umrah Kota Cirebon</p>
+                    <h1>{{ $siteSetting->nama_kemenhaj }}</h1>
+                    <p>{{ $siteSetting->kota }}</p>
                 </div>
             </div>
             

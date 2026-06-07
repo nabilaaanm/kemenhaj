@@ -491,11 +491,11 @@
             <!-- Logo -->
             <div class="flex items-center gap-3 flex-shrink-0" style="margin-right: 32px;">
                 <a href="/">
-                    <img src="/image/lambang.png" alt="Logo Kementerian Haji dan Umrah" style="height: 40px; width: auto; max-width: 100%;">
+                    <img src="{{ $siteSetting->lambang_url }}" alt="Logo {{ $siteSetting->nama_kemenhaj }}" style="height: 40px; width: auto; max-width: 100%;">
                 </a>
                 <div class="leading-tight flex-shrink-0">
-                    <p class="text-sm font-semibold whitespace-nowrap">Kementerian Haji dan Umrah</p>
-                    <p class="text-xs text-gray-500 whitespace-nowrap">Kota Cirebon</p>
+                    <p class="text-sm font-semibold whitespace-nowrap">{{ $siteSetting->nama_kemenhaj }}</p>
+                    <p class="text-xs text-gray-500 whitespace-nowrap">{{ $siteSetting->kota }}</p>
                 </div>
             </div>
 

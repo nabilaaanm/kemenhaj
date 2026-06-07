@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Profil;
 use App\Models\SiteAppearance;
+use App\Models\SiteSetting;
 use App\Models\TimKemenhaj;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,10 @@ class PengaturanController extends Controller
 {
     public function umum()
     {
-        return view('admin.pengaturan.umum');
+        $this->ensureSiteSettingsTable();
+        $setting = SiteSetting::current();
+
+        return view('admin.pengaturan.umum', compact('setting'));
     }
 
     public function modul()
@@ -278,10 +282,12 @@ class PengaturanController extends Controller
             ->values()
             ->all();
 
-        if (!empty($misiCards)) {
-            $data['misi_konten'] = json_encode($misiCards, JSON_UNESCAPED_UNICODE);
-        } else {
-            $data['misi_konten'] = null;
+        if ($request->has('misi_cards')) {
+            if (!empty($misiCards)) {
+                $data['misi_konten'] = json_encode($misiCards, JSON_UNESCAPED_UNICODE);
+            } else {
+                $data['misi_konten'] = null;
+            }
         }
 
         $cards = collect($request->input('sejarah_cards', []))
@@ -302,10 +308,12 @@ class PengaturanController extends Controller
             ->values()
             ->all();
 
-        if (!empty($cards)) {
-            $data['sejarah_konten'] = json_encode($cards, JSON_UNESCAPED_UNICODE);
-        } else {
-            $data['sejarah_konten'] = null;
+        if ($request->has('sejarah_cards')) {
+            if (!empty($cards)) {
+                $data['sejarah_konten'] = json_encode($cards, JSON_UNESCAPED_UNICODE);
+            } else {
+                $data['sejarah_konten'] = null;
+            }
         }
 
         if ($request->boolean('hapus_struktur_gambar') && !$request->hasFile('struktur_gambar')) {
@@ -426,25 +434,50 @@ class PengaturanController extends Controller
 
     public function updateUmum(Request $request)
     {
-        // Simpan pengaturan umum (nama kemenhaj, kota, lambang)
-        // Untuk demo, kita simpan ke session atau file config
-        // Dalam production, simpan ke database
-        
+        $this->ensureSiteSettingsTable();
+
         $request->validate([
             'nama_kemenhaj' => 'required|string|max:255',
             'kota' => 'required|string|max:255',
             'lambang' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ]);
 
-        // Handle upload lambang jika ada
+        $setting = SiteSetting::current();
+        $data = [
+            'nama_kemenhaj' => $request->nama_kemenhaj,
+            'kota' => $request->kota,
+        ];
+
         if ($request->hasFile('lambang')) {
             $file = $request->file('lambang');
-            $filename = 'lambang.' . $file->getClientOriginalExtension();
+            $filename = 'lambang.' . strtolower($file->getClientOriginalExtension());
             Storage::disk('image')->putFileAs('', $file, $filename);
+            $data['lambang'] = $filename;
         }
+
+        $setting->update($data);
+        SiteSetting::refreshCache();
 
         return redirect()->route('admin.pengaturan.umum')
             ->with('success', 'Pengaturan umum berhasil disimpan.');
+    }
+
+    private function ensureSiteSettingsTable(): void
+    {
+        if (Schema::hasTable('site_settings')) {
+            return;
+        }
+
+        Schema::create('site_settings', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_kemenhaj')->default('Kementerian Haji dan Umrah');
+            $table->string('kota')->default('Kota Cirebon');
+            $table->string('lambang')->default('lambang.png');
+            $table->timestamps();
+        });
+
+        SiteSetting::query()->create(SiteSetting::defaults());
+        SiteSetting::refreshCache();
     }
 
     // Tim Kemenhaj CRUD
