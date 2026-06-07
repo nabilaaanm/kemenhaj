@@ -206,8 +206,21 @@ class RegulasiController extends Controller
 
     private function findRegulasi(string $judul, string $tanggal): Regulasi
     {
-        return Regulasi::where('title', urldecode($judul))
-            ->whereDate('regulation_date', $tanggal)
-            ->firstOrFail();
+        $candidates = array_unique([
+            Regulasi::decodeRouteTitle($judul),
+            urldecode($judul),
+        ]);
+
+        foreach ($candidates as $title) {
+            $regulation = Regulasi::where('title', $title)
+                ->whereDate('regulation_date', $tanggal)
+                ->first();
+
+            if ($regulation) {
+                return $regulation;
+            }
+        }
+
+        abort(404);
     }
 }

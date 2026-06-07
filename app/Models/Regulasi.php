@@ -54,4 +54,35 @@ class Regulasi extends Model
         }
         return null;
     }
+
+    public function routeParams(): array
+    {
+        return [
+            'judul' => self::encodeRouteTitle($this->title),
+            'tanggal' => $this->regulation_date->format('Y-m-d'),
+        ];
+    }
+
+    public static function encodeRouteTitle(string $title): string
+    {
+        return rtrim(strtr(base64_encode($title), '+/', '-_'), '=');
+    }
+
+    public static function decodeRouteTitle(string $judul): string
+    {
+        $judul = urldecode($judul);
+
+        $base64 = strtr($judul, '-_', '+/');
+        $padding = strlen($base64) % 4;
+        if ($padding) {
+            $base64 .= str_repeat('=', 4 - $padding);
+        }
+
+        $decoded = base64_decode($base64, true);
+        if ($decoded !== false && mb_check_encoding($decoded, 'UTF-8')) {
+            return $decoded;
+        }
+
+        return $judul;
+    }
 }

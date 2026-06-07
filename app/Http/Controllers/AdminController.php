@@ -161,7 +161,7 @@ class AdminController extends Controller
                             'description' => Str::limit((string) $regulation->description, 140),
                             'date' => $regulation->created_at,
                             'image' => null,
-                            'url' => route('admin.regulasi.edit', ['judul' => $regulation->title, 'tanggal' => $regulation->regulation_date->format('Y-m-d')]),
+                            'url' => route('admin.regulasi.edit', $regulation->routeParams()),
                         ];
                     })
             );
