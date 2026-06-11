@@ -15,7 +15,17 @@
     </div>
 
     <h3 style="margin-bottom: 24px;">Tambah Pengguna Baru</h3>
-    <p style="color: #6b7280; margin-bottom: 24px;">Hanya dapat menambahkan pengguna dengan role Kontributor atau Editor.</p>
+    <p style="color: #6b7280; margin-bottom: 8px;">
+        Maksimal {{ \App\Models\User::MAX_ADMIN_ACCOUNTS }} akun admin di sistem.
+        Saat ini: <strong>{{ \App\Models\User::adminCount() }}/{{ \App\Models\User::MAX_ADMIN_ACCOUNTS }}</strong> admin.
+    </p>
+    <p style="color: #6b7280; margin-bottom: 24px;">
+        @if($canCreateAdmin ?? false)
+            Anda masih dapat menambahkan akun admin baru.
+        @else
+            Kuota admin sudah penuh. Hanya dapat menambahkan Kontributor atau Editor.
+        @endif
+    </p>
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -92,10 +102,12 @@
             <select name="role" required
                     style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: white;">
                 <option value="">-- Pilih Role --</option>
-                <option value="kontributor" {{ old('role') === 'kontributor' ? 'selected' : '' }}>Kontributor</option>
-                <option value="editor" {{ old('role') === 'editor' ? 'selected' : '' }}>Editor</option>
+                @foreach($roleOptions as $value => $label)
+                    <option value="{{ $value }}" {{ old('role') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                @endforeach
             </select>
             <div style="margin-top: 8px; padding: 12px; background-color: #f3f4f6; border-radius: 8px; font-size: 13px; color: #6b7280;">
+                <strong>Admin:</strong> Akses penuh termasuk manajemen pengguna (maks. {{ \App\Models\User::MAX_ADMIN_ACCOUNTS }} akun)<br>
                 <strong>Kontributor:</strong> Dapat membuat dan mengelola postingan sendiri<br>
                 <strong>Editor:</strong> Dapat membuat, mengedit, dan menghapus semua postingan serta mengelola halaman dan galeri
             </div>

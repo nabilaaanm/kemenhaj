@@ -76,6 +76,24 @@
     $primaryDark = $adjust($primaryColor, -25);
     $primaryLight = $adjust($primaryColor, 25);
     $primaryBg = $adjust($primaryColor, 60);
+    $relativeLuminance = function ($hex) use ($normalizeHex) {
+        $hex = $normalizeHex($hex);
+        if (!preg_match('/^#([A-Fa-f0-9]{6})$/', $hex)) {
+            return 0.25;
+        }
+        $hex = ltrim($hex, '#');
+        $channels = [];
+        foreach ([0, 2, 4] as $offset) {
+            $c = hexdec(substr($hex, $offset, 2)) / 255;
+            $channels[] = $c <= 0.03928 ? $c / 12.92 : pow(($c + 0.055) / 1.055, 2.4);
+        }
+        return 0.2126 * $channels[0] + 0.7152 * $channels[1] + 0.0722 * $channels[2];
+    };
+    $isDarkColor = fn ($hex) => $relativeLuminance($hex) < 0.45;
+    $contrastText = $isDarkColor($primaryColor) ? '#ffffff' : '#111827';
+    $contrastMuted = $isDarkColor($primaryColor) ? 'rgba(255, 255, 255, 0.88)' : '#374151';
+    $sidebarCardText = $contrastText;
+    $sidebarCardMuted = $contrastMuted;
 @endphp
 
 <style>
@@ -87,8 +105,14 @@
         --page-bg: #f9fafb;
         --page-text: #111827;
         --title-text: #111827;
-        --footer-text: #111827;
-        --footer-muted: #4b5563;
+        --on-dark-text: #ffffff;
+        --on-dark-muted: rgba(255, 255, 255, 0.88);
+        --on-light-text: #111827;
+        --on-light-muted: #374151;
+        --footer-text: {{ $contrastText }};
+        --footer-muted: {{ $contrastMuted }};
+        --sidebar-card-text: {{ $sidebarCardText }};
+        --sidebar-card-muted: {{ $sidebarCardMuted }};
         --card-bg: #ffffff;
         --card-border: #e5e7eb;
     }
@@ -96,8 +120,8 @@
         --page-bg: #0f172a;
         --page-text: #e2e8f0;
         --title-text: #ffffff;
-        --footer-text: #ffffff;
-        --footer-muted: #cbd5f5;
+        --on-light-text: #e2e8f0;
+        --on-light-muted: #cbd5e1;
         --card-bg: #111827;
         --card-border: #1f2937;
     }
@@ -148,6 +172,30 @@
     }
     .footer-muted {
         color: var(--footer-muted) !important;
+    }
+    .footer-custom a.footer-muted:hover {
+        color: var(--footer-text) !important;
+        opacity: 1;
+    }
+    .text-on-dark {
+        color: var(--on-dark-text) !important;
+    }
+    .text-on-dark-muted {
+        color: var(--on-dark-muted) !important;
+    }
+    .text-on-light-muted {
+        color: var(--on-light-muted) !important;
+    }
+    .hero-carousel .hero-content,
+    .hero-carousel .hero-content .page-title {
+        color: var(--on-dark-text) !important;
+    }
+    .hero-carousel .hero-content p {
+        color: var(--on-dark-muted) !important;
+    }
+    .bg-white .text-gray-500,
+    .news-meta {
+        color: var(--on-light-muted) !important;
     }
     .header-container {
         max-width: 1280px;
@@ -219,7 +267,7 @@
         bottom: 22px;
         z-index: 10000;
         display: flex;
-        flex-direction: column;
+        flex-direction: column-reverse;
         gap: 12px;
         align-items: flex-end;
         font-family: inherit;
@@ -867,7 +915,8 @@
     (function () {
         const toggle = document.getElementById('accessibilityToggle');
         const panel = document.getElementById('accessibilityPanel');
-        if (!toggle || !panel) return;
+        const widget = document.querySelector('.accessibility-widget');
+        if (!toggle || !panel || !widget) return;
 
         const settingsKey = 'accessibilitySettings';
         const defaultSettings = {
@@ -923,18 +972,25 @@
             toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         };
 
-        toggle.addEventListener('click', () => {
+        toggle.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             setPanel(!panel.classList.contains('active'));
         });
 
-        document.addEventListener('click', (event) => {
-            if (!panel.contains(event.target) && !toggle.contains(event.target)) {
-                setPanel(false);
-            }
+        // Cegah klik di dalam widget menutup panel (perilaku Chrome/Edge).
+        widget.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+        widget.addEventListener('mousedown', (event) => {
+            event.stopPropagation();
         });
 
-        panel.addEventListener('click', (event) => {
-            event.stopPropagation();
+        document.addEventListener('click', (event) => {
+            if (widget.contains(event.target)) {
+                return;
+            }
+            setPanel(false);
         });
 
         document.getElementById('accIncrease')?.addEventListener('click', () => {

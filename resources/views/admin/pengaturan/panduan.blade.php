@@ -234,7 +234,7 @@
                     <li>Isi nama lengkap pengguna</li>
                     <li>Isi email pengguna (harus unik, belum terdaftar)</li>
                     <li>Isi password dan konfirmasi password (minimal 6 karakter)</li>
-                    <li>Pilih role: <strong>Kontributor</strong> atau <strong>Editor</strong> (tidak bisa membuat admin baru)</li>
+                    <li>Pilih role: <strong>Admin</strong>, <strong>Kontributor</strong>, atau <strong>Editor</strong> (maksimal {{ \App\Models\User::MAX_ADMIN_ACCOUNTS }} akun admin)</li>
                     <li>Klik tombol <strong>"Simpan Pengguna"</strong> untuk menyimpan</li>
                     <li>Untuk mengedit, klik tombol <strong>"Edit"</strong> pada pengguna yang ingin diubah</li>
                     <li>Untuk menghapus, klik tombol <strong>"Hapus"</strong> (hanya untuk non-admin, akan muncul konfirmasi)</li>

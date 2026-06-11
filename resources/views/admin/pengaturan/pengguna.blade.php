@@ -16,7 +16,13 @@
         </a>
     </div>
 
-    <p style="color: #6b7280; margin-bottom: 24px;">Hanya admin yang dapat menambah, mengedit, dan menghapus pengguna.</p>
+    <p style="color: #6b7280; margin-bottom: 8px;">Hanya admin yang dapat menambah, mengedit, dan menghapus pengguna.</p>
+    <p style="color: #6b7280; margin-bottom: 24px;">
+        Akun admin aktif: <strong>{{ $adminCount ?? 0 }}/{{ \App\Models\User::MAX_ADMIN_ACCOUNTS }}</strong>
+        @if(($adminCount ?? 0) >= \App\Models\User::MAX_ADMIN_ACCOUNTS)
+            <span style="color: #b45309;">(kuota penuh)</span>
+        @endif
+    </p>
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -69,6 +75,9 @@
                 </thead>
                 <tbody>
                     @foreach ($users as $user)
+                        @php
+                            $isCurrentUser = $user->email === session('user.email');
+                        @endphp
                         <tr style="border-bottom: 1px solid #e5e7eb;">
                             <td style="padding: 12px; color: #374151;">
                                 <div style="font-weight: 600;">{{ $user->name }}</div>
@@ -98,7 +107,7 @@
                                        style="padding: 6px 12px; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; text-decoration: none;">
                                         Edit
                                     </a>
-                                    @if($user->role !== 'admin')
+                                    @if(!$isCurrentUser && ($user->role !== 'admin' || ($adminCount ?? 0) > 1))
                                         <form action="{{ route('admin.pengaturan.pengguna.destroy', $user->email) }}" method="POST" style="display: inline;">
                                             @csrf
                                             @method('DELETE')

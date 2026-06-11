@@ -88,29 +88,36 @@
 
         <div style="margin-bottom: 24px;">
             <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Role</label>
-            @if($pengguna->role === 'admin')
+            <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">
+                Akun admin aktif: <strong>{{ $adminCount ?? 0 }}/{{ \App\Models\User::MAX_ADMIN_ACCOUNTS }}</strong>
+            </p>
+            @if($isLastAdmin ?? false)
                 <input type="hidden" name="role" value="admin">
                 <div style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: #f9fafb; color: #374151; font-weight: 600;">
                     Admin
                 </div>
                 <p style="color: #6b7280; font-size: 13px; margin-top: 8px;">
-                    Akun admin tidak dapat diubah rolenya karena hanya ada satu administrator sistem. Anda tetap dapat mengubah nama, email, dan password.
+                    Ini adalah admin terakhir di sistem. Role tidak dapat diubah, tetapi nama, email, dan password tetap dapat diperbarui.
                 </p>
             @else
                 <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Pilih role untuk pengguna</p>
                 <select name="role" required
                         style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: white;">
                     <option value="">-- Pilih Role --</option>
-                    <option value="kontributor" {{ old('role', $pengguna->role) === 'kontributor' ? 'selected' : '' }}>Kontributor</option>
-                    <option value="editor" {{ old('role', $pengguna->role) === 'editor' ? 'selected' : '' }}>Editor</option>
+                    @foreach($roleOptions as $value => $label)
+                        <option value="{{ $value }}" {{ old('role', $pengguna->role) === $value ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
                 </select>
+                @if(!($canCreateAdmin ?? false) && $pengguna->role !== 'admin')
+                    <p style="color: #b45309; font-size: 13px; margin-top: 8px;">
+                        Kuota admin sudah penuh. Role Admin tidak tersedia untuk pengguna ini.
+                    </p>
+                @endif
             @endif
             <div style="margin-top: 8px; padding: 12px; background-color: #f3f4f6; border-radius: 8px; font-size: 13px; color: #6b7280;">
+                <strong>Admin:</strong> Akses penuh termasuk manajemen pengguna (maks. {{ \App\Models\User::MAX_ADMIN_ACCOUNTS }} akun)<br>
                 <strong>Kontributor:</strong> Dapat membuat dan mengelola postingan sendiri<br>
                 <strong>Editor:</strong> Dapat membuat, mengedit, dan menghapus semua postingan serta mengelola halaman dan galeri
-                @if($pengguna->role === 'admin')
-                    <br><strong>Admin:</strong> Akses penuh termasuk manajemen pengguna
-                @endif
             </div>
         </div>
 

@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 
 class PenggunaController extends Controller
 {
@@ -22,7 +23,9 @@ class PenggunaController extends Controller
         }
 
         $users = User::orderBy('created_at', 'desc')->get();
-        return view('admin.pengaturan.pengguna', compact('users'));
+        $adminCount = User::adminCount();
+
+        return view('admin.pengaturan.pengguna', compact('users', 'adminCount'));
     }
 
     /**
@@ -36,7 +39,10 @@ class PenggunaController extends Controller
             abort(403, 'Akses ditolak. Hanya admin yang dapat mengakses halaman ini.');
         }
 
-        return view('admin.pengaturan.pengguna-create');
+        $canCreateAdmin = User::canCreateAdmin();
+        $roleOptions = User::roleOptions($canCreateAdmin);
+
+        return view('admin.pengaturan.pengguna-create', compact('canCreateAdmin', 'roleOptions'));
     }
 
     /**
@@ -50,11 +56,13 @@ class PenggunaController extends Controller
             abort(403, 'Akses ditolak. Hanya admin yang dapat mengakses halaman ini.');
         }
 
+        $allowedRoles = array_keys(User::roleOptions(User::canCreateAdmin()));
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email|max:255',
             'password' => 'required|min:6|confirmed',
-            'role' => 'required|in:kontributor,editor',
+            'role' => ['required', Rule::in($allowedRoles)],
         ], [
             'name.required' => 'Nama wajib diisi',
             'email.required' => 'Email wajib diisi',
@@ -64,8 +72,14 @@ class PenggunaController extends Controller
             'password.min' => 'Password minimal 6 karakter',
             'password.confirmed' => 'Konfirmasi password tidak cocok',
             'role.required' => 'Role wajib dipilih',
-            'role.in' => 'Role harus kontributor atau editor',
+            'role.in' => 'Role tidak valid',
         ]);
+
+        if ($request->role === 'admin' && !User::canCreateAdmin()) {
+            return back()
+                ->with('error', 'Kuota akun admin sudah penuh. Maksimal ' . User::MAX_ADMIN_ACCOUNTS . ' akun admin.')
+                ->withInput();
+        }
 
         try {
             User::create([
@@ -93,7 +107,20 @@ class PenggunaController extends Controller
         }
 
         $pengguna = User::findOrFail(urldecode($email));
-        return view('admin.pengaturan.pengguna-edit', compact('pengguna'));
+        $adminCount = User::adminCount();
+        $canCreateAdmin = User::canCreateAdmin();
+        $isLastAdmin = $pengguna->role === 'admin' && $adminCount <= 1;
+        $canChangeRole = !$isLastAdmin;
+        $roleOptions = User::roleOptions($canCreateAdmin || $pengguna->role === 'admin');
+
+        return view('admin.pengaturan.pengguna-edit', compact(
+            'pengguna',
+            'adminCount',
+            'canCreateAdmin',
+            'isLastAdmin',
+            'canChangeRole',
+            'roleOptions',
+        ));
     }
 
     /**
@@ -108,18 +135,19 @@ class PenggunaController extends Controller
         }
 
         $pengguna = User::findOrFail(urldecode($email));
-
-        $isAdminAccount = $pengguna->role === 'admin';
+        $adminCount = User::adminCount();
+        $isLastAdmin = $pengguna->role === 'admin' && $adminCount <= 1;
+        $canCreateAdmin = User::canCreateAdmin();
+        $allowedRoles = $isLastAdmin
+            ? ['admin']
+            : array_keys(User::roleOptions($canCreateAdmin || $pengguna->role === 'admin'));
 
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $pengguna->email . ',email|max:255',
             'password' => 'nullable|min:6|confirmed',
+            'role' => ['required', Rule::in($allowedRoles)],
         ];
-
-        if (!$isAdminAccount) {
-            $rules['role'] = 'required|in:kontributor,editor';
-        }
 
         $request->validate($rules, [
             'name.required' => 'Nama wajib diisi',
@@ -132,11 +160,25 @@ class PenggunaController extends Controller
             'role.in' => 'Role tidak valid',
         ]);
 
+        $newRole = $request->role;
+
+        if ($newRole === 'admin' && $pengguna->role !== 'admin' && !User::canCreateAdmin()) {
+            return back()
+                ->with('error', 'Kuota akun admin sudah penuh. Maksimal ' . User::MAX_ADMIN_ACCOUNTS . ' akun admin.')
+                ->withInput();
+        }
+
+        if ($pengguna->role === 'admin' && $newRole !== 'admin' && $adminCount <= 1) {
+            return back()
+                ->with('error', 'Tidak dapat mengubah role admin terakhir di sistem.')
+                ->withInput();
+        }
+
         try {
             $data = [
                 'name' => $request->name,
                 'email' => $request->email,
-                'role' => $isAdminAccount ? 'admin' : $request->role,
+                'role' => $newRole,
             ];
 
             // Update password hanya jika diisi
@@ -187,14 +229,14 @@ class PenggunaController extends Controller
 
         try {
             $pengguna = User::findOrFail(urldecode($email));
-            
+
             // Jangan izinkan menghapus diri sendiri
             if ($pengguna->email === $user['email']) {
                 return back()->with('error', 'Anda tidak dapat menghapus akun sendiri');
             }
 
-            if ($pengguna->role === 'admin') {
-                return back()->with('error', 'Akun admin tidak dapat dihapus.');
+            if ($pengguna->role === 'admin' && User::adminCount() <= 1) {
+                return back()->with('error', 'Tidak dapat menghapus admin terakhir di sistem.');
             }
 
             $pengguna->delete();

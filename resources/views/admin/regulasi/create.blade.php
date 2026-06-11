@@ -76,9 +76,9 @@
             <select name="category" required
                     style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: white;">
                 <option value="">Pilih Kategori</option>
-                <option value="uu" {{ old('category') == 'uu' ? 'selected' : '' }}>Undang Undang</option>
-                <option value="perpres" {{ old('category') == 'perpres' ? 'selected' : '' }}>Peraturan Presiden</option>
-                <option value="lainnya" {{ old('category') == 'lainnya' ? 'selected' : '' }}>Peraturan Lainnya</option>
+                @foreach(\App\Models\Regulasi::categoryOptions() as $value => $label)
+                    <option value="{{ $value }}" {{ old('category') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                @endforeach
             </select>
         </div>
 

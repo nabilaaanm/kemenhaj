@@ -50,7 +50,7 @@ class RegulasiController extends Controller
         $request->validate([
             'title' => 'required|string|max:500',
             'description' => 'nullable|string',
-            'category' => 'required|in:uu,perpres,lainnya',
+            'category' => 'required|in:' . implode(',', Regulasi::categoryKeys()),
             'regulation_date' => 'required|date',
             'file' => 'nullable|mimes:pdf|max:10240', // Max 10MB
         ], [
@@ -122,7 +122,7 @@ class RegulasiController extends Controller
         $request->validate([
             'title' => 'required|string|max:500',
             'description' => 'nullable|string',
-            'category' => 'required|in:uu,perpres,lainnya',
+            'category' => 'required|in:' . implode(',', Regulasi::categoryKeys()),
             'regulation_date' => 'required|date',
             'file' => 'nullable|mimes:pdf|max:10240', // Max 10MB
         ], [

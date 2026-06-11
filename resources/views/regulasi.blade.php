@@ -78,21 +78,35 @@
         </p>
     </div>
 
+    @php
+        $buildRegulasiUrl = function (string $category = 'all', ?string $search = null) use ($searchQuery) {
+            $params = array_filter([
+                'category' => $category !== 'all' ? $category : null,
+                'q' => ($search ?? $searchQuery) !== '' ? ($search ?? $searchQuery) : null,
+            ]);
+
+            return route('regulasi', $params);
+        };
+    @endphp
+
     <!-- Search Section -->
     <div class="mb-8">
-        <div class="flex flex-col md:flex-row gap-4 items-center justify-center max-w-2xl mx-auto">
+        <form method="GET" action="{{ route('regulasi') }}" class="flex flex-col md:flex-row gap-4 items-center justify-center max-w-2xl mx-auto">
+            @if(($activeCategory ?? 'all') !== 'all')
+                <input type="hidden" name="category" value="{{ $activeCategory }}">
+            @endif
             <div class="flex-1 w-full">
-                <input type="text" id="regulasiSearch" data-i18n-placeholder="regulasi.searchPlaceholder" placeholder="Cari regulasi..."
+                <input type="text" name="q" value="{{ $searchQuery ?? '' }}" data-i18n-placeholder="regulasi.searchPlaceholder" placeholder="Cari regulasi..."
                     class="w-full border rounded-lg px-4 py-3 text-sm focus-custom"
                     style="min-width: 0;">
             </div>
-            <button class="btn-custom text-black font-semibold px-6 py-3 rounded-lg text-sm whitespace-nowrap flex items-center gap-2" id="searchBtn" data-i18n="regulasi.searchBtn">
+            <button type="submit" class="btn-custom text-black font-semibold px-6 py-3 rounded-lg text-sm whitespace-nowrap flex items-center gap-2" data-i18n="regulasi.searchBtn">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
                 Cari
             </button>
-        </div>
+        </form>
     </div>
 
     <!-- Filter Section -->
@@ -101,10 +115,12 @@
             Filter Berdasarkan Kategori
         </h2>
         <div class="flex flex-wrap gap-3">
-            <button class="filter-btn active" data-category="all" data-i18n="regulasi.filterAll">Semua</button>
-            <button class="filter-btn" data-category="uu" data-i18n="regulasi.filterUU">Undang Undang</button>
-            <button class="filter-btn" data-category="perpres" data-i18n="regulasi.filterPerpres">Peraturan Presiden</button>
-            <button class="filter-btn" data-category="lainnya" data-i18n="regulasi.filterLainnya">Peraturan Lainnya</button>
+            @foreach(\App\Models\Regulasi::filterCategories() as $categoryKey => $categoryLabel)
+                <a href="{{ $buildRegulasiUrl($categoryKey) }}"
+                   class="filter-btn {{ ($activeCategory ?? 'all') === $categoryKey ? 'active' : '' }}">
+                    {{ $categoryLabel }}
+                </a>
+            @endforeach
         </div>
     </div>
 
@@ -153,10 +169,22 @@
             </article>
         @empty
             <div class="text-center py-12">
-                <p class="text-gray-600">Belum ada regulasi yang ditampilkan.</p>
+                <p class="text-gray-600">
+                    @if(($searchQuery ?? '') !== '' || ($activeCategory ?? 'all') !== 'all')
+                        Tidak ada regulasi yang sesuai dengan filter.
+                    @else
+                        Belum ada regulasi yang ditampilkan.
+                    @endif
+                </p>
             </div>
         @endforelse
     </div>
+
+    @if($regulations->hasPages())
+        <div class="regulasi-pagination mt-8">
+            {{ $regulations->onEachSide(1)->links('pagination.berhak-lunas') }}
+        </div>
+    @endif
 </main>
 
 @include('partials.footer')
@@ -193,6 +221,8 @@
     
     /* Filter Buttons */
     .filter-btn {
+        display: inline-flex;
+        align-items: center;
         padding: 8px 16px;
         border-radius: 8px;
         background-color: #F3F4F6;
@@ -203,6 +233,7 @@
         cursor: pointer;
         transition: all 0.2s;
         white-space: nowrap;
+        text-decoration: none;
     }
     
     .filter-btn:hover {
@@ -220,6 +251,21 @@
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
+    }
+
+    .regulasi-pagination .bl-pagination {
+        border-color: #e5e7eb;
+    }
+
+    .regulasi-pagination .bl-pagination__item.is-active .bl-pagination__link {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+        color: #111827;
+    }
+
+    .regulasi-pagination .bl-pagination__link:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
     }
     
     /* Grid stability */
@@ -343,46 +389,6 @@
             }
         });
 
-        
-        // Filter & search functionality
-        const searchInput = document.getElementById('regulasiSearch');
-        const searchBtn = document.getElementById('searchBtn');
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        const regulasiCards = document.querySelectorAll('.regulasi-card');
-        let activeCategory = 'all';
-
-        const applyFilters = () => {
-            const searchTerm = (searchInput?.value || '').toLowerCase().trim();
-            regulasiCards.forEach(card => {
-                const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
-                const category = (card.dataset.category || '').toLowerCase();
-                const matchesCategory = activeCategory === 'all' || category === activeCategory;
-                const matchesSearch = title.includes(searchTerm);
-                card.style.display = matchesCategory && matchesSearch ? 'block' : 'none';
-            });
-        };
-        
-        filterButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                activeCategory = this.dataset.category || 'all';
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                applyFilters();
-            });
-        });
-
-        if (searchBtn) {
-            searchBtn.addEventListener('click', applyFilters);
-        }
-
-        if (searchInput) {
-            searchInput.addEventListener('input', applyFilters);
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    applyFilters();
-                }
-            });
-        }
     });
 </script>
 

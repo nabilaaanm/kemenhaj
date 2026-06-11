@@ -7,6 +7,12 @@ use Illuminate\Support\Facades\Storage;
 
 class Regulasi extends Model
 {
+    public const CATEGORY_UU = 'uu';
+    public const CATEGORY_PERPRES = 'perpres';
+    public const CATEGORY_KEPPRES = 'keppres';
+    public const CATEGORY_KEPMEN = 'kepmen';
+    public const CATEGORY_LAINNYA = 'lainnya';
+
     protected $table = 'regulasi';
 
     protected $primaryKey = ['title', 'regulation_date'];
@@ -44,12 +50,35 @@ class Regulasi extends Model
         return $query;
     }
 
+    public static function categoryOptions(): array
+    {
+        return [
+            self::CATEGORY_UU => 'Undang Undang',
+            self::CATEGORY_PERPRES => 'Peraturan Presiden',
+            self::CATEGORY_KEPPRES => 'Keputusan Presiden',
+            self::CATEGORY_KEPMEN => 'Keputusan Menteri',
+            self::CATEGORY_LAINNYA => 'Peraturan Lainnya',
+        ];
+    }
+
+    public static function categoryKeys(): array
+    {
+        return array_keys(self::categoryOptions());
+    }
+
+    public static function filterCategories(): array
+    {
+        return ['all' => 'Semua'] + self::categoryOptions();
+    }
+
     public function getBadgeTextAttribute()
     {
         $badges = [
-            'uu' => 'UNDANG UNDANG',
-            'perpres' => 'PERATURAN PRESIDEN',
-            'lainnya' => 'PERATURAN LAINNYA',
+            self::CATEGORY_UU => 'UNDANG UNDANG',
+            self::CATEGORY_PERPRES => 'PERATURAN PRESIDEN',
+            self::CATEGORY_KEPPRES => 'KEPUTUSAN PRESIDEN',
+            self::CATEGORY_KEPMEN => 'KEPUTUSAN MENTERI',
+            self::CATEGORY_LAINNYA => 'PERATURAN LAINNYA',
         ];
 
         return $badges[$this->category] ?? 'PERATURAN LAINNYA';

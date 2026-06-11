@@ -82,7 +82,7 @@
                                     {{ $slide->title }}
                                 </h1>
                                 @if($slide->description)
-                                    <p class="text-sm md:text-base text-gray-200 mb-6">
+                                    <p class="text-sm md:text-base text-on-dark-muted mb-6">
                                         {{ $slide->description }}
                                     </p>
                                 @endif
@@ -106,7 +106,7 @@
                             Bimtek Pemvisaan Haji 1447H/2026M Digelar, 
                             Misi Perkuat Akurasi Dokumen Jemaah
                         </h1>
-                        <p class="text-sm md:text-base text-gray-200 mb-6" data-i18n="hero.slide1.description">
+                        <p class="text-sm md:text-base text-on-dark-muted mb-6" data-i18n="hero.slide1.description">
                             Serpong — Direktorat Pelayanan Haji Dalam Negeri Kementerian Haji dan Umrah RI
                             menggelar Bimbingan Teknis Penyelesaian Dokumen Pemvisaan Haji.
                         </p>
@@ -127,7 +127,7 @@
                             Kemenhaj Tetap Buka Layanan di Hari Libur, 
                             Percepat Persiapan Haji
                         </h1>
-                        <p class="text-sm md:text-base text-gray-200 mb-6" data-i18n="hero.slide2.description">
+                        <p class="text-sm md:text-base text-on-dark-muted mb-6" data-i18n="hero.slide2.description">
                             Kemenhaj (Jakarta) — Kementerian Haji dan Umrah (Kemenhaj) tetap membuka layanan kepada jemaah haji 
                             di tingkat kabupaten/kota meskipun pada hari libur.
                         </p>
@@ -148,7 +148,7 @@
                             Kemenhaj Fokus Penyelenggaraan Haji 1447 H/2026 M: 
                             Tepat Waktu, Berkualitas
                         </h1>
-                        <p class="text-sm md:text-base text-gray-200 mb-6" data-i18n="hero.slide3.description">
+                        <p class="text-sm md:text-base text-on-dark-muted mb-6" data-i18n="hero.slide3.description">
                             Jakarta (Kemenhaj) — Menteri Haji dan Umrah RI menegaskan komitmen pelayanan haji yang tepat waktu, 
                             berkualitas tinggi, dan memperkuat perlindungan jemaah.
                         </p>
@@ -284,14 +284,14 @@
 
                 <div class="space-y-4 text-sm w-full">
                     @forelse($announcementPosts as $post)
-                    <div class="flex gap-3 border-b pb-3 w-full search-card">
+                    <div class="flex gap-3 border-b pb-3 w-full search-card sidebar-post-card">
                             <img src="{{ $post->cover_url ?: asset('image/lambang.png') }}" class="object-cover rounded flex-shrink-0" style="width: 56px; height: 56px; min-width: 56px;">
                         <div class="flex-1 min-w-0">
                             <p class="font-medium leading-snug search-title">
                                     {{ $post->title }}
                                 </p>
                             <div class="news-meta-row">
-                                <p class="text-xs text-gray-500">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                                <p class="text-xs sidebar-card-date">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
                                 <p class="view-meta">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/>
@@ -352,14 +352,14 @@
 
                 <div class="space-y-4 text-sm w-full">
                     @forelse($pressPosts as $post)
-                        <div class="flex gap-3 border-b pb-3 w-full search-card">
+                        <div class="flex gap-3 border-b pb-3 w-full search-card sidebar-post-card">
                             <img src="{{ $post->cover_url ?: asset('image/lambang.png') }}" class="object-cover rounded flex-shrink-0" style="width: 56px; height: 56px; min-width: 56px;">
                         <div class="flex-1 min-w-0">
                             <p class="font-medium leading-snug search-title">
                                     {{ $post->title }}
                                 </p>
                                 <div class="news-meta-row">
-                                    <p class="text-xs text-gray-500">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                                    <p class="text-xs sidebar-card-date">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
                                     <p class="view-meta">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/>
@@ -419,14 +419,14 @@
                 <h2 class="text-lg font-semibold mb-4" data-i18n="content.hoax">Klarifikasi Hoax</h2>
                 <div class="space-y-4 text-sm w-full">
                     @forelse($hoaxPosts as $post)
-                        <div class="flex gap-3 border-b pb-3 w-full search-card">
+                        <div class="flex gap-3 border-b pb-3 w-full search-card sidebar-post-card">
                             <img src="{{ $post->cover_url ?: asset('image/lambang.png') }}" class="object-cover rounded flex-shrink-0" style="width: 56px; height: 56px; min-width: 56px;">
                             <div class="flex-1 min-w-0">
                                 <p class="font-medium leading-snug search-title">
                                     {{ $post->title }}
                                 </p>
                                 <div class="news-meta-row">
-                                    <p class="text-xs text-gray-500">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
+                                    <p class="text-xs sidebar-card-date">{{ $post->published_at?->translatedFormat('d F Y') ?? '-' }}</p>
                                     <p class="view-meta">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/>
@@ -927,7 +927,10 @@
         box-sizing: border-box;
     }
     .hero-content .page-title {
-        color: #ffffff !important;
+        color: var(--on-dark-text) !important;
+    }
+    .hero-content p {
+        color: var(--on-dark-muted) !important;
     }
     
     @media (max-width: 1023px) {
@@ -1299,7 +1302,7 @@
         line-height: 1.4;
     }
     .news-excerpt {
-        color: #6b7280;
+        color: var(--on-light-muted);
         text-align: justify;
         text-justify: inter-word;
     }
@@ -1316,7 +1319,7 @@
     }
     .news-meta {
         font-size: 12px;
-        color: #9ca3af;
+        color: var(--on-light-muted);
     }
     .news-meta-row {
         display: flex;
@@ -1344,40 +1347,93 @@
         stroke: var(--color-primary-dark);
     }
 
-    /* Sidebar cards (Pengumuman & Klarifikasi Hoax) */
-    .sidebar-section .bg-white .flex {
+    /* Sidebar cards (Pengumuman, Siaran Pers & Klarifikasi Hoax) */
+    .sidebar-section .sidebar-post-card {
+        position: relative;
+        overflow: hidden;
         border-bottom: none !important;
-        background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary-bg));
-        border: 1px solid var(--color-primary-light);
+        background: linear-gradient(
+            145deg,
+            var(--color-primary-dark) 0%,
+            var(--color-primary) 46%,
+            var(--color-primary-light) 100%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 14px;
         padding: 10px 12px;
         align-items: center;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
-    .sidebar-section .bg-white .flex:hover {
+    .sidebar-section .sidebar-post-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            120deg,
+            rgba(255, 255, 255, 0.24) 0%,
+            rgba(255, 255, 255, 0.08) 36%,
+            transparent 68%
+        );
+        pointer-events: none;
+    }
+    .sidebar-section .sidebar-post-card > * {
+        position: relative;
+        z-index: 1;
+    }
+    .sidebar-section .sidebar-post-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(17, 24, 39, 0.08);
-        background: var(--color-primary-bg);
-        border-color: var(--color-primary);
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.2);
+        border-color: rgba(255, 255, 255, 0.35);
+        background: linear-gradient(
+            145deg,
+            var(--color-primary) 0%,
+            var(--color-primary-light) 55%,
+            var(--color-primary-bg) 100%
+        );
     }
-    .sidebar-section .bg-white img {
+    .sidebar-section .sidebar-post-card .search-title,
+    .sidebar-section .sidebar-post-card .font-medium {
+        color: var(--sidebar-card-text) !important;
+    }
+    .sidebar-section .sidebar-post-card .sidebar-card-date {
+        color: var(--sidebar-card-muted) !important;
+    }
+    .sidebar-section .sidebar-post-card .sidebar-readmore {
+        color: var(--sidebar-card-text) !important;
+    }
+    .sidebar-section .sidebar-post-card .sidebar-readmore:hover {
+        color: var(--sidebar-card-muted) !important;
+    }
+    .sidebar-section .sidebar-post-card .share-toggle {
+        background: rgba(255, 255, 255, 0.14);
+        border-color: rgba(255, 255, 255, 0.42);
+        color: var(--sidebar-card-text);
+    }
+    .sidebar-section .sidebar-post-card .share-toggle:hover {
+        background: rgba(255, 255, 255, 0.24);
+        border-color: rgba(255, 255, 255, 0.55);
+        color: var(--sidebar-card-text);
+    }
+    .sidebar-section .sidebar-post-card img {
         width: 64px;
         height: 64px;
         min-width: 64px;
         border-radius: 12px;
-        box-shadow: 0 6px 14px rgba(17, 24, 39, 0.08);
+        box-shadow: 0 6px 14px rgba(15, 23, 42, 0.18);
+        border: 2px solid rgba(255, 255, 255, 0.35);
     }
-    .sidebar-section .bg-white .font-medium {
+    .sidebar-section .sidebar-post-card .font-medium {
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
     @media (max-width: 640px) {
-        .sidebar-section .bg-white .flex {
+        .sidebar-section .sidebar-post-card {
             padding: 10px;
         }
-        .sidebar-section .bg-white img {
+        .sidebar-section .sidebar-post-card img {
             width: 56px;
             height: 56px;
             min-width: 56px;

@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    public const MAX_ADMIN_ACCOUNTS = 2;
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -57,5 +59,29 @@ class User extends Authenticatable
     public function getAuthIdentifierName(): string
     {
         return 'email';
+    }
+
+    public static function adminCount(): int
+    {
+        return static::where('role', 'admin')->count();
+    }
+
+    public static function canCreateAdmin(): bool
+    {
+        return static::adminCount() < self::MAX_ADMIN_ACCOUNTS;
+    }
+
+    public static function roleOptions(bool $includeAdmin = false): array
+    {
+        $roles = [
+            'kontributor' => 'Kontributor',
+            'editor' => 'Editor',
+        ];
+
+        if ($includeAdmin) {
+            return ['admin' => 'Admin'] + $roles;
+        }
+
+        return $roles;
     }
 }

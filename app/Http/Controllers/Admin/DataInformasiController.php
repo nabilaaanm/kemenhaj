@@ -8,6 +8,7 @@ use App\Models\HajiJamaah;
 use App\Models\Kbihu;
 use App\Models\Ppiu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Dompdf\Dompdf;
@@ -1177,46 +1178,65 @@ class DataInformasiController extends Controller
                 return back()->with('error', 'Tidak ada data valid untuk diimpor. Pastikan kolom terisi dengan benar.');
             }
 
-            foreach ($preparedRows as $data) {
-                $fingerprint = $this->importFingerprint($data, $compareFields);
-                if ($this->isDuplicateInFile($fingerprint, $seenInFile)) {
-                    $duplicates++;
-                    continue;
+            $yearsToReplace = $forceYear !== null
+                ? [$forceYear]
+                : collect($preparedRows)
+                    ->pluck('tahun_keberangkatan')
+                    ->filter()
+                    ->unique()
+                    ->values()
+                    ->all();
+
+            $importResult = DB::transaction(function () use ($yearsToReplace, $preparedRows, $compareFields, &$seenInFile) {
+                $deletedCount = 0;
+                $inserted = 0;
+                $duplicates = 0;
+
+                if (!empty($yearsToReplace)) {
+                    $deletedCount = HajiJamaah::whereIn('tahun_keberangkatan', $yearsToReplace)->delete();
                 }
 
-                $existing = null;
-                if (!empty($data['nomor_porsi'])) {
-                    $existing = HajiJamaah::find($data['nomor_porsi']);
-                }
-
-                if (!$existing && !empty($data['nama'])) {
-                    $candidates = HajiJamaah::where('nama', $data['nama'])
-                        ->where('tahun_keberangkatan', $data['tahun_keberangkatan'])
-                        ->get();
-
-                    foreach ($candidates as $candidate) {
-                        if ($this->modelMatchesImport($candidate, $data, $compareFields)) {
-                            $existing = $candidate;
-                            break;
-                        }
+                foreach ($preparedRows as $data) {
+                    $fingerprint = $this->importFingerprint($data, $compareFields);
+                    if ($this->isDuplicateInFile($fingerprint, $seenInFile)) {
+                        $duplicates++;
+                        continue;
                     }
+
+                    HajiJamaah::create($data);
+                    $inserted++;
                 }
 
-                if ($existing && $this->modelMatchesImport($existing, $data, $compareFields)) {
-                    $duplicates++;
-                    continue;
-                }
+                return compact('deletedCount', 'inserted', 'duplicates');
+            });
 
-                if ($existing) {
-                    $duplicates++;
-                    continue;
-                }
+            $inserted = $importResult['inserted'];
+            $duplicates = $importResult['duplicates'];
+            $deletedCount = $importResult['deletedCount'];
 
-                HajiJamaah::create($data);
-                $inserted++;
+            if ($inserted === 0 && $duplicates === 0) {
+                return redirect()->route('admin.data-informasi.statistik.index')
+                    ->with('error', 'Tidak ada data valid untuk diimpor.');
             }
 
-            return $this->finishImportRedirect('admin.data-informasi.statistik.index', $inserted, $duplicates, $skipped);
+            $yearLabel = count($yearsToReplace) === 1
+                ? (string) $yearsToReplace[0]
+                : implode(', ', $yearsToReplace);
+
+            $message = $deletedCount > 0
+                ? "Import selesai: data tahun {$yearLabel} diganti ({$deletedCount} baris lama dihapus)"
+                : 'Import selesai';
+
+            $message .= ", {$inserted} data diimpor";
+            if ($duplicates > 0) {
+                $message .= ", {$duplicates} duplikat dalam file dilewati";
+            }
+            if ($skipped > 0) {
+                $message .= ", {$skipped} baris kosong dilewati";
+            }
+            $message .= '.';
+
+            return redirect()->route('admin.data-informasi.statistik.index')->with('success', $message);
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal import: ' . $e->getMessage());
         }
