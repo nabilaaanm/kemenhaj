@@ -87,7 +87,7 @@
         <h1 class="text-4xl md:text-5xl font-bold mb-4 page-title" style="color: #374151;">
             {{ $profil?->sejarah_judul ?? 'Sejarah Kementerian Haji dan Umrah Kota Cirebon' }}
         </h1>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto profil-text-justify">
             {{ $profil?->sejarah_subjudul ?? 'Perjalanan panjang dalam melayani jemaah haji dan umrah di Kota Cirebon' }}
         </p>
     </div>
@@ -118,7 +118,7 @@
                                         <h3 class="text-xl font-bold mb-3" style="color: #374151;">
                                             {{ $card['title'] ?? '' }}
                                         </h3>
-                                        <p class="text-gray-700 leading-relaxed">
+                                        <p class="text-gray-700 leading-relaxed profil-text-justify">
                                             {!! nl2br(e($card['description'] ?? '')) !!}
                                         </p>
                                     </div>
@@ -131,7 +131,7 @@
         @else
             <div class="max-w-3xl mx-auto">
                 <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-                    <div class="prose max-w-none text-gray-700 leading-relaxed">
+                    <div class="prose max-w-none text-gray-700 leading-relaxed profil-text-justify">
                         {!! nl2br(e($rawSejarah)) !!}
                     </div>
                 </div>
@@ -233,6 +233,12 @@
         background-color: var(--color-primary-bg);
         color: var(--color-primary);
         padding-left: 24px;
+    }
+
+    .profil-text-justify {
+        text-align: justify;
+        text-justify: inter-word;
+        hyphens: auto;
     }
     
     

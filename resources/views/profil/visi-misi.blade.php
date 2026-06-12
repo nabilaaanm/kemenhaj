@@ -95,7 +95,7 @@
                 </h1>
                 
                 <!-- VISI Description -->
-                <p class="text-lg md:text-xl text-white leading-relaxed max-w-3xl mx-auto" data-i18n="visi.description">
+                <p class="text-lg md:text-xl text-white leading-relaxed max-w-3xl mx-auto profil-text-justify" data-i18n="visi.description">
                     {{ $visiText }}
                 </p>
             </div>
@@ -121,7 +121,7 @@
                         </div>
                         <div class="mt-8">
                             <h3 class="text-xl font-bold text-gray-800 mb-3">{{ $title }}</h3>
-                            <p class="text-gray-600 leading-relaxed">
+                            <p class="text-gray-600 leading-relaxed profil-text-justify">
                                 {{ $description }}
                             </p>
                         </div>
@@ -278,6 +278,12 @@
     
     .misi-card .absolute.top-4.left-4 span {
         transition: transform 0.3s ease;
+    }
+
+    .profil-text-justify {
+        text-align: justify;
+        text-justify: inter-word;
+        hyphens: auto;
     }
 </style>
 

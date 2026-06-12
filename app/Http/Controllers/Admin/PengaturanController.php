@@ -247,91 +247,124 @@ class PengaturanController extends Controller
         ]);
 
         $profil = Profil::first();
-        $data = $request->only([
-            'struktur_organisasi',
-            'struktur_subjudul',
-            'sejarah_judul',
-            'sejarah_subjudul',
-            'sejarah_konten',
-            'visi_konten',
-            'alamat',
-            'alamat_keterangan',
-            'telepon',
-            'telepon_alt',
-            'email',
-            'website',
-            'maps_url',
-            'maps_embed',
-            'maps_embed_kbihu',
-            'maps_embed_ppiu',
-            'facebook',
-            'instagram',
-            'whatsapp',
-        ]);
+        $redirectTo = $request->input('redirect_to', 'admin.profil.struktur');
+        $data = [];
 
-        $misiCards = collect($request->input('misi_cards', []))
-            ->map(function ($card) {
-                return [
-                    'title' => trim((string) ($card['title'] ?? '')),
-                    'description' => trim((string) ($card['description'] ?? '')),
-                ];
-            })
-            ->filter(function ($card) {
-                return $card['title'] !== '' || $card['description'] !== '';
-            })
-            ->values()
-            ->all();
-
-        if ($request->has('misi_cards')) {
-            if (!empty($misiCards)) {
-                $data['misi_konten'] = json_encode($misiCards, JSON_UNESCAPED_UNICODE);
-            } else {
-                $data['misi_konten'] = null;
+        $pickPresent = function (array $fields) use ($request, &$data): void {
+            foreach ($fields as $field) {
+                if ($request->exists($field)) {
+                    $data[$field] = $request->input($field);
+                }
             }
-        }
+        };
 
-        $cards = collect($request->input('sejarah_cards', []))
-            ->map(function ($card) {
-                return [
-                    'label' => trim((string) ($card['label'] ?? '')),
-                    'period' => trim((string) ($card['period'] ?? '')),
-                    'title' => trim((string) ($card['title'] ?? '')),
-                    'description' => trim((string) ($card['description'] ?? '')),
-                ];
-            })
-            ->filter(function ($card) {
-                return $card['label'] !== ''
-                    || $card['period'] !== ''
-                    || $card['title'] !== ''
-                    || $card['description'] !== '';
-            })
-            ->values()
-            ->all();
+        if (str_contains($redirectTo, 'struktur')) {
+            $pickPresent(['struktur_organisasi', 'struktur_subjudul']);
 
-        if ($request->has('sejarah_cards')) {
-            if (!empty($cards)) {
-                $data['sejarah_konten'] = json_encode($cards, JSON_UNESCAPED_UNICODE);
-            } else {
-                $data['sejarah_konten'] = null;
+            if ($request->boolean('hapus_struktur_gambar') && !$request->hasFile('struktur_gambar')) {
+                if ($profil && $profil->struktur_gambar) {
+                    Storage::disk('struktur')->delete($profil->struktur_gambar);
+                }
+                $data['struktur_gambar'] = null;
             }
-        }
 
-        if ($request->boolean('hapus_struktur_gambar') && !$request->hasFile('struktur_gambar')) {
-            if ($profil && $profil->struktur_gambar) {
-                Storage::disk('struktur')->delete($profil->struktur_gambar);
+            if ($request->hasFile('struktur_gambar')) {
+                $file = $request->file('struktur_gambar');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                Storage::disk('struktur')->putFileAs('', $file, $filename);
+                $data['struktur_gambar'] = $filename;
+
+                if ($profil && $profil->struktur_gambar) {
+                    Storage::disk('struktur')->delete($profil->struktur_gambar);
+                }
             }
-            $data['struktur_gambar'] = null;
-        }
+        } elseif (str_contains($redirectTo, 'sejarah')) {
+            $pickPresent(['sejarah_judul', 'sejarah_subjudul', 'sejarah_konten']);
 
-        if ($request->hasFile('struktur_gambar')) {
-            $file = $request->file('struktur_gambar');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            Storage::disk('struktur')->putFileAs('', $file, $filename);
-            $data['struktur_gambar'] = $filename;
+            $cards = collect($request->input('sejarah_cards', []))
+                ->map(function ($card) {
+                    return [
+                        'label' => trim((string) ($card['label'] ?? '')),
+                        'period' => trim((string) ($card['period'] ?? '')),
+                        'title' => trim((string) ($card['title'] ?? '')),
+                        'description' => trim((string) ($card['description'] ?? '')),
+                    ];
+                })
+                ->filter(function ($card) {
+                    return $card['label'] !== ''
+                        || $card['period'] !== ''
+                        || $card['title'] !== ''
+                        || $card['description'] !== '';
+                })
+                ->values()
+                ->all();
 
-            if ($profil && $profil->struktur_gambar) {
-                Storage::disk('struktur')->delete($profil->struktur_gambar);
+            if ($request->has('sejarah_cards')) {
+                $data['sejarah_konten'] = !empty($cards)
+                    ? json_encode($cards, JSON_UNESCAPED_UNICODE)
+                    : null;
             }
+        } elseif (str_contains($redirectTo, 'visi-misi')) {
+            if ($request->exists('visi_konten')) {
+                $data['visi_konten'] = $request->input('visi_konten');
+            }
+
+            $misiCards = collect($request->input('misi_cards', []))
+                ->map(function ($card) {
+                    return [
+                        'title' => trim((string) ($card['title'] ?? '')),
+                        'description' => trim((string) ($card['description'] ?? '')),
+                    ];
+                })
+                ->filter(function ($card) {
+                    return $card['title'] !== '' || $card['description'] !== '';
+                })
+                ->values()
+                ->all();
+
+            if ($request->has('misi_cards')) {
+                $data['misi_konten'] = !empty($misiCards)
+                    ? json_encode($misiCards, JSON_UNESCAPED_UNICODE)
+                    : null;
+            }
+        } elseif (str_contains($redirectTo, 'kontak')) {
+            $pickPresent([
+                'alamat',
+                'alamat_keterangan',
+                'telepon',
+                'telepon_alt',
+                'email',
+                'website',
+                'maps_url',
+                'maps_embed',
+                'maps_embed_kbihu',
+                'maps_embed_ppiu',
+                'facebook',
+                'instagram',
+                'whatsapp',
+            ]);
+        } else {
+            $pickPresent([
+                'struktur_organisasi',
+                'struktur_subjudul',
+                'sejarah_judul',
+                'sejarah_subjudul',
+                'sejarah_konten',
+                'visi_konten',
+                'alamat',
+                'alamat_keterangan',
+                'telepon',
+                'telepon_alt',
+                'email',
+                'website',
+                'maps_url',
+                'maps_embed',
+                'maps_embed_kbihu',
+                'maps_embed_ppiu',
+                'facebook',
+                'instagram',
+                'whatsapp',
+            ]);
         }
         
         // Guard against missing columns if migration not applied yet.
@@ -341,11 +374,9 @@ class PengaturanController extends Controller
         if (!$profil) {
             $data['kode'] = 'utama';
             $profil = Profil::create($data);
-        } else {
+        } elseif (!empty($data)) {
             $profil->update($data);
         }
-
-        $redirectTo = $request->input('redirect_to', 'admin.profil.struktur');
 
         return redirect()->route($redirectTo)
             ->with('success', 'Profil berhasil diperbarui.');
