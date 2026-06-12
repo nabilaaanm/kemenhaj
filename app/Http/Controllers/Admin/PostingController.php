@@ -37,7 +37,10 @@ class PostingController extends Controller
         $postingTableError = null;
 
         try {
-            $posts = Posting::with('category')->orderByDesc('published_at')->orderByDesc('created_at')->get();
+            $posts = Posting::with('category')
+                ->orderByRaw("CASE WHEN submitted_by_role = 'kontributor' AND is_active = 0 THEN 0 ELSE 1 END")
+                ->orderByDesc('created_at')
+                ->get();
         } catch (\Throwable $e) {
             $postingTableError = 'Tabel posting belum tersedia. Jalankan migrasi terlebih dahulu.';
         }
@@ -159,6 +162,9 @@ class PostingController extends Controller
 
         $data['slug'] = $slug;
         $userRole = \Illuminate\Support\Facades\Session::get('user.role', 'kontributor');
+        $data['submitted_by_role'] = $userRole;
+        $data['submitted_by_name'] = \Illuminate\Support\Facades\Session::get('user.name');
+
         if ($userRole === 'editor') {
             $data['is_active'] = $request->boolean('is_active');
         } elseif ($userRole === 'admin') {
@@ -181,7 +187,12 @@ class PostingController extends Controller
             return back()->with('error', 'Tabel posting belum tersedia. Jalankan migrasi terlebih dahulu.');
         }
 
-        return redirect()->route('admin.posting.index')->with('success', 'Posting berhasil disimpan.');
+        return redirect()->route('admin.posting.index')->with(
+            'success',
+            $userRole === 'kontributor'
+                ? 'Posting berhasil disimpan dan menunggu persetujuan editor/admin.'
+                : 'Posting berhasil disimpan.'
+        );
     }
 
     public function edit($id)
@@ -220,7 +231,7 @@ class PostingController extends Controller
         ]);
 
         $userRole = \Illuminate\Support\Facades\Session::get('user.role', 'kontributor');
-        if ($userRole === 'editor') {
+        if (in_array($userRole, ['editor', 'admin'], true)) {
             $data['is_active'] = $request->boolean('is_active');
         } else {
             $data['is_active'] = $post->is_active;
@@ -252,5 +263,44 @@ class PostingController extends Controller
         }
 
         return back()->with('success', 'Posting berhasil dihapus.');
+    }
+
+    public function toggleActive(Request $request, $id)
+    {
+        $userRole = \Illuminate\Support\Facades\Session::get('user.role', 'kontributor');
+        if (!in_array($userRole, ['admin', 'editor'], true)) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Akses ditolak.'], 403);
+            }
+
+            return back()->with('error', 'Akses ditolak.');
+        }
+
+        try {
+            $post = Posting::findOrFail($id);
+        } catch (\Throwable $e) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Posting tidak ditemukan.'], 404);
+            }
+
+            return back()->with('error', 'Posting tidak ditemukan.');
+        }
+
+        $post->is_active = !$post->is_active;
+        $post->save();
+
+        $message = $post->is_active
+            ? 'Posting "' . $post->title . '" berhasil diaktifkan.'
+            : 'Posting "' . $post->title . '" berhasil dinonaktifkan.';
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => $post->is_active,
+                'message' => $message,
+            ]);
+        }
+
+        return back()->with('success', $message);
     }
 }

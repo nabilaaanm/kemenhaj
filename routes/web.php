@@ -481,6 +481,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
 
     // Posting - Admin & Editor only
     Route::middleware(['role:admin,editor'])->prefix('posting')->name('posting.')->group(function () {
+        Route::patch('/{id}/toggle-active', [PostingController::class, 'toggleActive'])->name('toggle-active');
         Route::get('/{id}/edit', [PostingController::class, 'edit'])->name('edit');
         Route::put('/{id}/edit', [PostingController::class, 'update'])->name('update');
         Route::delete('/{id}', [PostingController::class, 'destroy'])->name('destroy');
@@ -491,6 +492,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
     
     // Halaman - Admin, Editor
     Route::middleware(['role:admin,editor'])->prefix('halaman')->name('halaman.')->group(function () {
+        Route::post('/upload-editor-image', [HalamanController::class, 'uploadEditorImage'])->name('upload-editor-image');
         Route::post('/create', [HalamanController::class, 'store'])->name('store');
         Route::get('/create', [HalamanController::class, 'create'])->name('create');
         Route::get('/', [HalamanController::class, 'index'])->name('index');

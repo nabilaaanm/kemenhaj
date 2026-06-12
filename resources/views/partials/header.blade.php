@@ -111,6 +111,7 @@
         --on-light-muted: #374151;
         --footer-text: {{ $contrastText }};
         --footer-muted: {{ $contrastMuted }};
+        --on-primary-text: {{ $contrastText }};
         --sidebar-card-text: {{ $sidebarCardText }};
         --sidebar-card-muted: {{ $sidebarCardMuted }};
         --card-bg: #ffffff;
@@ -128,6 +129,14 @@
     body {
         background-color: var(--page-bg) !important;
         color: var(--page-text) !important;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        padding-bottom: 88px;
+    }
+    main {
+        flex: 1 0 auto;
+        width: 100%;
     }
     .bg-white {
         background-color: var(--card-bg) !important;
@@ -140,9 +149,11 @@
     }
     .btn-custom {
         background-color: var(--color-primary) !important;
+        color: var(--on-primary-text) !important;
     }
     .btn-custom:hover {
         background-color: var(--color-primary-dark) !important;
+        color: var(--on-primary-text) !important;
     }
     .hover-custom:hover {
         color: var(--color-primary) !important;
@@ -153,6 +164,17 @@
     }
     .footer-custom {
         background-color: var(--color-primary) !important;
+        margin-top: auto;
+        flex-shrink: 0;
+        width: 100%;
+    }
+    .footer-container {
+        padding-bottom: 24px;
+    }
+    @media (min-width: 1024px) {
+        .footer-container {
+            padding-right: 190px;
+        }
     }
     .badge-custom {
         background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)) !important;
@@ -266,11 +288,20 @@
         right: 22px;
         bottom: 22px;
         z-index: 10000;
-        display: flex;
-        flex-direction: column-reverse;
-        gap: 12px;
-        align-items: flex-end;
         font-family: inherit;
+        width: 280px;
+        max-width: calc(100vw - 44px);
+        height: 56px;
+    }
+    @media (max-width: 640px) {
+        .accessibility-widget {
+            right: 16px;
+            bottom: 16px;
+        }
+        .accessibility-panel {
+            width: min(280px, calc(100vw - 32px));
+            max-height: min(65vh, 480px);
+        }
     }
     .accessibility-toggle {
         width: 56px;
@@ -285,7 +316,9 @@
         cursor: pointer;
         box-shadow: 0 16px 36px rgba(15, 23, 42, 0.25);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
-        position: relative;
+        position: absolute;
+        right: 0;
+        bottom: 0;
         overflow: hidden;
     }
     .accessibility-toggle::after {
@@ -302,7 +335,14 @@
     }
     .accessibility-panel {
         display: none;
+        position: absolute;
+        right: 0;
+        bottom: calc(56px + 12px);
         width: 280px;
+        max-width: calc(100vw - 44px);
+        max-height: min(70vh, 520px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         background: var(--card-bg);
         color: var(--page-text);
         border: 1px solid var(--card-border);
@@ -942,6 +982,39 @@
         };
         const settings = loadSettings();
 
+        const isFloatingUi = (element) => {
+            if (!element || element.nodeType !== 1) {
+                return false;
+            }
+
+            return element.classList.contains('accessibility-widget')
+                || element.classList.contains('whatsapp-chat')
+                || element.classList.contains('mobile-menu-panel')
+                || element.id === 'whatsappBot';
+        };
+
+        const applyVisualFilters = () => {
+            const filters = [];
+            if (settings.contrast) {
+                filters.push('contrast(1.15)');
+            }
+            if (settings.grayscale) {
+                filters.push('grayscale(1)');
+            }
+            const filterValue = filters.length ? filters.join(' ') : '';
+
+            // Jangan terapkan filter ke body: di Chrome/Edge/mobile filter pada body
+            // mengubah containing block elemen fixed sehingga menu aksesibilitas bergeser.
+            document.body.style.filter = '';
+            Array.from(document.body.children).forEach((child) => {
+                if (isFloatingUi(child)) {
+                    child.style.filter = '';
+                    return;
+                }
+                child.style.filter = filterValue;
+            });
+        };
+
         const applySettings = () => {
             document.documentElement.style.fontSize = settings.fontScale + '%';
             document.documentElement.classList.toggle('accessibility-large-text', settings.fontScale > 100);
@@ -951,10 +1024,7 @@
             document.documentElement.classList.toggle('accessibility-large-cursor', settings.cursor);
             document.documentElement.classList.toggle('accessibility-pause-anim', settings.pauseAnim);
 
-            const filters = [];
-            if (settings.contrast) filters.push('contrast(1.15)');
-            if (settings.grayscale) filters.push('grayscale(1)');
-            document.body.style.filter = filters.length ? filters.join(' ') : 'none';
+            applyVisualFilters();
 
             document.getElementById('accContrast')?.classList.toggle('active', settings.contrast);
             document.getElementById('accGrayscale')?.classList.toggle('active', settings.grayscale);

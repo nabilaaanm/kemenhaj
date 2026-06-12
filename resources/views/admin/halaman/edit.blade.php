@@ -39,9 +39,12 @@
                 </select>
                 <p style="color: #6b7280; font-size: 12px; margin-top: 6px;">Jika posisi menu diubah, halaman dipindahkan ke bagian bawah submenu baru.</p>
             </div>
-            <div style="display:flex; align-items:center; gap:10px; padding-top:28px;">
-                <input type="checkbox" name="is_active" value="1" {{ old('is_active', $page->is_active) ? 'checked' : '' }}>
-                <label>Aktif</label>
+            <div style="padding-top: 8px;">
+                @include('admin.partials.active-toggle', [
+                    'checked' => old('is_active', $page->is_active),
+                    'label' => 'Aktif',
+                    'description' => 'Halaman ditampilkan di menu website',
+                ])
             </div>
         </div>
 
@@ -64,8 +67,9 @@
 
         <div style="margin-bottom: 16px;">
             <label style="display:block; font-weight:600; margin-bottom:8px;">Konten (detail)</label>
-            <textarea name="content" rows="6"
-                      style="width:100%; padding:12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px;">{{ old('content', $page->content) }}</textarea>
+            <p style="font-size: 12px; color: #6b7280; margin: 0 0 8px;">Gunakan toolbar untuk menambah gambar, link, dan mengatur perataan teks. Gambar diunggah ke server agar konten tidak hilang saat disimpan.</p>
+            <textarea name="content" rows="8" class="js-rich-content"
+                      style="width:100%; padding:12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px;">{!! old('content', $page->content) !!}</textarea>
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px;">
@@ -102,4 +106,5 @@
         </button>
     </form>
 </div>
+@include('admin.posting._tinymce', ['tinymceUploadUrl' => route('admin.halaman.upload-editor-image')])
 @endsection

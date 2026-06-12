@@ -100,7 +100,7 @@
                     class="w-full border rounded-lg px-4 py-3 text-sm focus-custom"
                     style="min-width: 0;">
             </div>
-            <button type="submit" class="btn-custom text-black font-semibold px-6 py-3 rounded-lg text-sm whitespace-nowrap flex items-center gap-2" data-i18n="regulasi.searchBtn">
+            <button type="submit" class="btn-custom font-semibold px-6 py-3 rounded-lg text-sm whitespace-nowrap flex items-center gap-2" data-i18n="regulasi.searchBtn">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
@@ -126,15 +126,11 @@
 
     <!-- Regulation List -->
     <div class="space-y-4" id="regulasiList">
-        @php
-            $regulations = $regulations ?? collect([]);
-        @endphp
-        
         @forelse($regulations as $regulation)
             <article class="regulasi-card bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition" data-category="{{ $regulation->category }}">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div class="flex-1">
-                    <span class="inline-block badge-custom text-black text-xs font-bold px-3 py-1 rounded mb-3">
+                    <span class="inline-block badge-custom text-xs font-bold px-3 py-1 rounded mb-3">
                             {{ $regulation->badge_text }}
                     </span>
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">
@@ -155,7 +151,7 @@
                                     $downloadName .= '.pdf';
                                 }
                             @endphp
-                            <a href="{{ $regulation->file_url }}" download="{{ $downloadName }}" class="btn-custom text-black font-semibold px-6 py-2.5 rounded-lg text-sm inline-flex items-center gap-2 hover:bg-opacity-90 transition">
+                            <a href="{{ $regulation->file_url }}" download="{{ $downloadName }}" class="btn-custom font-semibold px-6 py-2.5 rounded-lg text-sm inline-flex items-center gap-2 hover:bg-opacity-90 transition">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="vertical-align: middle;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
@@ -180,9 +176,9 @@
         @endforelse
     </div>
 
-    @if($regulations->hasPages())
+    @if(($regulations->total() ?? 0) > 0)
         <div class="regulasi-pagination mt-8">
-            {{ $regulations->onEachSide(1)->links('pagination.berhak-lunas') }}
+            {{ $regulations->onEachSide(1)->links('pagination.public') }}
         </div>
     @endif
 </main>
@@ -205,18 +201,39 @@
         box-shadow: 0 0 0 1px var(--color-primary);
     }
     
+    /* Footer */
+    .footer-custom {
+        background-color: var(--color-primary);
+    }
+    .footer-text {
+        color: var(--footer-text) !important;
+    }
+    .footer-muted {
+        color: var(--footer-muted) !important;
+    }
+    .footer-custom a.footer-muted:hover {
+        color: var(--footer-text) !important;
+        opacity: 1;
+    }
+    
     /* Badge primary */
     .badge-custom {
         background-color: var(--color-primary);
+        color: var(--on-primary-text) !important;
     }
     
     /* Button primary */
     .btn-custom {
         background-color: var(--color-primary);
-        transition: background-color 0.2s;
+        color: var(--on-primary-text) !important;
+        transition: background-color 0.2s, color 0.2s;
     }
     .btn-custom:hover {
         background-color: var(--color-primary-dark);
+        color: var(--on-primary-text) !important;
+    }
+    .btn-custom svg {
+        stroke: currentColor;
     }
     
     /* Filter Buttons */
@@ -242,7 +259,7 @@
     
     .filter-btn.active {
         background-color: var(--color-primary);
-        color: #000;
+        color: var(--on-primary-text) !important;
         font-weight: 600;
     }
     
@@ -253,19 +270,23 @@
         box-sizing: border-box;
     }
 
-    .regulasi-pagination .bl-pagination {
+    .regulasi-pagination .public-pagination {
         border-color: #e5e7eb;
     }
 
-    .regulasi-pagination .bl-pagination__item.is-active .bl-pagination__link {
+    .regulasi-pagination .public-pagination__item.is-active .public-pagination__link {
         background-color: var(--color-primary);
         border-color: var(--color-primary);
-        color: #111827;
+        color: var(--on-primary-text) !important;
     }
 
-    .regulasi-pagination .bl-pagination__link:hover {
+    .regulasi-pagination .public-pagination__item.is-active .public-pagination__link:hover {
+        color: var(--on-primary-text) !important;
+    }
+
+    .regulasi-pagination .public-pagination__link:hover {
         border-color: var(--color-primary);
-        color: var(--color-primary);
+        color: var(--color-primary-dark);
     }
     
     /* Grid stability */

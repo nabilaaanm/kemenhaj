@@ -38,6 +38,25 @@ class HalamanController extends Controller
         return view('admin.halaman.create');
     }
 
+    public function uploadEditorImage(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        ], [
+            'file.required' => 'Berkas gambar wajib diunggah.',
+            'file.image' => 'Berkas harus berupa gambar.',
+            'file.max' => 'Ukuran gambar maksimal 5 MB.',
+        ]);
+
+        $file = $request->file('file');
+        $extension = $file->getClientOriginalExtension() ?: $file->extension();
+        $filename = time() . '_' . Str::random(12) . ($extension ? '.' . $extension : '');
+
+        Storage::disk('pages')->putFileAs('', $file, $filename);
+
+        return response()->json(['location' => Storage::disk('pages')->url($filename)]);
+    }
+
     public function index()
     {
         $pages = CustomPage::orderBy('group')

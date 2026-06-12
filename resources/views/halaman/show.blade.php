@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
     @include('partials.favicon')
     <title>{{ $page->title }} - {{ $siteSetting->title_suffix }}</title>
-    @include('partials.assets')
+    @include('partials.rich-content-styles')
     <style>
         * {
             box-sizing: border-box;
@@ -129,8 +129,8 @@
     @endif
 
     @if($page->content)
-        <div class="prose max-w-none">
-            {!! nl2br(e($page->content)) !!}
+        <div class="rich-content">
+            {!! $page->content !!}
         </div>
     @endif
 

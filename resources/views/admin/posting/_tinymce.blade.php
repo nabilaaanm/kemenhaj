@@ -47,7 +47,7 @@
     };
 
     const csrf = @json(csrf_token());
-    const uploadUrl = @json(route('admin.posting.upload-editor-image'));
+    const uploadUrl = @json($tinymceUploadUrl ?? route('admin.posting.upload-editor-image'));
 
     const images_upload_handler = (blobInfo, progress) => new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();

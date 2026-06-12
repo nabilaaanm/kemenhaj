@@ -114,10 +114,13 @@
                 <input type="text" name="source" value="{{ old('source', $post->source) }}"
                        style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px;">
             </div>
-            @if(session('user.role', 'kontributor') === 'editor')
-                <div style="display: flex; align-items: center; gap: 8px; margin-top: 28px;">
-                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', $post->is_active) ? 'checked' : '' }}>
-                    <label style="font-weight: 600; color: #374151;">Tampilkan di publik</label>
+            @if(in_array(session('user.role', 'kontributor'), ['admin', 'editor'], true))
+                <div style="grid-column: 1 / -1;">
+                    @include('admin.partials.active-toggle', [
+                        'checked' => old('is_active', $post->is_active),
+                        'label' => 'Tampilkan di publik',
+                        'description' => 'Postingan terlihat di halaman berita website',
+                    ])
                 </div>
             @endif
         </div>

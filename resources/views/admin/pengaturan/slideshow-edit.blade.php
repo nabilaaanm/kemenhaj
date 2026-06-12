@@ -100,10 +100,11 @@
         </div>
 
         <div style="margin-bottom: 24px;">
-            <label style="display: inline-flex; align-items: center; gap: 8px; color: #374151;">
-                <input type="checkbox" name="is_active" value="1" {{ old('is_active', $slide->is_active) ? 'checked' : '' }}>
-                Aktif
-            </label>
+            @include('admin.partials.active-toggle', [
+                'checked' => old('is_active', $slide->is_active),
+                'label' => 'Aktif',
+                'description' => 'Slide ditampilkan di slideshow beranda',
+            ])
         </div>
 
         <div style="display: flex; gap: 12px;">

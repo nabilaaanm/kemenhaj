@@ -28,9 +28,9 @@ class RegulasiController extends Controller
                 $query->where('title', 'like', '%' . $searchQuery . '%');
             }
 
-            $regulations = $query->paginate(10)->withQueryString();
+            $regulations = $query->paginate(5)->withQueryString();
         } catch (\Exception $e) {
-            $regulations = new LengthAwarePaginator([], 0, 10, 1, [
+            $regulations = new LengthAwarePaginator([], 0, 5, 1, [
                 'path' => $request->url(),
                 'query' => $request->query(),
             ]);

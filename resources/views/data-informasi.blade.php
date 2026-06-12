@@ -445,6 +445,16 @@
     .footer-custom {
         background-color: var(--color-primary);
     }
+    .footer-text {
+        color: var(--footer-text) !important;
+    }
+    .footer-muted {
+        color: var(--footer-muted) !important;
+    }
+    .footer-custom a.footer-muted:hover {
+        color: var(--footer-text) !important;
+        opacity: 1;
+    }
     
     /* Tab Styles */
     .data-tab {

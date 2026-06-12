@@ -13,8 +13,25 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: '{{ session('success') }}',
+                    text: @json(session('success')),
                     timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            });
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: @json(session('error')),
+                    timer: 4000,
                     timerProgressBar: true,
                     showConfirmButton: false,
                     toast: true,
@@ -30,7 +47,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal',
-                    text: '{{ $postingTableError }}',
+                    text: @json($postingTableError),
                     timer: 4000,
                     timerProgressBar: true,
                     showConfirmButton: false,
@@ -52,8 +69,24 @@
     </div>
 
     @php
-        $isEditor = in_array(session('user.role', 'kontributor'), ['admin', 'editor']);
+        $userRole = session('user.role', 'kontributor');
+        $isEditor = in_array($userRole, ['admin', 'editor'], true);
+        $pendingContributorCount = $posts->filter(function ($post) {
+            return $post->submitted_by_role === 'kontributor' && !$post->is_active;
+        })->count();
     @endphp
+
+    @if($isEditor && $pendingContributorCount > 0)
+        <div style="margin-bottom: 16px; padding: 14px 16px; border-radius: 12px; border: 1px solid #fcd34d; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); display: flex; align-items: center; gap: 12px;">
+            <svg style="width: 22px; height: 22px; color: #d97706; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <div>
+                <div style="font-weight: 700; color: #92400e;">{{ $pendingContributorCount }} posting dari kontributor menunggu aktivasi</div>
+                <div style="font-size: 13px; color: #b45309; margin-top: 2px;">Gunakan switch di kolom status untuk mengaktifkan tanpa perlu membuka halaman edit.</div>
+            </div>
+        </div>
+    @endif
 
     @if($posts->isEmpty())
         <div style="padding: 14px 16px; border: 1px dashed #d1d5db; border-radius: 10px; color: #6b7280;">
@@ -67,6 +100,7 @@
                         <th style="padding: 10px;">Judul</th>
                         <th style="padding: 10px;">Kategori</th>
                         <th style="padding: 10px;">Tanggal</th>
+                        <th style="padding: 10px;">Sumber</th>
                         <th style="padding: 10px;">Status</th>
                         @if($isEditor)
                             <th style="padding: 10px; text-align: center;">Aksi</th>
@@ -75,18 +109,57 @@
                 </thead>
                 <tbody>
                     @foreach($posts as $post)
-                        <tr style="border-bottom: 1px solid #f3f4f6;">
+                        @php
+                            $fromContributor = $post->submitted_by_role === 'kontributor';
+                            $needsReview = $fromContributor && !$post->is_active;
+                        @endphp
+                        <tr style="border-bottom: 1px solid #f3f4f6; {{ $needsReview ? 'background: #fffbeb;' : '' }}" data-from-contributor="{{ $fromContributor ? '1' : '0' }}" data-needs-review="{{ $needsReview ? '1' : '0' }}">
                             <td style="padding: 10px; min-width: 240px;">
                                 <div style="font-weight: 600; color: #111827;">{{ $post->title }}</div>
-                                <div style="font-size: 12px; color: #6b7280;">Slug: {{ $post->slug }}</div>
+                                <div style="font-size: 12px; color: #6b7280; margin-top: 2px;">Slug: {{ $post->slug }}</div>
+                                @if($needsReview)
+                                    <div style="margin-top: 6px;">
+                                        <span style="padding: 3px 8px; background: #fef3c7; color: #92400e; border-radius: 999px; font-size: 11px; font-weight: 700;">Menunggu Review</span>
+                                    </div>
+                                @endif
                             </td>
                             <td style="padding: 10px;">{{ $post->category?->name ?? '-' }}</td>
-                            <td style="padding: 10px;">{{ $post->published_at?->format('d M Y') ?? '-' }}</td>
-                            <td style="padding: 10px;">
-                                @if($post->is_active)
-                                    <span style="padding: 4px 10px; background: #dcfce7; color: #166534; border-radius: 999px; font-size: 12px; font-weight: 600;">Aktif</span>
+                            <td style="padding: 10px;">{{ $post->published_at?->format('d M Y') ?? $post->created_at?->format('d M Y') ?? '-' }}</td>
+                            <td style="padding: 10px; min-width: 140px;">
+                                @if($fromContributor)
+                                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: #dbeafe; color: #1e40af; border-radius: 999px; font-size: 12px; font-weight: 600;">
+                                        <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                        </svg>
+                                        Kontributor
+                                    </span>
+                                    @if($post->submitted_by_name)
+                                        <div style="font-size: 11px; color: #6b7280; margin-top: 4px;">{{ $post->submitted_by_name }}</div>
+                                    @endif
+                                @elseif($post->submitted_by_role === 'editor')
+                                    <span style="padding: 4px 10px; background: #ede9fe; color: #5b21b6; border-radius: 999px; font-size: 12px; font-weight: 600;">Editor</span>
+                                @elseif($post->submitted_by_role === 'admin')
+                                    <span style="padding: 4px 10px; background: #fce7f3; color: #9d174d; border-radius: 999px; font-size: 12px; font-weight: 600;">Admin</span>
                                 @else
-                                    <span style="padding: 4px 10px; background: #fee2e2; color: #991b1b; border-radius: 999px; font-size: 12px; font-weight: 600;">Nonaktif</span>
+                                    <span style="color: #9ca3af;">-</span>
+                                @endif
+                            </td>
+                            <td style="padding: 10px;">
+                                @if($isEditor)
+                                    @include('admin.partials.inline-active-switch', [
+                                        'postId' => $post->id,
+                                        'active' => $post->is_active,
+                                        'title' => $post->title,
+                                        'id' => 'post_switch_' . $post->id,
+                                    ])
+                                @else
+                                    @if($post->is_active)
+                                        <span style="padding: 4px 10px; background: #dcfce7; color: #166534; border-radius: 999px; font-size: 12px; font-weight: 600;">Aktif</span>
+                                    @elseif($fromContributor)
+                                        <span style="padding: 4px 10px; background: #fef3c7; color: #92400e; border-radius: 999px; font-size: 12px; font-weight: 600;">Menunggu Review</span>
+                                    @else
+                                        <span style="padding: 4px 10px; background: #fee2e2; color: #991b1b; border-radius: 999px; font-size: 12px; font-weight: 600;">Nonaktif</span>
+                                    @endif
                                 @endif
                             </td>
                             @if($isEditor)
@@ -112,4 +185,95 @@
         </div>
     @endif
 </div>
+
+@if($isEditor && $posts->isNotEmpty())
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const csrf = @json(csrf_token());
+    const toggleUrlTemplate = @json(route('admin.posting.toggle-active', ['id' => '__ID__']));
+
+    document.querySelectorAll('.js-posting-active-switch').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const postId = this.dataset.postId;
+            const isActive = this.dataset.active === '1';
+            const title = this.dataset.title || 'Posting';
+            const actionText = isActive ? 'nonaktifkan' : 'aktifkan';
+            const confirmColor = isActive ? '#ef4444' : '#10b981';
+
+            Swal.fire({
+                title: isActive ? 'Nonaktifkan posting?' : 'Aktifkan posting?',
+                html: '<strong>' + title + '</strong><br><span style="color:#6b7280;font-size:14px;">Posting akan ' + actionText + ' di website publik.</span>',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, ' + actionText,
+                cancelButtonText: 'Batal',
+                confirmButtonColor: confirmColor,
+                reverseButtons: true,
+            }).then(function (result) {
+                if (!result.isConfirmed) {
+                    return;
+                }
+
+                fetch(toggleUrlTemplate.replace('__ID__', postId), {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRF-TOKEN': csrf,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                })
+                .then(function (response) {
+                    return response.json().then(function (data) {
+                        if (!response.ok) {
+                            throw new Error(data.message || 'Gagal mengubah status posting.');
+                        }
+                        return data;
+                    });
+                })
+                .then(function (data) {
+                    const nextActive = data.is_active ? '1' : '0';
+                    button.dataset.active = nextActive;
+                    button.classList.toggle('is-on', data.is_active);
+                    button.setAttribute('aria-pressed', data.is_active ? 'true' : 'false');
+                    button.setAttribute('aria-label', data.is_active ? 'Nonaktifkan posting' : 'Aktifkan posting');
+                    button.querySelector('.inline-active-switch-label').textContent = data.is_active ? 'Aktif' : 'Nonaktif';
+
+                    const row = button.closest('tr');
+                    if (row) {
+                        const fromContributor = row.dataset.fromContributor === '1';
+                        row.style.background = (!data.is_active && fromContributor) ? '#fffbeb' : '';
+                        row.dataset.needsReview = (!data.is_active && fromContributor) ? '1' : '0';
+                        const reviewBadge = row.querySelector('td:first-child span[style*="Menunggu Review"]');
+                        if (reviewBadge) {
+                            reviewBadge.style.display = (!data.is_active && fromContributor) ? 'inline-block' : 'none';
+                        }
+                    }
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: data.message,
+                        timer: 2500,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end',
+                    });
+                })
+                .catch(function (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: error.message || 'Terjadi kesalahan.',
+                        confirmButtonColor: '#ECB176',
+                    });
+                });
+            });
+        });
+    });
+});
+</script>
+@endif
 @endsection

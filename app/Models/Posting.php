@@ -21,6 +21,8 @@ class Posting extends Model
         'published_at',
         'views',
         'is_active',
+        'submitted_by_role',
+        'submitted_by_name',
     ];
 
     protected $casts = [
