@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
     @include('partials.favicon')
     <title>{{ $page->title }} - {{ $siteSetting->title_suffix }}</title>
+    @include('partials.assets')
     @include('partials.rich-content-styles')
     <style>
         * {
