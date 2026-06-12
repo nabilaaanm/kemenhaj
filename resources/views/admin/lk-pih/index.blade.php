@@ -135,6 +135,12 @@
                         </tbody>
                     </table>
                 </div>
+
+                @if($lkDocuments->hasPages())
+                    <div style="margin-top: 16px;">
+                        {{ $lkDocuments->onEachSide(1)->links('pagination.berhak-lunas') }}
+                    </div>
+                @endif
             @else
                 <div style="text-align: center; padding: 32px; color: #6b7280;">
                     <p style="font-size: 14px;">Belum ada dokumen LK</p>
@@ -218,6 +224,12 @@
                         </tbody>
                     </table>
                 </div>
+
+                @if($pihDocuments->hasPages())
+                    <div style="margin-top: 16px;">
+                        {{ $pihDocuments->onEachSide(1)->links('pagination.berhak-lunas') }}
+                    </div>
+                @endif
             @else
                 <div style="text-align: center; padding: 32px; color: #6b7280;">
                     <p style="font-size: 14px;">Belum ada dokumen PIH</p>

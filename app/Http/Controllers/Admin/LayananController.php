@@ -12,7 +12,8 @@ class LayananController extends Controller
     public function index()
     {
         $services = Layanan::orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
         
         return view('admin.layanan.index', compact('services'));
     }

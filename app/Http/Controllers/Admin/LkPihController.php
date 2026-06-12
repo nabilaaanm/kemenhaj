@@ -16,13 +16,15 @@ class LkPihController extends Controller
             ->orderBy('order', 'asc')
             ->orderBy('document_date', 'desc')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10, ['*'], 'lk_page')
+            ->withQueryString();
 
         $pihDocuments = LkPihDocument::where('type', 'pih')
             ->orderBy('order', 'asc')
             ->orderBy('document_date', 'desc')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10, ['*'], 'pih_page')
+            ->withQueryString();
 
         return view('admin.lk-pih.index', compact('lkDocuments', 'pihDocuments'));
     }

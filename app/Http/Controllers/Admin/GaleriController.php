@@ -70,7 +70,8 @@ class GaleriController extends Controller
     {
         $fotos = Galeri::where('type', 'foto')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
         return view('admin.galeri.foto.index', compact('fotos'));
     }
 
@@ -314,7 +315,8 @@ class GaleriController extends Controller
     {
         $videos = Galeri::where('type', 'video')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
         return view('admin.galeri.video.index', compact('videos'));
     }
 
@@ -517,7 +519,8 @@ class GaleriController extends Controller
     {
         $infografis = Galeri::where('type', 'infografis')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
         return view('admin.galeri.infografis.index', compact('infografis'));
     }
 

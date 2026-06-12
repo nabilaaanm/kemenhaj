@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\Rule;
 
 class SlideshowController extends Controller
@@ -16,11 +17,14 @@ class SlideshowController extends Controller
     {
         if (!Schema::hasTable('slideshows')) {
             return view('admin.pengaturan.slideshow', [
-                'slides' => collect(),
+                'slides' => new LengthAwarePaginator([], 0, 10, 1, [
+                    'path' => request()->url(),
+                    'query' => request()->query(),
+                ]),
             ])->with('warning', 'Tabel slideshow belum dibuat. Silakan jalankan migrasi terlebih dahulu.');
         }
 
-        $slides = Slideshow::orderBy('order')->orderBy('title')->get();
+        $slides = Slideshow::orderBy('order')->orderBy('title')->paginate(10)->withQueryString();
         return view('admin.pengaturan.slideshow', compact('slides'));
     }
 

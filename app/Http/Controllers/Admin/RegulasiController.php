@@ -14,7 +14,8 @@ class RegulasiController extends Controller
     {
         $regulations = Regulasi::orderBy('regulation_date', 'desc')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
         
         return view('admin.regulasi.index', compact('regulations'));
     }

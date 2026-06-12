@@ -11,6 +11,7 @@ class Regulasi extends Model
     public const CATEGORY_PERPRES = 'perpres';
     public const CATEGORY_KEPPRES = 'keppres';
     public const CATEGORY_KEPMEN = 'kepmen';
+    public const CATEGORY_PERMEN = 'permen';
     public const CATEGORY_LAINNYA = 'lainnya';
 
     protected $table = 'regulasi';
@@ -57,6 +58,7 @@ class Regulasi extends Model
             self::CATEGORY_PERPRES => 'Peraturan Presiden',
             self::CATEGORY_KEPPRES => 'Keputusan Presiden',
             self::CATEGORY_KEPMEN => 'Keputusan Menteri',
+            self::CATEGORY_PERMEN => 'Peraturan Menteri',
             self::CATEGORY_LAINNYA => 'Peraturan Lainnya',
         ];
     }
@@ -78,6 +80,7 @@ class Regulasi extends Model
             self::CATEGORY_PERPRES => 'PERATURAN PRESIDEN',
             self::CATEGORY_KEPPRES => 'KEPUTUSAN PRESIDEN',
             self::CATEGORY_KEPMEN => 'KEPUTUSAN MENTERI',
+            self::CATEGORY_PERMEN => 'PERATURAN MENTERI',
             self::CATEGORY_LAINNYA => 'PERATURAN LAINNYA',
         ];
 

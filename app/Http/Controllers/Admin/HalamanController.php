@@ -62,7 +62,8 @@ class HalamanController extends Controller
         $pages = CustomPage::orderBy('group')
             ->orderBy('order')
             ->orderByDesc('slug')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
         return view('admin.halaman.index', compact('pages'));
     }
 

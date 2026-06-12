@@ -115,6 +115,12 @@
                 </tbody>
             </table>
         </div>
+
+        @if($services->hasPages())
+            <div style="margin-top: 20px;">
+                {{ $services->onEachSide(1)->links('pagination.berhak-lunas') }}
+            </div>
+        @endif
     @else
         <div style="text-align: center; padding: 48px; color: #6b7280;">
             <svg style="width: 64px; height: 64px; margin: 0 auto 16px; color: #d1d5db;" fill="none" stroke="currentColor" viewBox="0 0 24 24">

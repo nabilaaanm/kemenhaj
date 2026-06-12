@@ -54,7 +54,7 @@
                         <th style="text-align: left; padding: 12px; font-size: 13px; font-weight: 700; color: #374151;">Badge</th>
                         <th style="text-align: left; padding: 12px; font-size: 13px; font-weight: 700; color: #374151;">Urutan</th>
                         <th style="text-align: left; padding: 12px; font-size: 13px; font-weight: 700; color: #374151;">Status</th>
-                        <th style="text-align: right; padding: 12px; font-size: 13px; font-weight: 700; color: #374151;">Aksi</th>
+                        <th style="text-align: center; padding: 12px; font-size: 13px; font-weight: 700; color: #374151;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,24 +82,32 @@
                                     <span style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;">Nonaktif</span>
                                 @endif
                             </td>
-                            <td style="padding: 12px; text-align: right;">
+                            <td style="padding: 12px; text-align: center;">
+                                <div style="display: inline-flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: nowrap;">
                                 <a href="{{ route('admin.pengaturan.slideshow.edit', $slide->title) }}" 
-                                   style="padding: 6px 12px; background-color: #3b82f6; color: white; border-radius: 6px; text-decoration: none; font-size: 12px; margin-right: 6px;">
+                                   style="padding: 6px 12px; background-color: #3b82f6; color: white; border-radius: 6px; text-decoration: none; font-size: 12px; white-space: nowrap;">
                                     Edit
                                 </a>
-                                <form action="{{ route('admin.pengaturan.slideshow.destroy', $slide->title) }}" method="POST" style="display: inline;" onsubmit="return confirm('Hapus slide ini?');">
+                                <form action="{{ route('admin.pengaturan.slideshow.destroy', $slide->title) }}" method="POST" style="display: inline; margin: 0;" onsubmit="return confirm('Hapus slide ini?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" style="padding: 6px 12px; background-color: #ef4444; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">
+                                    <button type="submit" style="padding: 6px 12px; background-color: #ef4444; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; white-space: nowrap;">
                                         Hapus
                                     </button>
                                 </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
+
+        @if($slides->hasPages())
+            <div style="margin-top: 20px;">
+                {{ $slides->onEachSide(1)->links('pagination.berhak-lunas') }}
+            </div>
+        @endif
     @else
         <div style="text-align: center; padding: 40px; background: #f9fafb; border: 2px dashed #d1d5db; border-radius: 12px;">
             <p style="color: #6b7280; margin-bottom: 16px;">Belum ada slide</p>

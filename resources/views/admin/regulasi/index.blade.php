@@ -100,7 +100,7 @@
                                 </span>
                             </td>
                             <td style="padding: 12px; text-align: center; white-space: nowrap;">
-                                <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: nowrap;">
+                                <div style="display: inline-flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: nowrap;">
                                     <a href="{{ route('admin.regulasi.edit', $regulation->routeParams()) }}" 
                                        style="padding: 6px 12px; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap;">
                                         Edit
@@ -133,6 +133,10 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+
+        <div style="margin-top: 20px;">
+            {{ $regulations->onEachSide(1)->links('pagination.berhak-lunas') }}
         </div>
     @else
         <div style="text-align: center; padding: 48px; color: #6b7280;">

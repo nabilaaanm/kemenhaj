@@ -71,9 +71,7 @@
     @php
         $userRole = session('user.role', 'kontributor');
         $isEditor = in_array($userRole, ['admin', 'editor'], true);
-        $pendingContributorCount = $posts->filter(function ($post) {
-            return $post->submitted_by_role === 'kontributor' && !$post->is_active;
-        })->count();
+        $pendingContributorCount = $pendingContributorCount ?? 0;
     @endphp
 
     @if($isEditor && $pendingContributorCount > 0)
@@ -183,6 +181,12 @@
                 </tbody>
             </table>
         </div>
+
+        @if($posts->hasPages())
+            <div style="margin-top: 20px;">
+                {{ $posts->onEachSide(1)->links('pagination.berhak-lunas') }}
+            </div>
+        @endif
     @endif
 </div>
 

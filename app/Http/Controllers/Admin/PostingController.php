@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class PostingController extends Controller
 {
@@ -33,28 +34,40 @@ class PostingController extends Controller
 
     public function index()
     {
-        $posts = collect();
+        $posts = new LengthAwarePaginator([], 0, 10, 1, [
+            'path' => request()->url(),
+            'query' => request()->query(),
+        ]);
         $postingTableError = null;
+        $pendingContributorCount = 0;
 
         try {
             $posts = Posting::with('category')
                 ->orderByRaw("CASE WHEN submitted_by_role = 'kontributor' AND is_active = 0 THEN 0 ELSE 1 END")
                 ->orderByDesc('created_at')
-                ->get();
+                ->paginate(10)
+                ->withQueryString();
+
+            $pendingContributorCount = Posting::where('submitted_by_role', 'kontributor')
+                ->where('is_active', false)
+                ->count();
         } catch (\Throwable $e) {
             $postingTableError = 'Tabel posting belum tersedia. Jalankan migrasi terlebih dahulu.';
         }
 
-        return view('admin.posting.index', compact('posts', 'postingTableError'));
+        return view('admin.posting.index', compact('posts', 'postingTableError', 'pendingContributorCount'));
     }
 
     public function category()
     {
-        $categories = collect();
+        $categories = new LengthAwarePaginator([], 0, 10, 1, [
+            'path' => request()->url(),
+            'query' => request()->query(),
+        ]);
         $tableError = null;
 
         try {
-            $categories = PostingKategori::orderBy('name')->get();
+            $categories = PostingKategori::orderBy('name')->paginate(10)->withQueryString();
         } catch (\Throwable $e) {
             $tableError = 'Tabel kategori belum tersedia. Jalankan migrasi terlebih dahulu.';
         }

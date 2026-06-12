@@ -87,5 +87,11 @@
             </tbody>
         </table>
     </div>
+
+    @if($pages->hasPages())
+        <div style="margin-top: 20px;">
+            {{ $pages->onEachSide(1)->links('pagination.berhak-lunas') }}
+        </div>
+    @endif
 </div>
 @endsection

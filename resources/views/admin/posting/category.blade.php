@@ -87,7 +87,7 @@
         </button>
     </form>
 
-    @if(count($categories) === 0)
+    @if($categories->isEmpty())
         <div style="padding: 14px 16px; border: 1px dashed #d1d5db; border-radius: 10px; color: #6b7280;">
             Belum ada kategori.
         </div>
@@ -109,6 +109,12 @@
                 </div>
             @endforeach
         </div>
+
+        @if($categories->hasPages())
+            <div style="margin-top: 20px;">
+                {{ $categories->onEachSide(1)->links('pagination.berhak-lunas') }}
+            </div>
+        @endif
     @endif
 </div>
 @endsection

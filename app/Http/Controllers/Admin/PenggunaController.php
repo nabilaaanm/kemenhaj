@@ -22,7 +22,7 @@ class PenggunaController extends Controller
             abort(403, 'Akses ditolak. Hanya admin yang dapat mengakses halaman ini.');
         }
 
-        $users = User::orderBy('created_at', 'desc')->get();
+        $users = User::orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         $adminCount = User::adminCount();
 
         return view('admin.pengaturan.pengguna', compact('users', 'adminCount'));
