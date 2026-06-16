@@ -107,7 +107,7 @@ Route::get('/', function () {
     }
 
     $slides = Slideshow::where('is_active', true)
-        ->orderBy('order')
+        ->orderBy('created_at')
         ->orderBy('title')
         ->get();
 

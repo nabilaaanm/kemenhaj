@@ -24,7 +24,7 @@ class SlideshowController extends Controller
             ])->with('warning', 'Tabel slideshow belum dibuat. Silakan jalankan migrasi terlebih dahulu.');
         }
 
-        $slides = Slideshow::orderBy('order')->orderBy('title')->paginate(10)->withQueryString();
+        $slides = Slideshow::orderBy('created_at')->orderBy('title')->paginate(10)->withQueryString();
         return view('admin.pengaturan.slideshow', compact('slides'));
     }
 
@@ -46,7 +46,6 @@ class SlideshowController extends Controller
             'button_text' => 'nullable|string|max:255',
             'button_url' => 'nullable|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:4096',
-            'order' => 'required|integer|min:1',
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -56,9 +55,8 @@ class SlideshowController extends Controller
             'description',
             'button_text',
             'button_url',
-            'order',
         ]);
-        $data['order'] = $data['order'];
+        $data['order'] = (int) (Slideshow::max('order') ?? 0) + 1;
         $data['is_active'] = $request->boolean('is_active');
 
         $file = $request->file('image');
@@ -100,7 +98,6 @@ class SlideshowController extends Controller
             'button_text' => 'nullable|string|max:255',
             'button_url' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
-            'order' => 'required|integer|min:1',
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -110,9 +107,8 @@ class SlideshowController extends Controller
             'description',
             'button_text',
             'button_url',
-            'order',
         ]);
-        $data['order'] = $data['order'];
+        $data['order'] = $slide->order;
         $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
