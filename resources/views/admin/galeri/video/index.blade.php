@@ -60,7 +60,6 @@
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">Thumbnail</th>
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">Judul</th>
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">Kategori</th>
-                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">Durasi</th>
                         <th style="padding: 12px; text-align: left; font-weight: 600; color: #374151;">Tanggal</th>
                         <th style="padding: 12px; text-align: center; font-weight: 600; color: #374151;">Aksi</th>
                     </tr>
@@ -124,9 +123,6 @@
                                 @else
                                     <span style="color: #9ca3af;">-</span>
                                 @endif
-                            </td>
-                            <td style="padding: 12px; color: #6b7280; font-size: 14px;">
-                                {{ $video->duration ?? '-' }}
                             </td>
                             <td style="padding: 12px; color: #6b7280; font-size: 14px;">
                                 {{ $video->created_at->format('d/m/Y') }}
