@@ -167,6 +167,18 @@ function closeTimModal() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.js-edit-tim-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
+            editTim(this.dataset.nama, this.dataset.jabatan);
+        });
+    });
+
+    document.querySelectorAll('.js-add-tim-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
+            openTimModal(null, Number(this.dataset.row || 1));
+        });
+    });
+
     const fotoInput = document.getElementById('tim_foto');
     const barisSelect = document.getElementById('tim_baris');
     if (fotoInput) {

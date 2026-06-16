@@ -30,6 +30,10 @@ class TimKemenhaj extends Model
         'slot' => 'integer',
     ];
 
+    protected $appends = [
+        'foto_url',
+    ];
+
     public function getFotoUrlAttribute()
     {
         if ($this->foto) {
