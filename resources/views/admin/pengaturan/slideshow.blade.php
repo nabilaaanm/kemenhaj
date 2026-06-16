@@ -76,11 +76,14 @@
                                 {{ $slide->order }}
                             </td>
                             <td style="padding: 12px;">
-                                @if($slide->is_active)
-                                    <span style="background: #d1fae5; color: #065f46; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;">Aktif</span>
-                                @else
-                                    <span style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;">Nonaktif</span>
-                                @endif
+                                @include('admin.partials.inline-active-switch', [
+                                    'active' => $slide->is_active,
+                                    'title' => $slide->title,
+                                    'id' => 'slide_switch_' . md5($slide->title),
+                                    'switchClass' => 'js-slideshow-active-switch',
+                                    'toggleUrl' => route('admin.pengaturan.slideshow.toggle-active', $slide->title),
+                                    'entityLabel' => 'slide',
+                                ])
                             </td>
                             <td style="padding: 12px; text-align: center;">
                                 <div style="display: inline-flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: nowrap;">
@@ -118,4 +121,81 @@
         </div>
     @endif
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    document.querySelectorAll('.js-slideshow-active-switch').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const toggleUrl = this.dataset.toggleUrl;
+            const isActive = this.dataset.active === '1';
+            const title = this.dataset.title || 'Slide';
+            const actionText = isActive ? 'nonaktifkan' : 'aktifkan';
+            const confirmColor = isActive ? '#ef4444' : '#10b981';
+
+            Swal.fire({
+                title: isActive ? 'Nonaktifkan slide?' : 'Aktifkan slide?',
+                html: '<strong>' + title + '</strong><br><span style="color:#6b7280;font-size:14px;">Slide akan ' + actionText + ' di slideshow beranda.</span>',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, ' + actionText,
+                cancelButtonText: 'Batal',
+                confirmButtonColor: confirmColor,
+                reverseButtons: true,
+            }).then(function (result) {
+                if (!result.isConfirmed) {
+                    return;
+                }
+
+                fetch(toggleUrl, {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRF-TOKEN': csrf,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                })
+                .then(function (response) {
+                    return response.json().then(function (data) {
+                        if (!response.ok) {
+                            throw new Error(data.message || 'Gagal mengubah status slide.');
+                        }
+                        return data;
+                    });
+                })
+                .then(function (data) {
+                    const nextActive = data.is_active ? '1' : '0';
+                    button.dataset.active = nextActive;
+                    button.classList.toggle('is-on', data.is_active);
+                    button.setAttribute('aria-pressed', data.is_active ? 'true' : 'false');
+                    button.setAttribute('aria-label', data.is_active ? 'Nonaktifkan slide' : 'Aktifkan slide');
+                    button.querySelector('.inline-active-switch-label').textContent = data.is_active ? 'Aktif' : 'Nonaktif';
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: data.message,
+                        timer: 2500,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end',
+                    });
+                })
+                .catch(function (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: error.message || 'Terjadi kesalahan.',
+                        confirmButtonColor: '#ECB176',
+                    });
+                });
+            });
+        });
+    });
+});
+</script>
 @endsection

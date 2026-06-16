@@ -60,17 +60,24 @@
 @php
     $switchActive = (bool) ($active ?? false);
     $switchId = $id ?? 'switch_' . uniqid();
+    $switchClass = $switchClass ?? 'js-posting-active-switch';
+    $entityLabel = $entityLabel ?? 'posting';
+    $toggleUrl = $toggleUrl ?? '';
 @endphp
 
 <button
     type="button"
     id="{{ $switchId }}"
-    class="inline-active-switch js-posting-active-switch {{ $switchActive ? 'is-on' : '' }}"
-    data-post-id="{{ $postId }}"
+    class="inline-active-switch {{ $switchClass }} {{ $switchActive ? 'is-on' : '' }}"
+    @if($toggleUrl !== '')
+        data-toggle-url="{{ $toggleUrl }}"
+    @else
+        data-post-id="{{ $postId }}"
+    @endif
     data-active="{{ $switchActive ? '1' : '0' }}"
-    data-title="{{ $title ?? 'Posting' }}"
+    data-title="{{ $title ?? 'Konten' }}"
     aria-pressed="{{ $switchActive ? 'true' : 'false' }}"
-    aria-label="{{ $switchActive ? 'Nonaktifkan posting' : 'Aktifkan posting' }}"
+    aria-label="{{ $switchActive ? 'Nonaktifkan ' . $entityLabel : 'Aktifkan ' . $entityLabel }}"
 >
     <span class="inline-active-switch-track" aria-hidden="true">
         <span class="inline-active-switch-knob"></span>

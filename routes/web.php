@@ -635,6 +635,7 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::post('/slideshow', [SlideshowController::class, 'store'])->name('slideshow.store');
         Route::get('/slideshow/{title}/edit', [SlideshowController::class, 'edit'])->name('slideshow.edit');
         Route::put('/slideshow/{title}', [SlideshowController::class, 'update'])->name('slideshow.update');
+        Route::patch('/slideshow/{title}/toggle-active', [SlideshowController::class, 'toggleActive'])->name('slideshow.toggle-active');
         Route::delete('/slideshow/{title}', [SlideshowController::class, 'destroy'])->name('slideshow.destroy');
     });
 

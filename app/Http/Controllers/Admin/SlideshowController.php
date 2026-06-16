@@ -59,7 +59,7 @@ class SlideshowController extends Controller
             'order',
         ]);
         $data['order'] = $data['order'];
-        $data['is_active'] = $request->boolean('is_active', true);
+        $data['is_active'] = $request->boolean('is_active');
 
         $file = $request->file('image');
         $extension = $file->getClientOriginalExtension() ?: $file->extension();
@@ -113,7 +113,7 @@ class SlideshowController extends Controller
             'order',
         ]);
         $data['order'] = $data['order'];
-        $data['is_active'] = $request->boolean('is_active', true);
+        $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
             if (!empty($slide->image_path)) {
@@ -155,5 +155,34 @@ class SlideshowController extends Controller
 
         return redirect()->route('admin.pengaturan.slideshow')
             ->with('success', 'Slide berhasil dihapus.');
+    }
+
+    public function toggleActive(Request $request, $title)
+    {
+        if (!Schema::hasTable('slideshows')) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Tabel slideshow belum dibuat.'], 422);
+            }
+
+            return back()->with('warning', 'Tabel slideshow belum dibuat. Jalankan migrasi terlebih dahulu.');
+        }
+
+        $slide = Slideshow::findOrFail(urldecode($title));
+        $slide->is_active = !$slide->is_active;
+        $slide->save();
+
+        $message = $slide->is_active
+            ? 'Slide "' . $slide->title . '" berhasil diaktifkan.'
+            : 'Slide "' . $slide->title . '" berhasil dinonaktifkan.';
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => $slide->is_active,
+                'message' => $message,
+            ]);
+        }
+
+        return back()->with('success', $message);
     }
 }
