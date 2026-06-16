@@ -1114,9 +1114,6 @@ class DataInformasiController extends Controller
 
             $inserted = 0;
             $skipped = 0;
-            $duplicates = 0;
-            $seenInFile = [];
-            $compareFields = ['nomor_porsi', 'nama', 'pendidikan', 'kbihu', 'alamat', 'kelurahan', 'kecamatan', 'usia', 'jenis_kelamin', 'tahun_keberangkatan'];
             $preparedRows = [];
 
             foreach ($rows as $row) {
@@ -1125,7 +1122,12 @@ class DataInformasiController extends Controller
                     return $col ? $row[$col] ?? null : null;
                 };
 
-                $nomorPorsi = trim((string) ($getValue('nomor_porsi') ?? ''));
+                $nomorPorsiRaw = $getValue('nomor_porsi');
+                if (is_numeric($nomorPorsiRaw)) {
+                    $nomorPorsi = (string) (int) $nomorPorsiRaw;
+                } else {
+                    $nomorPorsi = trim((string) ($nomorPorsiRaw ?? ''));
+                }
                 $nama = trim((string) ($getValue('nama') ?? ''));
 
                 if ($nomorPorsi === '' && $nama === '') {
@@ -1187,7 +1189,7 @@ class DataInformasiController extends Controller
                     ->values()
                     ->all();
 
-            $importResult = DB::transaction(function () use ($yearsToReplace, $preparedRows, $compareFields, &$seenInFile) {
+            $importResult = DB::transaction(function () use ($yearsToReplace, $preparedRows) {
                 $deletedCount = 0;
                 $inserted = 0;
                 $duplicates = 0;
@@ -1196,11 +1198,28 @@ class DataInformasiController extends Controller
                     $deletedCount = HajiJamaah::whereIn('tahun_keberangkatan', $yearsToReplace)->delete();
                 }
 
+                $nomorPorsiInFile = collect($preparedRows)
+                    ->pluck('nomor_porsi')
+                    ->filter(fn ($value) => $value !== null && $value !== '')
+                    ->unique()
+                    ->values()
+                    ->all();
+
+                if (!empty($nomorPorsiInFile)) {
+                    $deletedCount += HajiJamaah::whereIn('nomor_porsi', $nomorPorsiInFile)->delete();
+                }
+
+                $seenNomorPorsi = [];
+
                 foreach ($preparedRows as $data) {
-                    $fingerprint = $this->importFingerprint($data, $compareFields);
-                    if ($this->isDuplicateInFile($fingerprint, $seenInFile)) {
-                        $duplicates++;
-                        continue;
+                    $nomorPorsi = $data['nomor_porsi'] ?? null;
+
+                    if ($nomorPorsi !== null && $nomorPorsi !== '') {
+                        if (isset($seenNomorPorsi[$nomorPorsi])) {
+                            $duplicates++;
+                            continue;
+                        }
+                        $seenNomorPorsi[$nomorPorsi] = true;
                     }
 
                     HajiJamaah::create($data);

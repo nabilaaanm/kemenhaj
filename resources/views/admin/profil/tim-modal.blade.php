@@ -11,7 +11,8 @@
         
         <form id="timForm" method="POST" enctype="multipart/form-data">
             @csrf
-            
+            <input type="hidden" name="original_nama" id="tim_original_nama" value="">
+            <input type="hidden" name="original_jabatan" id="tim_original_jabatan" value="">
             <div style="margin-bottom: 20px;">
                 <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Nama</label>
                 <input type="text" name="nama" id="tim_nama" required
@@ -113,10 +114,9 @@ function openTimModal(nama = null, jabatan = null, defaultRow = null) {
         const member = timData.find(t => t.nama === nama && t.jabatan === jabatan);
         if (member) {
             title.textContent = 'Edit Anggota Tim';
-            const updateUrl = '{{ route("admin.profil.tim.update", ["nama" => "__NAMA__", "jabatan" => "__JABATAN__"]) }}'
-                .replace('__NAMA__', encodeURIComponent(nama))
-                .replace('__JABATAN__', encodeURIComponent(jabatan));
-            form.action = updateUrl;
+            form.action = '{{ route("admin.profil.tim.update") }}';
+            document.getElementById('tim_original_nama').value = member.nama || '';
+            document.getElementById('tim_original_jabatan').value = member.jabatan || '';
             
             let methodInput = form.querySelector('input[name="_method"]');
             if (!methodInput) {
@@ -142,6 +142,8 @@ function openTimModal(nama = null, jabatan = null, defaultRow = null) {
     } else {
         title.textContent = 'Tambah Anggota Tim';
         form.action = '{{ route("admin.profil.tim.store") }}';
+        document.getElementById('tim_original_nama').value = '';
+        document.getElementById('tim_original_jabatan').value = '';
         
         let methodInput = form.querySelector('input[name="_method"]');
         if (methodInput) {
@@ -163,6 +165,8 @@ function editTim(nama, jabatan) {
 function closeTimModal() {
     document.getElementById('timModal').style.display = 'none';
     document.getElementById('timForm').reset();
+    document.getElementById('tim_original_nama').value = '';
+    document.getElementById('tim_original_jabatan').value = '';
     document.getElementById('tim_foto_preview').innerHTML = '';
 }
 

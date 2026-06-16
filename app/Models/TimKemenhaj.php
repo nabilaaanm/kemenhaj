@@ -34,6 +34,23 @@ class TimKemenhaj extends Model
         'foto_url',
     ];
 
+    protected function setKeysForSaveQuery($query)
+    {
+        if (! is_array($this->primaryKey)) {
+            return parent::setKeysForSaveQuery($query);
+        }
+
+        foreach ($this->primaryKey as $keyName) {
+            $query->where(
+                $keyName,
+                '=',
+                $this->getOriginal($keyName) ?? $this->getAttribute($keyName)
+            );
+        }
+
+        return $query;
+    }
+
     public function getFotoUrlAttribute()
     {
         if ($this->foto) {

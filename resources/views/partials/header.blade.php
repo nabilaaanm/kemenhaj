@@ -129,10 +129,9 @@
     body {
         background-color: var(--page-bg) !important;
         color: var(--page-text) !important;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        padding-bottom: 88px;
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 100vh !important;
     }
     main {
         flex: 1 0 auto;
@@ -167,6 +166,8 @@
         margin-top: auto;
         flex-shrink: 0;
         width: 100%;
+        padding-bottom: 88px;
+        box-sizing: border-box;
     }
     .footer-container {
         padding-bottom: 24px;

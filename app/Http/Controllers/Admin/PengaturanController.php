@@ -19,8 +19,9 @@ class PengaturanController extends Controller
     {
         $this->ensureSiteSettingsTable();
         $setting = SiteSetting::current();
+        $appearance = $this->getOrCreateAppearance();
 
-        return view('admin.pengaturan.umum', compact('setting'));
+        return view('admin.pengaturan.umum', compact('setting', 'appearance'));
     }
 
     public function modul()
@@ -30,47 +31,12 @@ class PengaturanController extends Controller
 
     public function tampilan()
     {
-        $appearance = null;
-        if (Schema::hasTable('site_appearances')) {
-            $appearance = SiteAppearance::first();
-            if (!$appearance) {
-                $appearance = SiteAppearance::create([
-                    'primary_color' => '#ECB176',
-                    'mode' => 'light',
-                ]);
-            }
-        }
-
-        return view('admin.pengaturan.tampilan', compact('appearance'));
+        return redirect()->route('admin.pengaturan.umum');
     }
 
     public function updateTampilan(Request $request)
     {
-        if (!Schema::hasTable('site_appearances')) {
-            return back()->with('error', 'Tabel pengaturan tampilan belum tersedia. Jalankan migrasi terlebih dahulu.');
-        }
-
-        $request->validate([
-            'primary_color' => ['required', 'regex:/^#([A-Fa-f0-9]{6})$/'],
-            'mode' => 'required|in:light,dark',
-        ], [
-            'primary_color.required' => 'Warna utama wajib dipilih',
-            'primary_color.regex' => 'Format warna tidak valid',
-            'mode.required' => 'Mode tampilan wajib dipilih',
-            'mode.in' => 'Mode tampilan tidak valid',
-        ]);
-
-        $appearance = SiteAppearance::first();
-        $data = $request->only(['primary_color', 'mode']);
-
-        if (!$appearance) {
-            SiteAppearance::create($data);
-        } else {
-            $appearance->update($data);
-        }
-
-        return redirect()->route('admin.pengaturan.tampilan')
-            ->with('success', 'Pengaturan tampilan berhasil disimpan.');
+        return $this->updateUmum($request);
     }
 
     public function slideshow()
@@ -467,11 +433,23 @@ class PengaturanController extends Controller
     {
         $this->ensureSiteSettingsTable();
 
-        $request->validate([
+        $rules = [
             'nama_kemenhaj' => 'required|string|max:255',
             'kota' => 'required|string|max:255',
             'lambang' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
-        ]);
+        ];
+        $messages = [];
+
+        if (Schema::hasTable('site_appearances')) {
+            $rules['primary_color'] = ['required', 'regex:/^#([A-Fa-f0-9]{6})$/'];
+            $rules['mode'] = 'required|in:light,dark';
+            $messages['primary_color.required'] = 'Warna utama wajib dipilih';
+            $messages['primary_color.regex'] = 'Format warna tidak valid';
+            $messages['mode.required'] = 'Mode tampilan wajib dipilih';
+            $messages['mode.in'] = 'Mode tampilan tidak valid';
+        }
+
+        $request->validate($rules, $messages);
 
         $setting = SiteSetting::current();
         $data = [
@@ -489,8 +467,36 @@ class PengaturanController extends Controller
         $setting->update($data);
         SiteSetting::refreshCache();
 
+        if (Schema::hasTable('site_appearances')) {
+            $appearance = SiteAppearance::first();
+            $appearanceData = $request->only(['primary_color', 'mode']);
+
+            if (!$appearance) {
+                SiteAppearance::create($appearanceData);
+            } else {
+                $appearance->update($appearanceData);
+            }
+        }
+
         return redirect()->route('admin.pengaturan.umum')
             ->with('success', 'Pengaturan umum berhasil disimpan.');
+    }
+
+    private function getOrCreateAppearance(): ?SiteAppearance
+    {
+        if (!Schema::hasTable('site_appearances')) {
+            return null;
+        }
+
+        $appearance = SiteAppearance::first();
+        if (!$appearance) {
+            $appearance = SiteAppearance::create([
+                'primary_color' => '#ECB176',
+                'mode' => 'light',
+            ]);
+        }
+
+        return $appearance;
     }
 
     private function ensureSiteSettingsTable(): void
@@ -522,24 +528,30 @@ class PengaturanController extends Controller
             'slot' => 'required|integer|min:1|max:4',
         ]);
 
-        $data = $request->only(['nama', 'jabatan', 'baris', 'slot']);
+        try {
+            $data = $request->only(['nama', 'jabatan', 'baris', 'slot']);
 
-        if ($request->hasFile('foto')) {
-            $file = $request->file('foto');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            Storage::disk('tim')->putFileAs('', $file, $filename);
-            $data['foto'] = $filename;
+            if ($request->hasFile('foto')) {
+                $file = $request->file('foto');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                Storage::disk('tim')->putFileAs('', $file, $filename);
+                $data['foto'] = $filename;
+            }
+
+            TimKemenhaj::create($data);
+
+            return redirect()->route('admin.profil.struktur')
+                ->with('success', 'Anggota tim berhasil ditambahkan.');
+        } catch (\Throwable $e) {
+            return back()->withInput()->with('error', 'Gagal menambahkan anggota tim: ' . $e->getMessage());
         }
-
-        TimKemenhaj::create($data);
-
-        return redirect()->route('admin.profil.struktur')
-            ->with('success', 'Anggota tim berhasil ditambahkan.');
     }
 
-    public function timUpdate(Request $request, $nama, $jabatan)
+    public function timUpdate(Request $request)
     {
         $request->validate([
+            'original_nama' => 'required|string|max:255',
+            'original_jabatan' => 'required|string|max:255',
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -547,51 +559,70 @@ class PengaturanController extends Controller
             'slot' => 'required|integer|min:1|max:4',
         ]);
 
-        $tim = TimKemenhaj::where('nama', urldecode($nama))
-            ->where('jabatan', urldecode($jabatan))
-            ->firstOrFail();
+        try {
+            $tim = TimKemenhaj::where('nama', $request->input('original_nama'))
+                ->where('jabatan', $request->input('original_jabatan'))
+                ->firstOrFail();
 
-        $data = $request->only(['nama', 'jabatan', 'baris', 'slot']);
+            $data = $request->only(['nama', 'jabatan', 'baris', 'slot']);
 
-        if ($request->hasFile('foto')) {
+            if ($request->hasFile('foto')) {
+                if ($tim->foto) {
+                    Storage::disk('tim')->delete($tim->foto);
+                }
+                $file = $request->file('foto');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                Storage::disk('tim')->putFileAs('', $file, $filename);
+                $data['foto'] = $filename;
+            }
+
+            $pkChanged = $data['nama'] !== $tim->nama || $data['jabatan'] !== $tim->jabatan;
+
+            if ($pkChanged) {
+                $data['foto'] = $data['foto'] ?? $tim->foto;
+                $data['is_active'] = $tim->is_active;
+                $tim->delete();
+                TimKemenhaj::create($data);
+            } else {
+                $updateData = [
+                    'baris' => $data['baris'],
+                    'slot' => $data['slot'],
+                ];
+                if (isset($data['foto'])) {
+                    $updateData['foto'] = $data['foto'];
+                }
+                $tim->update($updateData);
+            }
+
+            return redirect()->route('admin.profil.struktur')
+                ->with('success', 'Anggota tim berhasil diperbarui.');
+        } catch (\Throwable $e) {
+            return back()->withInput()->with('error', 'Gagal memperbarui anggota tim: ' . $e->getMessage());
+        }
+    }
+
+    public function timDestroy(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'jabatan' => 'required|string|max:255',
+        ]);
+
+        try {
+            $tim = TimKemenhaj::where('nama', $request->input('nama'))
+                ->where('jabatan', $request->input('jabatan'))
+                ->firstOrFail();
+
             if ($tim->foto) {
                 Storage::disk('tim')->delete($tim->foto);
             }
-            $file = $request->file('foto');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            Storage::disk('tim')->putFileAs('', $file, $filename);
-            $data['foto'] = $filename;
-        }
 
-        $pkChanged = $data['nama'] !== $tim->nama || $data['jabatan'] !== $tim->jabatan;
-
-        if ($pkChanged) {
-            $data['foto'] = $data['foto'] ?? $tim->foto;
-            $data['is_active'] = $tim->is_active;
             $tim->delete();
-            TimKemenhaj::create($data);
-        } else {
-            $tim->update($data);
+
+            return redirect()->route('admin.profil.struktur')
+                ->with('success', 'Anggota tim berhasil dihapus.');
+        } catch (\Throwable $e) {
+            return back()->with('error', 'Gagal menghapus anggota tim: ' . $e->getMessage());
         }
-
-        return redirect()->route('admin.profil.struktur')
-            ->with('success', 'Anggota tim berhasil diperbarui.');
-    }
-
-    public function timDestroy($nama, $jabatan)
-    {
-        $tim = TimKemenhaj::where('nama', urldecode($nama))
-            ->where('jabatan', urldecode($jabatan))
-            ->firstOrFail();
-        
-        // Hapus foto jika ada
-        if ($tim->foto) {
-            Storage::disk('tim')->delete($tim->foto);
-        }
-        
-        $tim->delete();
-
-        return redirect()->route('admin.profil.struktur')
-            ->with('success', 'Anggota tim berhasil dihapus.');
     }
 }

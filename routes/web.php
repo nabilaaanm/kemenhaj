@@ -620,8 +620,8 @@ Route::middleware(['auth.session'])->prefix('admin')->name('admin.')->group(func
         Route::get('/visi-misi', [PengaturanController::class, 'profilVisiMisi'])->name('visi-misi');
         Route::post('/visi-misi', [PengaturanController::class, 'updateProfil'])->name('visi-misi.update');
         Route::post('/tim', [PengaturanController::class, 'timStore'])->name('tim.store');
-        Route::put('/tim/{nama}/{jabatan}', [PengaturanController::class, 'timUpdate'])->name('tim.update');
-        Route::delete('/tim/{nama}/{jabatan}', [PengaturanController::class, 'timDestroy'])->name('tim.destroy');
+        Route::put('/tim', [PengaturanController::class, 'timUpdate'])->name('tim.update');
+        Route::delete('/tim', [PengaturanController::class, 'timDestroy'])->name('tim.destroy');
     });
 
     // Pengaturan - Admin & Editor

@@ -219,9 +219,8 @@
             <div style="background-color: white; padding: 16px; border-radius: 8px; margin-top: 12px;">
                 <strong style="color: #374151;">Menu Pengaturan:</strong>
                 <ul style="margin: 12px 0 0 20px; color: #6b7280;">
-                    <li><strong>Umum:</strong> Konfigurasi nama instansi, kota, dan lambang</li>
+                    <li><strong>Umum:</strong> Konfigurasi nama instansi, kota, lambang, warna utama, dan mode tampilan website</li>
                     <li><strong>Modul:</strong> Aktifkan/nonaktifkan modul sistem</li>
-                    <li><strong>Tampilan:</strong> Pengaturan tema dan tampilan website</li>
                     <li><strong>Slideshow:</strong> Kelola gambar slideshow di halaman utama</li>
                     <li><strong>Pengguna:</strong> Kelola pengguna sistem (tambah, edit, hapus pengguna dengan role kontributor atau editor)</li>
                     <li><strong>Backup Database:</strong> Unduh backup database untuk keamanan data</li>

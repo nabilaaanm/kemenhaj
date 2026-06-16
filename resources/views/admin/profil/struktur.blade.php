@@ -24,6 +24,19 @@
         </script>
     @endif
 
+    @if (session('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: @json(session('error')),
+                    confirmButtonColor: '#ECB176',
+                });
+            });
+        </script>
+    @endif
+
     <!-- Struktur Organisasi -->
     <form method="POST" action="{{ route('admin.profil.struktur.update') }}" enctype="multipart/form-data" style="margin-bottom: 32px;">
         @csrf
@@ -154,9 +167,11 @@
                                             >
                                                 Edit
                                             </button>
-                                            <form action="{{ route('admin.profil.tim.destroy', ['nama' => $member->nama, 'jabatan' => $member->jabatan]) }}" method="POST" style="display: inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus anggota ini?');">
+                                            <form action="{{ route('admin.profil.tim.destroy') }}" method="POST" style="display: inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus anggota ini?');">
                                                 @csrf
                                                 @method('DELETE')
+                                                <input type="hidden" name="nama" value="{{ $member->nama }}">
+                                                <input type="hidden" name="jabatan" value="{{ $member->jabatan }}">
                                                 <button type="submit" style="padding: 6px 12px; background-color: #ef4444; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">
                                                     Hapus
                                                 </button>

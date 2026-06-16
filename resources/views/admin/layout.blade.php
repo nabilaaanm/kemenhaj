@@ -690,9 +690,6 @@
                     <a href="{{ route('admin.pengaturan.umum') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.umum') ? 'active' : '' }}">
                         <span>Umum</span>
                     </a>
-                    <a href="{{ route('admin.pengaturan.tampilan') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.tampilan') ? 'active' : '' }}">
-                        <span>Tampilan</span>
-                    </a>
                     <a href="{{ route('admin.pengaturan.slideshow') }}" class="submenu-item {{ request()->routeIs('admin.pengaturan.slideshow') ? 'active' : '' }}">
                         <span>Slideshow</span>
                     </a>
