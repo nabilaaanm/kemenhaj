@@ -1090,7 +1090,7 @@ class DataInformasiController extends Controller
             }
 
             $aliases = [
-                'nomor_porsi' => ['nomor porsi', 'no porsi', 'nomor_porsi', 'no_porsi', 'no'],
+                'nomor_porsi' => ['nomor porsi', 'no porsi', 'nomor_porsi', 'no_porsi', 'no. porsi'],
                 'nama' => ['nama calon haji', 'nama', 'nama jamaah'],
                 'pendidikan' => ['pendidikan', 'pendidikan terakhir'],
                 'kbihu' => ['kbihu', 'kbi hu', 'kbiha', 'kelompok bimbingan'],
@@ -1122,15 +1122,10 @@ class DataInformasiController extends Controller
                     return $col ? $row[$col] ?? null : null;
                 };
 
-                $nomorPorsiRaw = $getValue('nomor_porsi');
-                if (is_numeric($nomorPorsiRaw)) {
-                    $nomorPorsi = (string) (int) $nomorPorsiRaw;
-                } else {
-                    $nomorPorsi = trim((string) ($nomorPorsiRaw ?? ''));
-                }
+                $nomorPorsi = $this->normalizeImportNomorPorsi($getValue('nomor_porsi'));
                 $nama = trim((string) ($getValue('nama') ?? ''));
 
-                if ($nomorPorsi === '' && $nama === '') {
+                if ($nomorPorsi === null) {
                     $skipped++;
                     continue;
                 }
@@ -1162,7 +1157,7 @@ class DataInformasiController extends Controller
                 }
 
                 $data = [
-                    'nomor_porsi' => $nomorPorsi !== '' ? $nomorPorsi : null,
+                    'nomor_porsi' => $nomorPorsi,
                     'nama' => $nama !== '' ? $nama : null,
                     'pendidikan' => $pendidikan !== '' ? Str::upper($pendidikan) : null,
                     'kbihu' => $kbihu !== '' ? $kbihu : null,
@@ -1175,6 +1170,11 @@ class DataInformasiController extends Controller
                 ];
                 $preparedRows[] = $data;
             }
+
+            $preparedRows = array_values(array_filter(
+                $preparedRows,
+                fn (array $row) => !empty($row['nomor_porsi'])
+            ));
 
             if (count($preparedRows) === 0) {
                 return back()->with('error', 'Tidak ada data valid untuk diimpor. Pastikan kolom terisi dengan benar.');
@@ -1212,17 +1212,32 @@ class DataInformasiController extends Controller
                 $seenNomorPorsi = [];
 
                 foreach ($preparedRows as $data) {
-                    $nomorPorsi = $data['nomor_porsi'] ?? null;
+                    $nomorPorsi = $this->normalizeImportNomorPorsi($data['nomor_porsi'] ?? null);
 
-                    if ($nomorPorsi !== null && $nomorPorsi !== '') {
-                        if (isset($seenNomorPorsi[$nomorPorsi])) {
-                            $duplicates++;
-                            continue;
-                        }
-                        $seenNomorPorsi[$nomorPorsi] = true;
+                    if ($nomorPorsi === null) {
+                        continue;
                     }
 
-                    HajiJamaah::create($data);
+                    if (isset($seenNomorPorsi[$nomorPorsi])) {
+                        $duplicates++;
+                        continue;
+                    }
+                    $seenNomorPorsi[$nomorPorsi] = true;
+
+                    $record = new HajiJamaah();
+                    $record->nomor_porsi = $nomorPorsi;
+                    $record->fill([
+                        'nama' => $data['nama'] ?? null,
+                        'pendidikan' => $data['pendidikan'] ?? null,
+                        'kbihu' => $data['kbihu'] ?? null,
+                        'alamat' => $data['alamat'] ?? null,
+                        'kelurahan' => $data['kelurahan'] ?? null,
+                        'kecamatan' => $data['kecamatan'] ?? null,
+                        'usia' => $data['usia'] ?? null,
+                        'jenis_kelamin' => $data['jenis_kelamin'] ?? null,
+                        'tahun_keberangkatan' => $data['tahun_keberangkatan'] ?? null,
+                    ]);
+                    $record->save();
                     $inserted++;
                 }
 
@@ -1565,5 +1580,29 @@ class DataInformasiController extends Controller
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ]);
+    }
+
+    private function normalizeImportNomorPorsi(mixed $raw): ?string
+    {
+        if ($raw === null) {
+            return null;
+        }
+
+        $text = trim((string) $raw);
+        if ($text === '') {
+            return null;
+        }
+
+        if (is_numeric($text)) {
+            $digits = preg_replace('/\D+/', '', sprintf('%.0f', (float) $text));
+        } else {
+            $digits = preg_replace('/\D+/', '', $text);
+        }
+
+        if ($digits === '' || strlen($digits) < 6) {
+            return null;
+        }
+
+        return $digits;
     }
 }
