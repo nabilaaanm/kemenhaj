@@ -5,6 +5,14 @@
 
 @section('content')
 <div class="card">
+    <div style="margin-bottom: 24px;">
+        <a href="{{ route('admin.halaman.index') }}" style="display: inline-flex; align-items: center; color: #6b7280; text-decoration: none; margin-bottom: 16px;">
+            <svg style="width: 20px; height: 20px; margin-right: 8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Kembali ke Daftar Halaman
+        </a>
+    </div>
     <h3>Edit Halaman</h3>
     <p style="color: #6b7280; margin-bottom: 24px;">Perbarui data halaman.</p>
 
@@ -101,9 +109,14 @@
                       style="width:100%; padding:12px; border:1px solid #d1d5db; border-radius:8px; font-size:14px;">{{ old('other_info', $page->other_info) }}</textarea>
         </div>
 
-        <button type="submit" style="padding: 10px 20px; background-color: #ECB176; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600;">
-            Simpan
-        </button>
+        <div style="margin-top: 24px; display: flex; gap: 12px;">
+            <button type="submit" style="padding: 10px 20px; background-color: #ECB176; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600;">
+                Simpan
+            </button>
+            <a href="{{ route('admin.halaman.index') }}" style="padding: 10px 20px; background-color: #e5e7eb; color: #374151; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center;">
+                Kembali
+            </a>
+        </div>
     </form>
 </div>
 @include('admin.posting._tinymce', ['tinymceUploadUrl' => route('admin.halaman.upload-editor-image')])
