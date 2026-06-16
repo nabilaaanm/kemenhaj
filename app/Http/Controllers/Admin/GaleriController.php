@@ -191,6 +191,7 @@ class GaleriController extends Controller
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:255',
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            'published_at' => 'nullable|date',
         ];
 
         // Hanya validasi file jika user upload file (bukan URL)
@@ -223,6 +224,7 @@ class GaleriController extends Controller
             'description' => $request->description,
             'category' => $request->category,
             'is_active' => true,
+            'published_at' => $request->published_at ?: now(),
         ];
 
         try {
@@ -314,7 +316,8 @@ class GaleriController extends Controller
     public function videoIndex()
     {
         $videos = Galeri::where('type', 'video')
-            ->orderBy('created_at', 'desc')
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at')
             ->paginate(10)
             ->withQueryString();
         return view('admin.galeri.video.index', compact('videos'));
@@ -360,6 +363,7 @@ class GaleriController extends Controller
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             'file' => 'nullable|mimes:mp4|max:' . $maxAllowed,
             'url' => $hasUrl ? 'required|url' : 'nullable|url',
+            'published_at' => 'nullable|date',
         ];
 
         $request->validate($rules, [
@@ -379,6 +383,7 @@ class GaleriController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'category' => $request->category,
+            'published_at' => $request->published_at ?: ($video->published_at ?? now()),
         ];
 
         try {

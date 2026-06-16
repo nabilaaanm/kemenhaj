@@ -125,7 +125,7 @@
                                 @endif
                             </td>
                             <td style="padding: 12px; color: #6b7280; font-size: 14px;">
-                                {{ $video->created_at->format('d/m/Y') }}
+                                {{ optional($video->published_at ?? $video->created_at)->format('d/m/Y') }}
                             </td>
                             <td style="padding: 12px; text-align: center;">
                                 <a href="{{ route('admin.galeri.video.edit', $video->id) }}"

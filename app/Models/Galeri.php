@@ -19,11 +19,13 @@ class Galeri extends Model
         'duration',
         'order',
         'is_active',
+        'published_at',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'order' => 'integer',
+        'published_at' => 'datetime',
     ];
 
     private function normalizePublicPath(?string $path): ?string

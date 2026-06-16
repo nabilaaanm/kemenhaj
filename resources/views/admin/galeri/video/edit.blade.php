@@ -88,6 +88,13 @@
             </select>
         </div>
 
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Tanggal</label>
+            <input type="date" name="published_at"
+                   value="{{ old('published_at', optional($video->published_at ?? $video->created_at)->format('Y-m-d')) }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;">
+        </div>
+
         <div style="margin-bottom: 16px;">
             <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">Thumbnail Saat Ini</label>
             <img src="{{ $video->video_thumbnail_url }}" alt="{{ $video->title }}"
