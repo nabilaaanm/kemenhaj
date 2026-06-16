@@ -261,6 +261,8 @@ class DataInformasiController extends Controller
                 $status = match (true) {
                     $statusRaw === 'CADANGAN' => 'Cadangan',
                     $statusRaw === 'BUKAN CADANGAN' => 'Bukan Cadangan',
+                    $statusRaw === 'MURNI' => 'Bukan Cadangan',
+                    $statusRaw === 'REGULER' => 'Bukan Cadangan',
                     $statusRaw === 'MENUNGGU' => 'Cadangan',
                     $statusRaw === 'BERHAK LUNAS' => 'Bukan Cadangan',
                     $statusRaw === 'TIDAK BERHAK' => 'Bukan Cadangan',
