@@ -124,7 +124,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    const csrf = @json(csrf_token());
 
     document.querySelectorAll('.js-slideshow-active-switch').forEach(function (button) {
         button.addEventListener('click', function () {
