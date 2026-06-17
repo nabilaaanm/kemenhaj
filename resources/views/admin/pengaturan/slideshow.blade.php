@@ -51,7 +51,6 @@
                     <tr style="background: #f9fafb; border-bottom: 1px solid #e5e7eb;">
                         <th style="text-align: left; padding: 12px; font-size: 13px; font-weight: 700; color: #374151;">Gambar</th>
                         <th style="text-align: left; padding: 12px; font-size: 13px; font-weight: 700; color: #374151;">Judul</th>
-                        <th style="text-align: left; padding: 12px; font-size: 13px; font-weight: 700; color: #374151;">Badge</th>
                         <th style="text-align: left; padding: 12px; font-size: 13px; font-weight: 700; color: #374151;">Status</th>
                         <th style="text-align: center; padding: 12px; font-size: 13px; font-weight: 700; color: #374151;">Aksi</th>
                     </tr>
@@ -67,9 +66,6 @@
                                 @if($slide->description)
                                     <div style="font-size: 12px; color: #6b7280;">{{ \Illuminate\Support\Str::limit($slide->description, 80) }}</div>
                                 @endif
-                            </td>
-                            <td style="padding: 12px; font-size: 12px; color: #6b7280;">
-                                {{ $slide->badge ?? '-' }}
                             </td>
                             <td style="padding: 12px;">
                                 @include('admin.partials.inline-active-switch', [

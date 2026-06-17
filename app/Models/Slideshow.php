@@ -16,7 +16,6 @@ class Slideshow extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'badge',
         'title',
         'description',
         'button_text',

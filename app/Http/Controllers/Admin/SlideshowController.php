@@ -41,7 +41,6 @@ class SlideshowController extends Controller
 
         $request->validate([
             'title' => 'required|string|max:255|unique:slideshows,title',
-            'badge' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'button_text' => 'nullable|string|max:255',
             'button_url' => 'nullable|string|max:255',
@@ -51,7 +50,6 @@ class SlideshowController extends Controller
 
         $data = $request->only([
             'title',
-            'badge',
             'description',
             'button_text',
             'button_url',
@@ -93,7 +91,6 @@ class SlideshowController extends Controller
 
         $request->validate([
             'title' => 'required|string|max:255|unique:slideshows,title,' . $slide->title . ',title',
-            'badge' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'button_text' => 'nullable|string|max:255',
             'button_url' => 'nullable|string|max:255',
@@ -103,7 +100,6 @@ class SlideshowController extends Controller
 
         $data = $request->only([
             'title',
-            'badge',
             'description',
             'button_text',
             'button_url',
