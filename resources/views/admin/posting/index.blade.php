@@ -72,7 +72,103 @@
         $userRole = session('user.role', 'kontributor');
         $isEditor = in_array($userRole, ['admin', 'editor'], true);
         $pendingContributorCount = $pendingContributorCount ?? 0;
+
+        $sourceDisplayName = function ($post) {
+            $name = trim((string) ($post->submitted_by_name ?? ''));
+            if ($name === '') {
+                return null;
+            }
+
+            $genericLabels = ['kontributor', 'editor', 'admin'];
+            if (in_array(strtolower($name), $genericLabels, true)) {
+                return null;
+            }
+
+            return $name;
+        };
     @endphp
+
+    <style>
+        .posting-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        .posting-status-badge svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+        .posting-status-badge.is-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .posting-status-badge.is-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .posting-status-badge.is-pending {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+        .posting-source-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .posting-source-badge.is-contributor {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .posting-source-badge.is-editor {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+        .posting-source-badge.is-admin {
+            background: #fce7f3;
+            color: #9d174d;
+        }
+        .posting-source-badge svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+        .posting-source-name {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        .posting-pending-title-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+        .posting-pending-title-badge svg {
+            width: 13px;
+            height: 13px;
+            flex-shrink: 0;
+        }
+    </style>
 
     @if($isEditor && $pendingContributorCount > 0)
         <div style="margin-bottom: 16px; padding: 14px 16px; border-radius: 12px; border: 1px solid #fcd34d; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); display: flex; align-items: center; gap: 12px;">
@@ -115,9 +211,12 @@
                             <td style="padding: 10px; min-width: 240px;">
                                 <div style="font-weight: 600; color: #111827;">{{ $post->title }}</div>
                                 <div style="font-size: 12px; color: #6b7280; margin-top: 2px;">Slug: {{ $post->slug }}</div>
-                                @if($needsReview)
-                                    <div style="margin-top: 6px;">
-                                        <span style="padding: 3px 8px; background: #fef3c7; color: #92400e; border-radius: 999px; font-size: 11px; font-weight: 700;">Menunggu Review</span>
+                                @if($needsReview && $isEditor)
+                                    <div class="posting-pending-title-badge">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        Menunggu Review
                                     </div>
                                 @endif
                             </td>
@@ -125,19 +224,19 @@
                             <td style="padding: 10px;">{{ $post->published_at?->format('d M Y') ?? $post->created_at?->format('d M Y') ?? '-' }}</td>
                             <td style="padding: 10px; min-width: 140px;">
                                 @if($fromContributor)
-                                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: #dbeafe; color: #1e40af; border-radius: 999px; font-size: 12px; font-weight: 600;">
-                                        <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <span class="posting-source-badge is-contributor">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                         </svg>
                                         Kontributor
                                     </span>
-                                    @if($post->submitted_by_name)
-                                        <div style="font-size: 11px; color: #6b7280; margin-top: 4px;">{{ $post->submitted_by_name }}</div>
+                                    @if($sourceDisplayName($post))
+                                        <div class="posting-source-name">{{ $sourceDisplayName($post) }}</div>
                                     @endif
                                 @elseif($post->submitted_by_role === 'editor')
-                                    <span style="padding: 4px 10px; background: #ede9fe; color: #5b21b6; border-radius: 999px; font-size: 12px; font-weight: 600;">Editor</span>
+                                    <span class="posting-source-badge is-editor">Editor</span>
                                 @elseif($post->submitted_by_role === 'admin')
-                                    <span style="padding: 4px 10px; background: #fce7f3; color: #9d174d; border-radius: 999px; font-size: 12px; font-weight: 600;">Admin</span>
+                                    <span class="posting-source-badge is-admin">Admin</span>
                                 @else
                                     <span style="color: #9ca3af;">-</span>
                                 @endif
@@ -152,11 +251,26 @@
                                     ])
                                 @else
                                     @if($post->is_active)
-                                        <span style="padding: 4px 10px; background: #dcfce7; color: #166534; border-radius: 999px; font-size: 12px; font-weight: 600;">Aktif</span>
+                                        <span class="posting-status-badge is-active">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            Aktif
+                                        </span>
                                     @elseif($fromContributor)
-                                        <span style="padding: 4px 10px; background: #fef3c7; color: #92400e; border-radius: 999px; font-size: 12px; font-weight: 600;">Menunggu Review</span>
+                                        <span class="posting-status-badge is-pending">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            Menunggu Review
+                                        </span>
                                     @else
-                                        <span style="padding: 4px 10px; background: #fee2e2; color: #991b1b; border-radius: 999px; font-size: 12px; font-weight: 600;">Nonaktif</span>
+                                        <span class="posting-status-badge is-inactive">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            Nonaktif
+                                        </span>
                                     @endif
                                 @endif
                             </td>
@@ -249,9 +363,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         const fromContributor = row.dataset.fromContributor === '1';
                         row.style.background = (!data.is_active && fromContributor) ? '#fffbeb' : '';
                         row.dataset.needsReview = (!data.is_active && fromContributor) ? '1' : '0';
-                        const reviewBadge = row.querySelector('td:first-child span[style*="Menunggu Review"]');
+                        const reviewBadge = row.querySelector('.posting-pending-title-badge');
                         if (reviewBadge) {
-                            reviewBadge.style.display = (!data.is_active && fromContributor) ? 'inline-block' : 'none';
+                            reviewBadge.style.display = (!data.is_active && fromContributor) ? 'inline-flex' : 'none';
                         }
                     }
 
