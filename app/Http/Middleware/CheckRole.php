@@ -28,7 +28,14 @@ class CheckRole
 
         // Cek apakah role user ada dalam daftar roles yang diizinkan
         if (!in_array($userRole, $roles)) {
-            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
+            $message = 'Anda tidak memiliki akses ke halaman ini.';
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $message], 403);
+            }
+
+            return redirect()->route('admin.dashboard')
+                ->with('access_denied', $message);
         }
 
         return $next($request);

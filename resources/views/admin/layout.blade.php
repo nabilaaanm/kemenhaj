@@ -769,6 +769,21 @@
 
             <!-- Content Area -->
             <div class="content-area">
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+                @if (session('access_denied'))
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Akses Ditolak',
+                                text: @json(session('access_denied')),
+                                confirmButtonText: 'Mengerti',
+                                confirmButtonColor: '#ECB176',
+                            });
+                        });
+                    </script>
+                @endif
 
                 @yield('content')
             </div>

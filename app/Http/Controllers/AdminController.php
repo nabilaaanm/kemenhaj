@@ -265,6 +265,8 @@ class AdminController extends Controller
             ->take(6)
             ->values();
 
-        return view('admin.dashboard', compact('user', 'stats', 'recentItems'));
+        $canEditDashboardItems = in_array($user['role'] ?? 'kontributor', ['admin', 'editor'], true);
+
+        return view('admin.dashboard', compact('user', 'stats', 'recentItems', 'canEditDashboardItems'));
     }
 }

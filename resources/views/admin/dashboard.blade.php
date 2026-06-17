@@ -338,15 +338,47 @@
                 </div>
                 <div class="content-actions">
                     @if(!empty($item['url']))
-                        <a href="{{ $item['url'] }}" class="action-icon" title="Buka detail">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
-                        </a>
+                        @if($canEditDashboardItems ?? false)
+                            <a href="{{ $item['url'] }}" class="action-icon" title="Buka detail">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                            </a>
+                        @else
+                            <button type="button"
+                                    class="action-icon js-dashboard-edit-blocked"
+                                    data-title="{{ $item['title'] }}"
+                                    title="Edit tidak tersedia"
+                                    style="border: none; background: transparent;">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                            </button>
+                        @endif
                     @endif
                 </div>
             </div>
         @endforeach
     @endif
 </div>
+
+@if(!($canEditDashboardItems ?? true))
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.js-dashboard-edit-blocked').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const title = this.dataset.title || 'Konten ini';
+            Swal.fire({
+                icon: 'warning',
+                title: 'Akses Ditolak',
+                html: '<strong>' + title + '</strong><br><span style="color:#6b7280;font-size:14px;">Anda tidak memiliki akses untuk mengedit konten ini. Hubungi admin atau editor jika perlu perubahan.</span>',
+                confirmButtonText: 'Mengerti',
+                confirmButtonColor: '#ECB176',
+            });
+        });
+    });
+});
+</script>
+@endif
 @endsection
